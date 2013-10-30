@@ -15,12 +15,12 @@
 		android:paddingLeft="4dp"
 		android:text="@string/ave_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
 </merge>

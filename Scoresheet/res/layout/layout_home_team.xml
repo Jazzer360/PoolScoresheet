@@ -21,7 +21,7 @@
 		android:textSize="24sp" >
 	</EditText>
 
-	<include layout="@layout/column_headers" />
+	<include layout="@layout/row_column_headers" />
 
 	<LinearLayout
 		android:id="@+id/hp1views"
@@ -29,11 +29,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/average_edittext" />
-
-		<include layout="@layout/p1_edittext" />
-
-		<include layout="@layout/p1_home_boxes" />
+		<include layout="@layout/row_p1_home" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -42,11 +38,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/average_edittext" />
-
-		<include layout="@layout/p2_edittext" />
-
-		<include layout="@layout/p2_home_boxes" />
+		<include layout="@layout/row_p2_home" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -55,11 +47,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/average_edittext" />
-
-		<include layout="@layout/p3_edittext" />
-
-		<include layout="@layout/p3_home_boxes" />
+		<include layout="@layout/row_p3_home" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -68,11 +56,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/average_edittext" />
-
-		<include layout="@layout/p4_edittext" />
-
-		<include layout="@layout/p4_home_boxes" />
+		<include layout="@layout/row_p4_home" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -81,11 +65,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/average_edittext" />
-
-		<include layout="@layout/p5_edittext" />
-
-		<include layout="@layout/p5_home_boxes" />
+		<include layout="@layout/row_p5_home" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -94,7 +74,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/total_averages" />
+		<include layout="@layout/row_total_averages" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -103,7 +83,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/total_boxes" />
+		<include layout="@layout/row_totals" />
 	</LinearLayout>
 
 </LinearLayout>

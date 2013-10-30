@@ -2,6 +2,7 @@ package drj.scoresheet;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 public class ScoresheetActivity extends Activity {
 
@@ -18,6 +19,10 @@ public class ScoresheetActivity extends Activity {
 	}
 	
 	public void onScoreBoxClicked(View v) {
+		
+	}
+	
+	public void onAverageBoxClicked(View v) {
 		
 	}
 }

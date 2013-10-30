@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<include layout="@layout/box_average" />
+
+	<include layout="@layout/edittext_p2" />
+
+	<include layout="@layout/box_game2" />
+
+	<include layout="@layout/box_game2" />
+
+	<include layout="@layout/box_game2" />
+
+	<include layout="@layout/box_total" />
+
+</merge>

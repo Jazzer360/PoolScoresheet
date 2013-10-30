@@ -8,12 +8,12 @@
 		android:gravity="right|center_vertical"
 		android:text="@string/totals" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
-	<include layout="@layout/score_box" />
+	<include layout="@layout/box_total" />
 
 </merge>
