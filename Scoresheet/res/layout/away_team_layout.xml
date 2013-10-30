@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/awayViews"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="@string/away_team" />
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/box_bg"
+		android:gravity="center"
+		android:hint="@string/team_name"
+		android:inputType="text"
+		android:textSize="24sp" >
+	</EditText>
+
+	<include layout="@layout/column_headers" />
+
+	<LinearLayout
+		android:id="@+id/ap1views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p1_edittext" />
+
+		<include layout="@layout/p1_away_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/ap2views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p2_edittext" />
+
+		<include layout="@layout/p2_away_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/ap3views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p3_edittext" />
+
+		<include layout="@layout/p3_away_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/ap4views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p4_edittext" />
+
+		<include layout="@layout/p4_away_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/ap5views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p5_edittext" />
+
+		<include layout="@layout/p5_away_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/aAveViews"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/total_averages" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/aTotalViews"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/total_boxes" />
+	</LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="box_border_width">1dp</dimen>
+    <dimen name="ave_width">32dp</dimen>
+    <dimen name="score_box_width">38dp</dimen>
+	
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<include layout="@layout/game5_box" />
+
+	<include layout="@layout/game4_box" />
+
+	<include layout="@layout/game3_box" />
+
+	<include layout="@layout/score_box" />
+
+</merge>

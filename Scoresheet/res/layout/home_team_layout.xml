@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/homeViews"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="@string/home_team" />
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/box_bg"
+		android:gravity="center"
+		android:hint="@string/team_name"
+		android:inputType="text"
+		android:textSize="24sp" >
+	</EditText>
+
+	<include layout="@layout/column_headers" />
+
+	<LinearLayout
+		android:id="@+id/hp1views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p1_edittext" />
+
+		<include layout="@layout/p1_home_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hp2views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p2_edittext" />
+
+		<include layout="@layout/p2_home_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hp3views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p3_edittext" />
+
+		<include layout="@layout/p3_home_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hp4views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p4_edittext" />
+
+		<include layout="@layout/p4_home_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hp5views"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/average_edittext" />
+
+		<include layout="@layout/p5_edittext" />
+
+		<include layout="@layout/p5_home_boxes" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hAveViews"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/total_averages" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/hTotalViews"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<include layout="@layout/total_boxes" />
+	</LinearLayout>
+
+</LinearLayout>
