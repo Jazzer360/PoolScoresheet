@@ -3,7 +3,8 @@
 
 	<include layout="@layout/box_average" />
 
-	<include layout="@layout/edittext_p1" />
+	<include layout="@layout/edittext_p1"
+		android:id="@id/focusFirstHomePlayer" />
 
 	<include layout="@layout/box_game1" />
 

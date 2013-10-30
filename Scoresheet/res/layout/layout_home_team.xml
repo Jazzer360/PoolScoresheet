@@ -18,7 +18,8 @@
 		android:gravity="center"
 		android:hint="@string/team_name"
 		android:inputType="text"
-		android:textSize="24sp" >
+		android:textSize="24sp"
+		android:nextFocusDown="@+id/focusFirstHomePlayer" >
 	</EditText>
 
 	<include layout="@layout/row_column_headers" />
