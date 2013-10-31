@@ -2,20 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:baselineAligned="false" >
+	android:baselineAligned="true" >
 
-    <include
-    	android:layout_width="0dp"
-    	android:layout_height="match_parent"
-    	android:layout_margin="4dp"
-    	android:layout_weight="1"
-    	layout="@layout/layout_home_team" />
+	<include
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_margin="4dp"
+		android:layout_weight="1"
+		layout="@layout/layout_home_team" />
 
-    <include
-    	android:layout_width="0dp"
-    	android:layout_height="fill_parent"
-    	android:layout_margin="4dp"
-    	android:layout_weight="1"
-    	layout="@layout/layout_away_team" />
+	<include
+		android:layout_width="0dp"
+		android:layout_height="fill_parent"
+		android:layout_margin="4dp"
+		android:layout_weight="1"
+		layout="@layout/layout_away_team" />
 
 </LinearLayout>

@@ -2,6 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
 
 	<TextView
+		android:id="@+id/homeAveTotal"
 		android:layout_width="@dimen/ave_width"
 		android:layout_height="match_parent"
 		android:background="@drawable/box_bg"
@@ -15,12 +16,20 @@
 		android:paddingLeft="4dp"
 		android:text="@string/ave_total" />
 
-	<include layout="@layout/box_total" />
+	<include
+		android:id="@+id/homeAveGame1"
+		layout="@layout/box_total" />
 
-	<include layout="@layout/box_total" />
+	<include
+		android:id="@+id/homeAveGame2"
+		layout="@layout/box_total" />
 
-	<include layout="@layout/box_total" />
+	<include
+		android:id="@+id/homeAveGame3"
+		layout="@layout/box_total" />
 
-	<include layout="@layout/box_total" />
+	<include
+		android:id="@+id/homeAveGame4"
+		layout="@layout/box_total" />
 
 </merge>

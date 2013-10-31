@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/game5"
 	android:layout_width="@dimen/score_box_width"
 	android:layout_height="match_parent"
 	android:background="@drawable/score5_bg"

@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<include layout="@layout/box_average" />
+	<include
+		android:id="@+id/awayPlayer4Ave"
+		layout="@layout/box_average" />
 
-	<include layout="@layout/edittext_p4" />
+	<include
+		android:id="@+id/awayPlayer4Name"
+		layout="@layout/edittext_p4" />
 
-	<include layout="@layout/box_game4" />
+	<include
+		android:id="@+id/awayPlayer4Game1"
+		layout="@layout/box_game4" />
 
-	<include layout="@layout/box_game2" />
+	<include
+		android:id="@+id/awayPlayer4Game2"
+		layout="@layout/box_game2" />
 
-	<include layout="@layout/box_game5" />
+	<include
+		android:id="@+id/awayPlayer4Game3"
+		layout="@layout/box_game5" />
 
-	<include layout="@layout/box_total" />
+	<include
+		android:id="@+id/awayPlayer4Total"
+		layout="@layout/box_total" />
 
 </merge>
