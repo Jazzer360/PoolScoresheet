@@ -10,19 +10,19 @@
 		layout="@layout/edittext_p3" />
 
 	<include
-		android:id="@+id/awayPlayer3Game1"
+		android:id="@id/awayPlayer3Round1"
 		layout="@layout/box_game3"
-		android:tag="@+id/game3Round1" />
+		android:tag="@id/homePlayer3Round1" />
 
 	<include
-		android:id="@+id/awayPlayer3Game2"
+		android:id="@id/awayPlayer3Round2"
 		layout="@layout/box_game5"
-		android:tag="@+id/game5Round2" />
+		android:tag="@id/homePlayer5Round2" />
 
 	<include
-		android:id="@+id/awayPlayer3Game3"
+		android:id="@id/awayPlayer3Round3"
 		layout="@layout/box_game1"
-		android:tag="@+id/game1Round3" />
+		android:tag="@id/homePlayer1Round3" />
 
 	<include
 		android:id="@+id/awayPlayer3Total"
