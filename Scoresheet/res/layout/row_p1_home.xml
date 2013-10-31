@@ -12,7 +12,7 @@
 	<include
 		android:id="@+id/homePlayer1Game1"
 		layout="@layout/box_game1"
-		android:tag="@+id/game1Round1" />
+		android:tag="@id/awayPlayer1Game1" />
 
 	<include
 		android:id="@+id/homePlayer1Game2"
