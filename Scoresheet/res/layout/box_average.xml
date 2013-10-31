@@ -5,4 +5,5 @@
 	android:background="@drawable/box_bg"
 	android:clickable="true"
 	android:gravity="center"
-	android:onClick="onAverageBoxClicked" />
+	android:onClick="onAverageBoxClicked"
+	android:textSize="@dimen/ave_text_size" />

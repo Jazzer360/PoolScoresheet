@@ -11,18 +11,15 @@
 
 	<include
 		android:id="@id/awayPlayer5Round1"
-		layout="@layout/box_game5"
-		android:tag="@id/homePlayer5Round1" />
+		layout="@layout/box_game5" />
 
 	<include
 		android:id="@id/awayPlayer5Round2"
-		layout="@layout/box_game4"
-		android:tag="@id/homePlayer4Round2" />
+		layout="@layout/box_game4" />
 
 	<include
 		android:id="@id/awayPlayer5Round3"
-		layout="@layout/box_game3"
-		android:tag="@id/homePlayer3Round3" />
+		layout="@layout/box_game3" />
 
 	<include
 		android:id="@+id/awayPlayer5Total"

@@ -17,5 +17,17 @@
 	<string name="player5">Player 5</string>
 	<string name="ave_total">Ave Total</string>
 	<string name="totals">Totals</string>
+	<string name="assign_average">Assign average</string>
+	<string name="n0">0</string>
+	<string name="n1">1</string>
+	<string name="n2">2</string>
+	<string name="n3">3</string>
+	<string name="n4">4</string>
+	<string name="n5">5</string>
+	<string name="n6">6</string>
+	<string name="n7">7</string>
+	<string name="n8">8</string>
+	<string name="n9">9</string>
+	<string name="n10">10</string>
 
 </resources>

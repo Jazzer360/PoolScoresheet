@@ -6,4 +6,5 @@
 	android:background="@drawable/box_bg"
 	android:hint="@string/player4"
 	android:inputType="text"
-	android:paddingLeft="4dp" />
+	android:paddingLeft="4dp"
+	android:textSize="@dimen/player_text_size" />

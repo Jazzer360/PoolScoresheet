@@ -5,4 +5,5 @@
 	android:background="@drawable/score5_bg"
 	android:clickable="true"
 	android:gravity="center"
-	android:onClick="onScoreBoxClicked" />
+	android:onClick="onScoreBoxClicked"
+	android:textSize="@dimen/score_text_size" />
