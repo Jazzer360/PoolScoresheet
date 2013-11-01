@@ -29,5 +29,9 @@
 	<string name="n8">8</string>
 	<string name="n9">9</string>
 	<string name="n10">10</string>
+	<string name="vs">Vs.</string>
+	<string name="select_winner">Select winner</string>
+	<string name="ero">ERO</string>
+	<string name="loser_score">Loser score</string>
 
 </resources>

@@ -3,5 +3,6 @@
 	android:layout_width="@dimen/score_box_width"
 	android:layout_height="match_parent"
 	android:background="@drawable/box_bg"
+	android:freezesText="true"
 	android:gravity="center"
 	android:textSize="@dimen/score_text_size" />

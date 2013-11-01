@@ -5,6 +5,6 @@
 	android:layout_weight="1"
 	android:background="@drawable/box_bg"
 	android:hint="@string/player3"
-	android:inputType="text"
+	android:inputType="textPersonName"
 	android:paddingLeft="4dp"
 	android:textSize="@dimen/player_text_size" />

@@ -70,7 +70,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1" >
 
-		<include layout="@layout/row_home_averages" />
+		<include layout="@layout/row_averages_home" />
 	</LinearLayout>
 
 	<LinearLayout
