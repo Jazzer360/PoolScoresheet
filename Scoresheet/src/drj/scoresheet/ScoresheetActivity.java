@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 public class ScoresheetActivity extends Activity {
 
+	static final String NAME_KEY = "name";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,17 +40,17 @@ public class ScoresheetActivity extends Activity {
 
 	public void onScoreBoxClicked(View v) {
 		TextView clickedBox = (TextView) v;
-		clickedBox.setText("10");
 		TextView otherBox = (TextView) clickedBox.getTag();
+
+		clickedBox.setText("10");
 		otherBox.setText("7");
 	}
 
 	public void onAverageBoxClicked(View v) {
 		Bundle args = new Bundle();
-		ViewGroup parent = (ViewGroup) v.getParent();
-		TextView name = (TextView) parent.getChildAt(1);
-		args.putString("name", name.getText().toString());
-		
+		TextView name = (TextView) ((ViewGroup) v.getParent()).getChildAt(1);
+		args.putString(NAME_KEY, name.getText().toString());
+
 		AveragePickerFragment dialog = new AveragePickerFragment();
 		dialog.setArguments(args);
 		dialog.show(getFragmentManager(), "AverageDialog");
@@ -68,11 +70,13 @@ public class ScoresheetActivity extends Activity {
 		linkScoreBoxes(R.id.homePlayer3Round1, R.id.awayPlayer3Round1);
 		linkScoreBoxes(R.id.homePlayer4Round1, R.id.awayPlayer4Round1);
 		linkScoreBoxes(R.id.homePlayer5Round1, R.id.awayPlayer5Round1);
+
 		linkScoreBoxes(R.id.homePlayer1Round2, R.id.awayPlayer2Round2);
 		linkScoreBoxes(R.id.homePlayer2Round2, R.id.awayPlayer4Round2);
 		linkScoreBoxes(R.id.homePlayer3Round2, R.id.awayPlayer1Round2);
 		linkScoreBoxes(R.id.homePlayer4Round2, R.id.awayPlayer5Round2);
 		linkScoreBoxes(R.id.homePlayer5Round2, R.id.awayPlayer3Round2);
+
 		linkScoreBoxes(R.id.homePlayer1Round3, R.id.awayPlayer3Round3);
 		linkScoreBoxes(R.id.homePlayer2Round3, R.id.awayPlayer1Round3);
 		linkScoreBoxes(R.id.homePlayer3Round3, R.id.awayPlayer5Round3);

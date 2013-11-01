@@ -38,7 +38,7 @@ public class AveragePickerFragment extends DialogFragment {
 		View v = inflater.inflate(R.layout.dialog_average, null);
 		setupListeners(v);
 		TextView name = (TextView) v.findViewById(R.id.dialog_name);
-		name.setText(getArguments().getString("name"));
+		name.setText(getArguments().getString(ScoresheetActivity.NAME_KEY));
 
 		builder.setTitle(R.string.assign_average)
 		.setView(v);
