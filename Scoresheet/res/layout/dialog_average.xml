@@ -9,91 +9,111 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:layout_marginTop="8dp"
+		android:layout_margin="8dp"
 		android:textSize="20sp" />
 
 	<LinearLayout
 		android:id="@+id/dialog_ave_buttons1"
-		style="?android:attr/buttonBarStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:orientation="horizontal" >
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
 			android:text="@string/n0" />
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/n1" />
-
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
 			android:text="@string/n2" />
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/n3" />
-
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
 			android:text="@string/n4" />
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/n5" />
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n6" />
+
+		<RadioButton
+			style="?android:attr/buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n8" />
+
+		<RadioButton
+			style="?android:attr/buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n10" />
 	</LinearLayout>
 
 	<LinearLayout
 		android:id="@+id/dialog_ave_buttons2"
-		style="?android:attr/buttonBarStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:orientation="horizontal" >
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/n6" />
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n1" />
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n3" />
+
+		<RadioButton
+			style="?android:attr/buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
+			android:text="@string/n5" />
+
+		<RadioButton
+			style="?android:attr/buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
 			android:text="@string/n7" />
 
-		<Button
+		<RadioButton
 			style="?android:attr/buttonBarButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/n8" />
-
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:background="@drawable/radio_button"
+			android:button="@null"
 			android:text="@string/n9" />
-
-		<Button
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/n10" />
 	</LinearLayout>
 
 </LinearLayout>

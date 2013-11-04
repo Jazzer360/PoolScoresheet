@@ -23,6 +23,7 @@ ScoringListener {
 		setContentView(R.layout.activity_scoresheet);
 
 		linkScoreBoxes();
+		recalculateScores();
 	}
 
 	@Override
@@ -99,18 +100,23 @@ ScoringListener {
 	}
 
 	public void onAverageBoxClicked(View v) {
+		TextView avgView = (TextView) v;
 		TextView nameView = (TextView) ((ViewGroup) v.getParent())
 				.getChildAt(1);
+		String avg = avgView.getText().toString();
 		String name = nameView.getText().toString();
 
 		Bundle args = new Bundle();
+		args.putInt(AveragePickerFragment.VIEW_ID_KEY, v.getId());
 		if (!TextUtils.isEmpty(name)) {
 			args.putString(AveragePickerFragment.NAME_KEY, name);
 		} else {
 			args.putString(AveragePickerFragment.NAME_KEY,
 					nameView.getHint().toString());
 		}
-		args.putInt(AveragePickerFragment.VIEW_ID_KEY, v.getId());
+		if (!TextUtils.isEmpty(avg)) {
+			args.putString(AveragePickerFragment.AVG_KEY, avg);
+		}
 
 		AveragePickerFragment dialog = new AveragePickerFragment();
 		dialog.setArguments(args);
@@ -125,7 +131,51 @@ ScoringListener {
 
 	private void recalculateScores() {
 		recalculateAverages();
-
+		
+		setViewToInt(R.id.awayTotalGame1,
+				getIntFromView(R.id.awayPlayer1Round1) +
+				getIntFromView(R.id.awayPlayer2Round1) +
+				getIntFromView(R.id.awayPlayer3Round1) +
+				getIntFromView(R.id.awayPlayer4Round1) +
+				getIntFromView(R.id.awayPlayer5Round1) +
+				getIntFromView(R.id.awayAveGame1));
+		
+		setViewToInt(R.id.awayTotalGame2,
+				getIntFromView(R.id.awayPlayer1Round2) +
+				getIntFromView(R.id.awayPlayer2Round2) +
+				getIntFromView(R.id.awayPlayer3Round2) +
+				getIntFromView(R.id.awayPlayer4Round2) +
+				getIntFromView(R.id.awayPlayer5Round2) +
+				getIntFromView(R.id.awayAveGame2));
+		
+		setViewToInt(R.id.awayTotalGame3,
+				getIntFromView(R.id.awayPlayer1Round3) +
+				getIntFromView(R.id.awayPlayer2Round3) +
+				getIntFromView(R.id.awayPlayer3Round3) +
+				getIntFromView(R.id.awayPlayer4Round3) +
+				getIntFromView(R.id.awayPlayer5Round3) +
+				getIntFromView(R.id.awayAveGame3));
+		
+		int homeRound1Total = getIntFromView(R.id.homePlayer1Round1) +
+				getIntFromView(R.id.homePlayer2Round1) +
+				getIntFromView(R.id.homePlayer3Round1) +
+				getIntFromView(R.id.homePlayer4Round1) +
+				getIntFromView(R.id.homePlayer5Round1) +
+				getIntFromView(R.id.homeAveGame1);
+		
+		int homeRound2Total = getIntFromView(R.id.homePlayer1Round2) +
+				getIntFromView(R.id.homePlayer2Round2) +
+				getIntFromView(R.id.homePlayer3Round2) +
+				getIntFromView(R.id.homePlayer4Round2) +
+				getIntFromView(R.id.homePlayer5Round2) +
+				getIntFromView(R.id.homeAveGame2);
+		
+		int homeRound3Total = getIntFromView(R.id.homePlayer1Round3) +
+				getIntFromView(R.id.homePlayer2Round3) +
+				getIntFromView(R.id.homePlayer3Round3) +
+				getIntFromView(R.id.homePlayer4Round3) +
+				getIntFromView(R.id.homePlayer5Round3) +
+				getIntFromView(R.id.homeAveGame3);
 	}
 
 	private void recalculateAverages() {

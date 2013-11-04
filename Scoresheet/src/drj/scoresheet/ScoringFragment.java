@@ -47,7 +47,7 @@ public class ScoringFragment extends DialogFragment {
 		builder.setTitle(R.string.select_winner)
 		.setView(v);
 
-		viewClickedId = getArguments().getInt(VIEW_ID_KEY);
+		//viewClickedId = getArguments().getInt(VIEW_ID_KEY);
 
 		return builder.create();
 	}
