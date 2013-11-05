@@ -16,13 +16,148 @@ import drj.scoresheet.ScoringDialog.ScoringListener;
 public class ScoresheetActivity extends Activity
 implements AveragePickerListener, ScoringListener {
 
+	private static final int[][] homePlayerGames =
+		{{
+			R.id.homePlayer1Round1,
+			R.id.homePlayer2Round1,
+			R.id.homePlayer3Round1,
+			R.id.homePlayer4Round1,
+			R.id.homePlayer5Round1,
+		}, {
+			R.id.homePlayer1Round2,
+			R.id.homePlayer2Round2,
+			R.id.homePlayer3Round2,
+			R.id.homePlayer4Round2,
+			R.id.homePlayer5Round2,
+		}, {
+			R.id.homePlayer1Round3,
+			R.id.homePlayer2Round3,
+			R.id.homePlayer3Round3,
+			R.id.homePlayer4Round3,
+			R.id.homePlayer5Round3,
+		}, {
+			R.id.homePlayer1Total,
+			R.id.homePlayer2Total,
+			R.id.homePlayer3Total,
+			R.id.homePlayer4Total,
+			R.id.homePlayer5Total,
+		}};
+	private static final int[][] awayPlayerGames =
+		{{
+			R.id.awayPlayer1Round1,
+			R.id.awayPlayer2Round1,
+			R.id.awayPlayer3Round1,
+			R.id.awayPlayer4Round1,
+			R.id.awayPlayer5Round1,
+		}, {
+			R.id.awayPlayer1Round2,
+			R.id.awayPlayer2Round2,
+			R.id.awayPlayer3Round2,
+			R.id.awayPlayer4Round2,
+			R.id.awayPlayer5Round2,
+		}, {
+			R.id.awayPlayer1Round3,
+			R.id.awayPlayer2Round3,
+			R.id.awayPlayer3Round3,
+			R.id.awayPlayer4Round3,
+			R.id.awayPlayer5Round3,
+		}, {
+			R.id.awayPlayer1Total,
+			R.id.awayPlayer2Total,
+			R.id.awayPlayer3Total,
+			R.id.awayPlayer4Total,
+			R.id.awayPlayer5Total,
+		}};
+	private static final int[] homePlayerAves =
+		{
+		R.id.homePlayer1Ave,
+		R.id.homePlayer2Ave,
+		R.id.homePlayer3Ave,
+		R.id.homePlayer4Ave,
+		R.id.homePlayer5Ave
+		};
+	private static final int[] awayPlayerAves =
+		{
+		R.id.awayPlayer1Ave,
+		R.id.awayPlayer2Ave,
+		R.id.awayPlayer3Ave,
+		R.id.awayPlayer4Ave,
+		R.id.awayPlayer5Ave
+		};
+	private static final int[] homeTeamTotals =
+		{
+		R.id.homeTotalGame1,
+		R.id.homeTotalGame2,
+		R.id.homeTotalGame3,
+		R.id.homeTotalGame4
+		};
+	private static final int[] awayTeamTotals =
+		{
+		R.id.awayTotalGame1,
+		R.id.awayTotalGame2,
+		R.id.awayTotalGame3,
+		R.id.awayTotalGame4
+		};
+	private static final int[] homeTeamAves =
+		{
+		R.id.homeAveGame1,
+		R.id.homeAveGame2,
+		R.id.homeAveGame3,
+		R.id.homeAveGame4
+		};
+	private static final int[] awayTeamAves =
+		{
+		R.id.awayAveGame1,
+		R.id.awayAveGame2,
+		R.id.awayAveGame3,
+		R.id.awayAveGame4
+		};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scoresheet);
 
 		linkScoreBoxes();
+		recalculateAverages();
+		recalculatePlayerTotals();
 		recalculateRoundTotals();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		recalculateAverages();
+		recalculatePlayerTotals();
+		recalculateRoundTotals();
+	}
+
+	private void linkScoreBoxes() {
+		linkScoreBoxes(R.id.homePlayer1Round1, R.id.awayPlayer1Round1);
+		linkScoreBoxes(R.id.homePlayer2Round1, R.id.awayPlayer2Round1);
+		linkScoreBoxes(R.id.homePlayer3Round1, R.id.awayPlayer3Round1);
+		linkScoreBoxes(R.id.homePlayer4Round1, R.id.awayPlayer4Round1);
+		linkScoreBoxes(R.id.homePlayer5Round1, R.id.awayPlayer5Round1);
+
+		linkScoreBoxes(R.id.homePlayer1Round2, R.id.awayPlayer2Round2);
+		linkScoreBoxes(R.id.homePlayer2Round2, R.id.awayPlayer4Round2);
+		linkScoreBoxes(R.id.homePlayer3Round2, R.id.awayPlayer1Round2);
+		linkScoreBoxes(R.id.homePlayer4Round2, R.id.awayPlayer5Round2);
+		linkScoreBoxes(R.id.homePlayer5Round2, R.id.awayPlayer3Round2);
+
+		linkScoreBoxes(R.id.homePlayer1Round3, R.id.awayPlayer3Round3);
+		linkScoreBoxes(R.id.homePlayer2Round3, R.id.awayPlayer1Round3);
+		linkScoreBoxes(R.id.homePlayer3Round3, R.id.awayPlayer5Round3);
+		linkScoreBoxes(R.id.homePlayer4Round3, R.id.awayPlayer2Round3);
+		linkScoreBoxes(R.id.homePlayer5Round3, R.id.awayPlayer4Round3);
+	}
+
+	private void linkScoreBoxes(int homeResId, int awayResId) {
+		View home = findViewById(homeResId);
+		View away = findViewById(awayResId);
+
+		home.setTag(away);
+		away.setTag(home);
 	}
 
 	@Override
@@ -46,32 +181,52 @@ implements AveragePickerListener, ScoringListener {
 		boolean homeClicked = findViewById(R.id.homeTeamViews)
 				.findViewById(v.getId()) != null;
 
-		View homeView = (View) (homeClicked ? v : v.getTag());
-		View awayView = (View) (homeClicked ? v.getTag() : v);
+		TextView homeView = (TextView) (homeClicked ? v : v.getTag());
+		TextView awayView = (TextView) (homeClicked ? v.getTag() : v);
+		String homeScore = homeView.getText().toString();
+		String awayScore = awayView.getText().toString();
 
 		TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
 				.getChildAt(1);
 		TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
 				.getChildAt(1);
+		String homeName = homePlayer.getText().toString();
+		String awayName = awayPlayer.getText().toString();
 
 		Bundle args = new Bundle();
-		if (!TextUtils.isEmpty(homePlayer.getText())) {
-			args.putString(ScoringDialog.HOME_PLAYER_KEY,
-					homePlayer.getText().toString());
+		if (!TextUtils.isEmpty(homeName)) {
+			args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
 		} else {
 			args.putString(ScoringDialog.HOME_PLAYER_KEY,
 					homePlayer.getHint().toString());
 		}
-
-		if (!TextUtils.isEmpty(awayPlayer.getText())) {
-			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
-					awayPlayer.getText().toString());
+		if (!TextUtils.isEmpty(awayName)) {
+			args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
 		} else {
 			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
 					awayPlayer.getHint().toString());
 		}
+		if (!TextUtils.isEmpty(homeScore)) {
+			args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
+		}
+		if (!TextUtils.isEmpty(awayScore)) {
+			args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
+		}
 		args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
 		args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
+
+		Typeface homeStyle = homeView.getTypeface();
+		Typeface awayStyle = awayView.getTypeface();
+
+		if ((homeStyle != null
+				&& (homeStyle.getStyle() & Typeface.BOLD) != 0)
+				||
+				awayStyle != null
+				&& (awayStyle.getStyle() & Typeface.BOLD) != 0) {
+			args.putBoolean(ScoringDialog.ERO_KEY, true);
+		} else {
+			args.putBoolean(ScoringDialog.ERO_KEY, false);
+		}
 
 		ScoringDialog dialog = new ScoringDialog();
 		dialog.setArguments(args);
@@ -79,23 +234,44 @@ implements AveragePickerListener, ScoringListener {
 	}
 
 	@Override
-	public void onScorePicked(int homeViewId, CharSequence homeScore,
-			int awayViewId, CharSequence awayScore, boolean ero) {
-		TextView home = setViewToText(homeViewId, homeScore);
-		TextView away = setViewToText(awayViewId, awayScore);
+	public void onScorePicked(int winViewId, CharSequence winScore,
+			int lossViewId, CharSequence lossScore, boolean ero) {
+		TextView winner = setViewToText(winViewId, winScore);
+		TextView loser = setViewToText(lossViewId, lossScore);
 
 		if (ero) {
-			if (stringToInt(homeScore.toString()) == 10) {
-				home.setTypeface(null, Typeface.BOLD);
-				away.setTypeface(null, Typeface.NORMAL);
-			} else {
-				away.setTypeface(null, Typeface.BOLD);
-				home.setTypeface(null, Typeface.NORMAL);
-			}
+			winner.setTypeface(null, Typeface.BOLD);
+			loser.setTypeface(null, Typeface.NORMAL);
 		} else {
-			home.setTypeface(null, Typeface.NORMAL);
-			away.setTypeface(null, Typeface.NORMAL);
+			winner.setTypeface(null, Typeface.NORMAL);
+			loser.setTypeface(null, Typeface.NORMAL);
 		}
+
+		recalculatePlayerTotals();
+		recalculateRoundTotals();
+	}
+
+	private void recalculatePlayerTotals() {
+		for (int playerIndex = 0; playerIndex < 5; playerIndex++) {
+			if (!TextUtils.isEmpty(
+					getTextFromView(homePlayerGames[2][playerIndex]))) {
+				int playerTotal = sumPlayer(playerIndex, homePlayerGames);
+				setViewToInt(homePlayerGames[3][playerIndex], playerTotal);
+			}
+			if (!TextUtils.isEmpty(
+					getTextFromView(awayPlayerGames[2][playerIndex]))) {
+				int playerTotal = sumPlayer(playerIndex, awayPlayerGames);
+				setViewToInt(awayPlayerGames[3][playerIndex], playerTotal);
+			}
+		}
+	}
+
+	private int sumPlayer(int playerIndex, int[][] playerViews) {
+		int total = 0;
+		for (int roundIndex = 0; roundIndex < 3; roundIndex++) {
+			total += getIntFromView(playerViews[roundIndex][playerIndex]);
+		}
+		return total;
 	}
 
 	public void onAverageBoxClicked(View v) {
@@ -125,141 +301,18 @@ implements AveragePickerListener, ScoringListener {
 	@Override
 	public void onAveragePicked(int viewId, CharSequence avg) {
 		setViewToText(viewId, avg);
+		recalculateAverages();
 		recalculateRoundTotals();
 	}
 
-	private void recalculateRoundTotals() {
-		recalculateAverages();
-		recalculatePlayerTotals();
-
-		setViewToInt(R.id.awayTotalGame1,
-				getIntFromView(R.id.awayPlayer1Round1) +
-				getIntFromView(R.id.awayPlayer2Round1) +
-				getIntFromView(R.id.awayPlayer3Round1) +
-				getIntFromView(R.id.awayPlayer4Round1) +
-				getIntFromView(R.id.awayPlayer5Round1) +
-				getIntFromView(R.id.awayAveGame1));
-
-		setViewToInt(R.id.awayTotalGame2,
-				getIntFromView(R.id.awayPlayer1Round2) +
-				getIntFromView(R.id.awayPlayer2Round2) +
-				getIntFromView(R.id.awayPlayer3Round2) +
-				getIntFromView(R.id.awayPlayer4Round2) +
-				getIntFromView(R.id.awayPlayer5Round2) +
-				getIntFromView(R.id.awayAveGame2));
-
-		setViewToInt(R.id.awayTotalGame3,
-				getIntFromView(R.id.awayPlayer1Round3) +
-				getIntFromView(R.id.awayPlayer2Round3) +
-				getIntFromView(R.id.awayPlayer3Round3) +
-				getIntFromView(R.id.awayPlayer4Round3) +
-				getIntFromView(R.id.awayPlayer5Round3) +
-				getIntFromView(R.id.awayAveGame3));
-
-		setViewToInt(R.id.awayTotalGame4,
-				getIntFromView(R.id.awayPlayer1Total) +
-				getIntFromView(R.id.awayPlayer2Total) +
-				getIntFromView(R.id.awayPlayer3Total) +
-				getIntFromView(R.id.awayPlayer4Total) +
-				getIntFromView(R.id.awayPlayer5Total) +
-				getIntFromView(R.id.awayAveGame4));
-
-		setViewToInt(R.id.homeTotalGame1,
-				getIntFromView(R.id.homePlayer1Round1) +
-				getIntFromView(R.id.homePlayer2Round1) +
-				getIntFromView(R.id.homePlayer3Round1) +
-				getIntFromView(R.id.homePlayer4Round1) +
-				getIntFromView(R.id.homePlayer5Round1) +
-				getIntFromView(R.id.homeAveGame1));
-
-		setViewToInt(R.id.homeTotalGame2,
-				getIntFromView(R.id.homePlayer1Round2) +
-				getIntFromView(R.id.homePlayer2Round2) +
-				getIntFromView(R.id.homePlayer3Round2) +
-				getIntFromView(R.id.homePlayer4Round2) +
-				getIntFromView(R.id.homePlayer5Round2) +
-				getIntFromView(R.id.homeAveGame2));
-
-		setViewToInt(R.id.homeTotalGame3,
-				getIntFromView(R.id.homePlayer1Round3) +
-				getIntFromView(R.id.homePlayer2Round3) +
-				getIntFromView(R.id.homePlayer3Round3) +
-				getIntFromView(R.id.homePlayer4Round3) +
-				getIntFromView(R.id.homePlayer5Round3) +
-				getIntFromView(R.id.homeAveGame3));
-
-		setViewToInt(R.id.homeTotalGame4,
-				getIntFromView(R.id.homePlayer1Total) +
-				getIntFromView(R.id.homePlayer2Total) +
-				getIntFromView(R.id.homePlayer3Total) +
-				getIntFromView(R.id.homePlayer4Total) +
-				getIntFromView(R.id.homePlayer5Total) +
-				getIntFromView(R.id.homeAveGame4));
-	}
-
-	private void recalculatePlayerTotals() {
-		setViewToInt(R.id.awayPlayer1Total,
-				getIntFromView(R.id.awayPlayer1Round1) +
-				getIntFromView(R.id.awayPlayer1Round2) +
-				getIntFromView(R.id.awayPlayer1Round3));
-
-		setViewToInt(R.id.awayPlayer2Total,
-				getIntFromView(R.id.awayPlayer2Round1) +
-				getIntFromView(R.id.awayPlayer2Round2) +
-				getIntFromView(R.id.awayPlayer2Round3));
-
-		setViewToInt(R.id.awayPlayer3Total,
-				getIntFromView(R.id.awayPlayer3Round1) +
-				getIntFromView(R.id.awayPlayer3Round2) +
-				getIntFromView(R.id.awayPlayer3Round3));
-
-		setViewToInt(R.id.awayPlayer4Total,
-				getIntFromView(R.id.awayPlayer4Round1) +
-				getIntFromView(R.id.awayPlayer4Round2) +
-				getIntFromView(R.id.awayPlayer4Round3));
-
-		setViewToInt(R.id.awayPlayer5Total,
-				getIntFromView(R.id.awayPlayer5Round1) +
-				getIntFromView(R.id.awayPlayer5Round2) +
-				getIntFromView(R.id.awayPlayer5Round3));
-
-		setViewToInt(R.id.homePlayer1Total,
-				getIntFromView(R.id.homePlayer1Round1) +
-				getIntFromView(R.id.homePlayer1Round2) +
-				getIntFromView(R.id.homePlayer1Round3));
-
-		setViewToInt(R.id.homePlayer2Total,
-				getIntFromView(R.id.homePlayer2Round1) +
-				getIntFromView(R.id.homePlayer2Round2) +
-				getIntFromView(R.id.homePlayer2Round3));
-
-		setViewToInt(R.id.homePlayer3Total,
-				getIntFromView(R.id.homePlayer3Round1) +
-				getIntFromView(R.id.homePlayer3Round2) +
-				getIntFromView(R.id.homePlayer3Round3));
-
-		setViewToInt(R.id.homePlayer4Total,
-				getIntFromView(R.id.homePlayer4Round1) +
-				getIntFromView(R.id.homePlayer4Round2) +
-				getIntFromView(R.id.homePlayer4Round3));
-
-		setViewToInt(R.id.homePlayer5Total,
-				getIntFromView(R.id.homePlayer5Round1) +
-				getIntFromView(R.id.homePlayer5Round2) +
-				getIntFromView(R.id.homePlayer5Round3));
-	}
-
 	private void recalculateAverages() {
-		int awayAveTotal = getIntFromView(R.id.awayPlayer1Ave) +
-				getIntFromView(R.id.awayPlayer2Ave) +
-				getIntFromView(R.id.awayPlayer3Ave) +
-				getIntFromView(R.id.awayPlayer4Ave) +
-				getIntFromView(R.id.awayPlayer5Ave);
-		int homeAveTotal = getIntFromView(R.id.homePlayer1Ave) +
-				getIntFromView(R.id.homePlayer2Ave) +
-				getIntFromView(R.id.homePlayer3Ave) +
-				getIntFromView(R.id.homePlayer4Ave) +
-				getIntFromView(R.id.homePlayer5Ave);
+		int homeAveTotal = 0;
+		int awayAveTotal = 0;
+
+		for (int playerIndex = 0; playerIndex < 5; playerIndex++) {
+			homeAveTotal += getIntFromView(homePlayerAves[playerIndex]);
+			awayAveTotal += getIntFromView(awayPlayerAves[playerIndex]);
+		}
 
 		int awayRoundBonus = Math.max(0, homeAveTotal - awayAveTotal);
 		int homeRoundBonus = Math.max(0, awayAveTotal - homeAveTotal);
@@ -275,6 +328,85 @@ implements AveragePickerListener, ScoringListener {
 		setViewToInt(R.id.homeAveGame2, homeRoundBonus);
 		setViewToInt(R.id.homeAveGame3, homeRoundBonus);
 		setViewToInt(R.id.homeAveGame4, homeRoundBonus * 3);
+	}
+
+	private void recalculateRoundTotals() {
+		for (int roundIndex = 0; roundIndex < 4; roundIndex++) {
+			if (!TextUtils.isEmpty(
+					getTextFromView(homePlayerGames[roundIndex][4]))) {
+				int homeTotal = 0;
+				int awayTotal = 0;
+				for (int playerIndex = 0; playerIndex < 5; playerIndex++) {
+					homeTotal += getIntFromView(
+							homePlayerGames[roundIndex][playerIndex]);
+					awayTotal += getIntFromView(
+							awayPlayerGames[roundIndex][playerIndex]);
+				}
+
+				homeTotal += getIntFromView(homeTeamAves[roundIndex]);
+				awayTotal += getIntFromView(awayTeamAves[roundIndex]);
+
+				setViewToInt(homeTeamTotals[roundIndex], homeTotal);
+				setViewToInt(awayTeamTotals[roundIndex], awayTotal);
+
+				if (roundIndex != 3) {
+					if (homeTotal > awayTotal ||
+							(homeTotal == awayTotal
+							&& countHomeWins(roundIndex) > 2)) {
+						circleScore(homeTeamTotals[roundIndex]);
+						clearCircle(awayTeamTotals[roundIndex]);
+					} else if (awayTotal > homeTotal ||
+							(homeTotal == awayTotal
+							&& countHomeWins(roundIndex) < 3)) {
+						circleScore(awayTeamTotals[roundIndex]);
+						clearCircle(homeTeamTotals[roundIndex]);
+					}
+				} else {
+					if (homeTotal > awayTotal ||
+							(homeTotal == awayTotal
+							&& countHomeWins(roundIndex) > 7)) {
+						circleScore(homeTeamTotals[roundIndex]);
+						clearCircle(awayTeamTotals[roundIndex]);
+					} else if (homeTotal > awayTotal ||
+							(homeTotal == awayTotal
+							&& countHomeWins(roundIndex) < 8)) {
+						circleScore(awayTeamTotals[roundIndex]);
+						clearCircle(homeTeamTotals[roundIndex]);
+					}
+				}
+			} else {
+				setViewToText(homeTeamTotals[roundIndex], "");
+				setViewToText(awayTeamTotals[roundIndex], "");
+				clearCircle(homeTeamTotals[roundIndex]);
+				clearCircle(awayTeamTotals[roundIndex]);
+			}
+		}
+	}
+
+	private int countHomeWins(int roundIndex) {
+		int sum = 0;
+		if (roundIndex == 3) {
+			for (int i = 0; i < 3; i++) {
+				sum += countHomeWins(i);
+			}
+			return sum;
+		} else {
+			for (int playerIndex = 0; playerIndex < 5; playerIndex++) {
+				sum += getIntFromView(homePlayerGames[roundIndex][playerIndex])
+						== 10 ? 1 : 0;
+			}
+			return sum;
+		}
+	}
+
+	private void circleScore(int viewId) {
+		View v = findViewById(viewId);
+		v.setBackgroundResource(R.drawable.round_winner_bg);
+	}
+
+	private void clearCircle(int viewId) {
+		View v = findViewById(viewId);
+		v.setBackgroundResource(R.drawable.box_bg);
 	}
 
 	private TextView setViewToInt(int viewId, int value) {
@@ -294,35 +426,12 @@ implements AveragePickerListener, ScoringListener {
 		return stringToInt(view.getText().toString());
 	}
 
+	private CharSequence getTextFromView(int viewId) {
+		TextView view = (TextView) findViewById(viewId);
+		return view.getText();
+	}
+
 	private int stringToInt(String string) {
 		return !TextUtils.isEmpty(string) ? Integer.valueOf(string) : 0;
-	}
-
-	private void linkScoreBoxes(int homeResId, int awayResId) {
-		View home = findViewById(homeResId);
-		View away = findViewById(awayResId);
-
-		home.setTag(away);
-		away.setTag(home);
-	}
-
-	private void linkScoreBoxes() {
-		linkScoreBoxes(R.id.homePlayer1Round1, R.id.awayPlayer1Round1);
-		linkScoreBoxes(R.id.homePlayer2Round1, R.id.awayPlayer2Round1);
-		linkScoreBoxes(R.id.homePlayer3Round1, R.id.awayPlayer3Round1);
-		linkScoreBoxes(R.id.homePlayer4Round1, R.id.awayPlayer4Round1);
-		linkScoreBoxes(R.id.homePlayer5Round1, R.id.awayPlayer5Round1);
-
-		linkScoreBoxes(R.id.homePlayer1Round2, R.id.awayPlayer2Round2);
-		linkScoreBoxes(R.id.homePlayer2Round2, R.id.awayPlayer4Round2);
-		linkScoreBoxes(R.id.homePlayer3Round2, R.id.awayPlayer1Round2);
-		linkScoreBoxes(R.id.homePlayer4Round2, R.id.awayPlayer5Round2);
-		linkScoreBoxes(R.id.homePlayer5Round2, R.id.awayPlayer3Round2);
-
-		linkScoreBoxes(R.id.homePlayer1Round3, R.id.awayPlayer3Round3);
-		linkScoreBoxes(R.id.homePlayer2Round3, R.id.awayPlayer1Round3);
-		linkScoreBoxes(R.id.homePlayer3Round3, R.id.awayPlayer5Round3);
-		linkScoreBoxes(R.id.homePlayer4Round3, R.id.awayPlayer2Round3);
-		linkScoreBoxes(R.id.homePlayer5Round3, R.id.awayPlayer4Round3);
 	}
 }

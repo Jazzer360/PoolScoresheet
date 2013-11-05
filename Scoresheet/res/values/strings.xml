@@ -33,5 +33,6 @@
 	<string name="select_winner">Select winner</string>
 	<string name="ero">ERO</string>
 	<string name="loser_score">Loser score</string>
+	<string name="clear">Clear</string>
 
 </resources>

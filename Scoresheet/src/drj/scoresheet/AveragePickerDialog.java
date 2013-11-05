@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -30,7 +29,7 @@ public class AveragePickerDialog extends DialogFragment {
 	private AveragePickerListener hostActivity;
 
 	private Set<RadioButton> buttons = new HashSet<RadioButton>();
-	private OnClickListener buttonListener = new OnClickListener() {
+	private View.OnClickListener buttonListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			for (RadioButton button : buttons) {
@@ -75,7 +74,15 @@ public class AveragePickerDialog extends DialogFragment {
 								button.getText());
 						return;
 					}
+					hostActivity.onAveragePicked(viewClickedId, "");
 				}
+			}
+		})
+		.setNeutralButton(R.string.clear,
+				new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				hostActivity.onAveragePicked(viewClickedId, "");
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);
