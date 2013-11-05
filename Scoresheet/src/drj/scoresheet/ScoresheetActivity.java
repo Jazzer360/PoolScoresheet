@@ -10,12 +10,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import drj.scoresheet.AveragePickerFragment.AveragePickerListener;
-import drj.scoresheet.ScoringFragment.ScoringListener;
+import drj.scoresheet.AveragePickerDialog.AveragePickerListener;
+import drj.scoresheet.ScoringDialog.ScoringListener;
 
 public class ScoresheetActivity extends Activity
-implements AveragePickerListener,
-ScoringListener {
+implements AveragePickerListener, ScoringListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +22,7 @@ ScoringListener {
 		setContentView(R.layout.activity_scoresheet);
 
 		linkScoreBoxes();
-		recalculateScores();
+		recalculateRoundTotals();
 	}
 
 	@Override
@@ -57,24 +56,24 @@ ScoringListener {
 
 		Bundle args = new Bundle();
 		if (!TextUtils.isEmpty(homePlayer.getText())) {
-			args.putString(ScoringFragment.HOME_PLAYER_KEY,
+			args.putString(ScoringDialog.HOME_PLAYER_KEY,
 					homePlayer.getText().toString());
 		} else {
-			args.putString(ScoringFragment.HOME_PLAYER_KEY,
+			args.putString(ScoringDialog.HOME_PLAYER_KEY,
 					homePlayer.getHint().toString());
 		}
 
 		if (!TextUtils.isEmpty(awayPlayer.getText())) {
-			args.putString(ScoringFragment.AWAY_PLAYER_KEY,
+			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
 					awayPlayer.getText().toString());
 		} else {
-			args.putString(ScoringFragment.AWAY_PLAYER_KEY,
+			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
 					awayPlayer.getHint().toString());
 		}
-		args.putInt(ScoringFragment.HOME_VIEW_ID_KEY, homeView.getId());
-		args.putInt(ScoringFragment.AWAY_VIEW_ID_KEY, awayView.getId());
+		args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
+		args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
 
-		ScoringFragment dialog = new ScoringFragment();
+		ScoringDialog dialog = new ScoringDialog();
 		dialog.setArguments(args);
 		dialog.show(getFragmentManager(), "ScoringDialog");
 	}
@@ -107,18 +106,18 @@ ScoringListener {
 		String name = nameView.getText().toString();
 
 		Bundle args = new Bundle();
-		args.putInt(AveragePickerFragment.VIEW_ID_KEY, v.getId());
+		args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
 		if (!TextUtils.isEmpty(name)) {
-			args.putString(AveragePickerFragment.NAME_KEY, name);
+			args.putString(AveragePickerDialog.NAME_KEY, name);
 		} else {
-			args.putString(AveragePickerFragment.NAME_KEY,
+			args.putString(AveragePickerDialog.NAME_KEY,
 					nameView.getHint().toString());
 		}
 		if (!TextUtils.isEmpty(avg)) {
-			args.putString(AveragePickerFragment.AVG_KEY, avg);
+			args.putString(AveragePickerDialog.AVG_KEY, avg);
 		}
 
-		AveragePickerFragment dialog = new AveragePickerFragment();
+		AveragePickerDialog dialog = new AveragePickerDialog();
 		dialog.setArguments(args);
 		dialog.show(getFragmentManager(), "AverageDialog");
 	}
@@ -126,12 +125,13 @@ ScoringListener {
 	@Override
 	public void onAveragePicked(int viewId, CharSequence avg) {
 		setViewToText(viewId, avg);
-		recalculateScores();
+		recalculateRoundTotals();
 	}
 
-	private void recalculateScores() {
+	private void recalculateRoundTotals() {
 		recalculateAverages();
-		
+		recalculatePlayerTotals();
+
 		setViewToInt(R.id.awayTotalGame1,
 				getIntFromView(R.id.awayPlayer1Round1) +
 				getIntFromView(R.id.awayPlayer2Round1) +
@@ -139,7 +139,7 @@ ScoringListener {
 				getIntFromView(R.id.awayPlayer4Round1) +
 				getIntFromView(R.id.awayPlayer5Round1) +
 				getIntFromView(R.id.awayAveGame1));
-		
+
 		setViewToInt(R.id.awayTotalGame2,
 				getIntFromView(R.id.awayPlayer1Round2) +
 				getIntFromView(R.id.awayPlayer2Round2) +
@@ -147,7 +147,7 @@ ScoringListener {
 				getIntFromView(R.id.awayPlayer4Round2) +
 				getIntFromView(R.id.awayPlayer5Round2) +
 				getIntFromView(R.id.awayAveGame2));
-		
+
 		setViewToInt(R.id.awayTotalGame3,
 				getIntFromView(R.id.awayPlayer1Round3) +
 				getIntFromView(R.id.awayPlayer2Round3) +
@@ -155,27 +155,98 @@ ScoringListener {
 				getIntFromView(R.id.awayPlayer4Round3) +
 				getIntFromView(R.id.awayPlayer5Round3) +
 				getIntFromView(R.id.awayAveGame3));
-		
-		int homeRound1Total = getIntFromView(R.id.homePlayer1Round1) +
+
+		setViewToInt(R.id.awayTotalGame4,
+				getIntFromView(R.id.awayPlayer1Total) +
+				getIntFromView(R.id.awayPlayer2Total) +
+				getIntFromView(R.id.awayPlayer3Total) +
+				getIntFromView(R.id.awayPlayer4Total) +
+				getIntFromView(R.id.awayPlayer5Total) +
+				getIntFromView(R.id.awayAveGame4));
+
+		setViewToInt(R.id.homeTotalGame1,
+				getIntFromView(R.id.homePlayer1Round1) +
 				getIntFromView(R.id.homePlayer2Round1) +
 				getIntFromView(R.id.homePlayer3Round1) +
 				getIntFromView(R.id.homePlayer4Round1) +
 				getIntFromView(R.id.homePlayer5Round1) +
-				getIntFromView(R.id.homeAveGame1);
-		
-		int homeRound2Total = getIntFromView(R.id.homePlayer1Round2) +
+				getIntFromView(R.id.homeAveGame1));
+
+		setViewToInt(R.id.homeTotalGame2,
+				getIntFromView(R.id.homePlayer1Round2) +
 				getIntFromView(R.id.homePlayer2Round2) +
 				getIntFromView(R.id.homePlayer3Round2) +
 				getIntFromView(R.id.homePlayer4Round2) +
 				getIntFromView(R.id.homePlayer5Round2) +
-				getIntFromView(R.id.homeAveGame2);
-		
-		int homeRound3Total = getIntFromView(R.id.homePlayer1Round3) +
+				getIntFromView(R.id.homeAveGame2));
+
+		setViewToInt(R.id.homeTotalGame3,
+				getIntFromView(R.id.homePlayer1Round3) +
 				getIntFromView(R.id.homePlayer2Round3) +
 				getIntFromView(R.id.homePlayer3Round3) +
 				getIntFromView(R.id.homePlayer4Round3) +
 				getIntFromView(R.id.homePlayer5Round3) +
-				getIntFromView(R.id.homeAveGame3);
+				getIntFromView(R.id.homeAveGame3));
+
+		setViewToInt(R.id.homeTotalGame4,
+				getIntFromView(R.id.homePlayer1Total) +
+				getIntFromView(R.id.homePlayer2Total) +
+				getIntFromView(R.id.homePlayer3Total) +
+				getIntFromView(R.id.homePlayer4Total) +
+				getIntFromView(R.id.homePlayer5Total) +
+				getIntFromView(R.id.homeAveGame4));
+	}
+
+	private void recalculatePlayerTotals() {
+		setViewToInt(R.id.awayPlayer1Total,
+				getIntFromView(R.id.awayPlayer1Round1) +
+				getIntFromView(R.id.awayPlayer1Round2) +
+				getIntFromView(R.id.awayPlayer1Round3));
+
+		setViewToInt(R.id.awayPlayer2Total,
+				getIntFromView(R.id.awayPlayer2Round1) +
+				getIntFromView(R.id.awayPlayer2Round2) +
+				getIntFromView(R.id.awayPlayer2Round3));
+
+		setViewToInt(R.id.awayPlayer3Total,
+				getIntFromView(R.id.awayPlayer3Round1) +
+				getIntFromView(R.id.awayPlayer3Round2) +
+				getIntFromView(R.id.awayPlayer3Round3));
+
+		setViewToInt(R.id.awayPlayer4Total,
+				getIntFromView(R.id.awayPlayer4Round1) +
+				getIntFromView(R.id.awayPlayer4Round2) +
+				getIntFromView(R.id.awayPlayer4Round3));
+
+		setViewToInt(R.id.awayPlayer5Total,
+				getIntFromView(R.id.awayPlayer5Round1) +
+				getIntFromView(R.id.awayPlayer5Round2) +
+				getIntFromView(R.id.awayPlayer5Round3));
+
+		setViewToInt(R.id.homePlayer1Total,
+				getIntFromView(R.id.homePlayer1Round1) +
+				getIntFromView(R.id.homePlayer1Round2) +
+				getIntFromView(R.id.homePlayer1Round3));
+
+		setViewToInt(R.id.homePlayer2Total,
+				getIntFromView(R.id.homePlayer2Round1) +
+				getIntFromView(R.id.homePlayer2Round2) +
+				getIntFromView(R.id.homePlayer2Round3));
+
+		setViewToInt(R.id.homePlayer3Total,
+				getIntFromView(R.id.homePlayer3Round1) +
+				getIntFromView(R.id.homePlayer3Round2) +
+				getIntFromView(R.id.homePlayer3Round3));
+
+		setViewToInt(R.id.homePlayer4Total,
+				getIntFromView(R.id.homePlayer4Round1) +
+				getIntFromView(R.id.homePlayer4Round2) +
+				getIntFromView(R.id.homePlayer4Round3));
+
+		setViewToInt(R.id.homePlayer5Total,
+				getIntFromView(R.id.homePlayer5Round1) +
+				getIntFromView(R.id.homePlayer5Round2) +
+				getIntFromView(R.id.homePlayer5Round3));
 	}
 
 	private void recalculateAverages() {

@@ -16,15 +16,15 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-public class AveragePickerFragment extends DialogFragment {
+public class AveragePickerDialog extends DialogFragment {
 
 	public interface AveragePickerListener {
 		public void onAveragePicked(int viewId, CharSequence avg);
 	}
 
-	static final String NAME_KEY = "name";
-	static final String VIEW_ID_KEY = "view_id";
-	static final String AVG_KEY = "avg";
+	public static final String NAME_KEY = "name";
+	public static final String VIEW_ID_KEY = "view_id";
+	public static final String AVG_KEY = "avg";
 
 	private int viewClickedId;
 	private AveragePickerListener hostActivity;

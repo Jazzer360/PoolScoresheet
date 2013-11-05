@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-public class ScoringFragment extends DialogFragment {
+public class ScoringDialog extends DialogFragment {
 
 	public interface ScoringListener {
 		public void onScorePicked(int homeViewId, CharSequence homeScore,
