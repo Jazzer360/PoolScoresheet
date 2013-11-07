@@ -1,4 +1,7 @@
-package drj.scoresheet;
+package com.derekjass.poolscoresheet;
+
+import com.derekjass.poolscoresheet.AveragePickerDialog.AveragePickerListener;
+import com.derekjass.poolscoresheet.ScoringDialog.ScoringListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,8 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import drj.scoresheet.AveragePickerDialog.AveragePickerListener;
-import drj.scoresheet.ScoringDialog.ScoringListener;
 
 public class ScoresheetActivity extends Activity
 implements AveragePickerListener, ScoringListener {
@@ -215,18 +216,8 @@ implements AveragePickerListener, ScoringListener {
 		args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
 		args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
 
-		Typeface homeStyle = homeView.getTypeface();
-		Typeface awayStyle = awayView.getTypeface();
-
-		if ((homeStyle != null
-				&& (homeStyle.getStyle() & Typeface.BOLD) != 0)
-				||
-				awayStyle != null
-				&& (awayStyle.getStyle() & Typeface.BOLD) != 0) {
-			args.putBoolean(ScoringDialog.ERO_KEY, true);
-		} else {
-			args.putBoolean(ScoringDialog.ERO_KEY, false);
-		}
+		args.putBoolean(ScoringDialog.ERO_KEY,
+				viewHasBoldText(homeView) || viewHasBoldText(awayView));
 
 		ScoringDialog dialog = new ScoringDialog();
 		dialog.setArguments(args);
@@ -433,5 +424,11 @@ implements AveragePickerListener, ScoringListener {
 
 	private int stringToInt(String string) {
 		return !TextUtils.isEmpty(string) ? Integer.valueOf(string) : 0;
+	}
+
+	private boolean viewHasBoldText(TextView v) {
+		Typeface tf = v.getTypeface();
+		return (tf != null && (tf.getStyle() & Typeface.BOLD) != 0)
+				? true : false;
 	}
 }

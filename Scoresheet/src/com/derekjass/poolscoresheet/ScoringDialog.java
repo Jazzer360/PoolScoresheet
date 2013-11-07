@@ -1,4 +1,4 @@
-package drj.scoresheet;
+package com.derekjass.poolscoresheet;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -170,10 +170,11 @@ public class ScoringDialog extends DialogFragment {
 		}
 		playerButtons.add(awayPlayer);
 
-		ViewGroup layout = (ViewGroup) v.findViewById(R.id.dialog_buttons);
+		ViewGroup buttonLayout =
+				(ViewGroup) v.findViewById(R.id.dialog_buttons);
 
-		for (int i = 0; i < layout.getChildCount(); i++) {
-			RadioButton button = (RadioButton) layout.getChildAt(i);
+		for (int i = 0; i < buttonLayout.getChildCount(); i++) {
+			RadioButton button = (RadioButton) buttonLayout.getChildAt(i);
 			button.setOnClickListener(scoreButtonListener);
 			if (button.getText().equals(score)) {
 				button.setChecked(true);

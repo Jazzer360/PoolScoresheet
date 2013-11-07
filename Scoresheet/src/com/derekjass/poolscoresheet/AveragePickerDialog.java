@@ -1,4 +1,4 @@
-package drj.scoresheet;
+package com.derekjass.poolscoresheet;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -94,10 +94,11 @@ public class AveragePickerDialog extends DialogFragment {
 
 	private void setupButtons(ViewGroup v) {
 		for (int i = 0; i < v.getChildCount(); i++) {
-			if (v.getChildAt(i) instanceof ViewGroup) {
-				setupButtons((ViewGroup) v.getChildAt(i));
-			} else if (v.getChildAt(i) instanceof RadioButton) {
-				RadioButton button = (RadioButton) v.getChildAt(i);
+			View childView = v.getChildAt(i);
+			if (childView instanceof ViewGroup) {
+				setupButtons((ViewGroup) childView);
+			} else if (childView instanceof RadioButton) {
+				RadioButton button = (RadioButton) childView;
 				button.setOnClickListener(buttonListener);
 				buttons.add(button);
 
