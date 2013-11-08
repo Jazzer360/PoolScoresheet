@@ -3,6 +3,7 @@
 
 	<declare-styleable name="PlayerScoreView">
 		<attr name="game" format="integer" />
+		<attr name="round" format="integer" />
 		<attr name="breaks" format="boolean" />
 	</declare-styleable>
 
