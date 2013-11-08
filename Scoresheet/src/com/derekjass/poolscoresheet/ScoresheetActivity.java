@@ -110,11 +110,9 @@ implements AveragePickerListener, ScoringListener {
 			awayRoundAves.get(i).addValueChangedListener(awayFinalRound.get(6));
 			awayTotals.get(i).addValueChangedListener(awayFinalRound.get(7));
 		}
-		
-		for (int i = 0; i < homeRoundAves.size(); i++) {
-			homeRoundAves.get(i).addValueChangedListener(avgChangedListener);
-			awayRoundAves.get(i).addValueChangedListener(avgChangedListener);
-		}
+
+		homeAve.addValueChangedListener(avgChangedListener);
+		awayAve.addValueChangedListener(avgChangedListener);
 	}
 
 	private void initLists() {
@@ -297,8 +295,8 @@ implements AveragePickerListener, ScoringListener {
 		args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
 		args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
 
-//		args.putBoolean(ScoringDialog.ERO_KEY,
-//				viewHasBoldText(homeView) || viewHasBoldText(awayView));
+		//		args.putBoolean(ScoringDialog.ERO_KEY,
+		//				viewHasBoldText(homeView) || viewHasBoldText(awayView));
 
 		ScoringDialog dialog = new ScoringDialog();
 		dialog.setArguments(args);
