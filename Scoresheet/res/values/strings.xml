@@ -3,7 +3,6 @@
 	<string name="app_name">Pool Scoresheet</string>
 	<string name="home_team">Home Team</string>
 	<string name="away_team">Away Team</string>
-	<string name="team_name">Team name</string>
 	<string name="abbrev_average">Ave</string>
 	<string name="player">Player</string>
 	<string name="r1">R1</string>
@@ -15,7 +14,7 @@
 	<string name="player3">Player 3</string>
 	<string name="player4">Player 4</string>
 	<string name="player5">Player 5</string>
-	<string name="ave_total">Ave Total</string>
+	<string name="subtotals">Subtotals</string>
 	<string name="totals">Totals</string>
 	<string name="assign_average">Assign average</string>
 	<string name="n0">0</string>
@@ -35,5 +34,6 @@
 	<string name="loser_score">Loser score</string>
 	<string name="clear">Clear</string>
 	<string name="breaks">Break</string>
+	<string name="round_ave">Round Ave</string>
 
 </resources>

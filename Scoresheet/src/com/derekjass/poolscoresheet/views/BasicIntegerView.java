@@ -58,7 +58,7 @@ public class BasicIntegerView extends TextView implements IntegerView {
 		}
 	}
 
-	private int stringToInt(String string) {
+	public static int stringToInt(String string) {
 		return !TextUtils.isEmpty(string) ? Integer.valueOf(string) : 0;
 	}
 }

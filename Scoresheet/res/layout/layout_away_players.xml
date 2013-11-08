@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/com.derekjass.poolscoresheet"
+	android:id="@+id/awayTeamViews"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+	<include layout="@layout/row_column_headers" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<include
+			android:id="@+id/awayPlayer1Ave"
+			layout="@layout/box_average" />
+
+		<EditText
+			android:id="@+id/awayPlayer1Name"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:hint="@string/player1"
+			android:inputType="textPersonName"
+			android:paddingLeft="4dp"
+			android:textSize="@dimen/player_text_size" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer1Round1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="1"
+			app:round="1" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer1Round2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="3"
+			app:round="2" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer1Round3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="2"
+			app:round="3" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayPlayer1Total"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<include
+			android:id="@+id/awayPlayer2Ave"
+			layout="@layout/box_average" />
+
+		<EditText
+			android:id="@+id/awayPlayer2Name"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:hint="@string/player2"
+			android:inputType="textPersonName"
+			android:paddingLeft="4dp"
+			android:textSize="@dimen/player_text_size" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer2Round1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="2"
+			app:round="1" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer2Round2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="1"
+			app:round="2" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer2Round3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="4"
+			app:round="3" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayPlayer2Total"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<include
+			android:id="@+id/awayPlayer3Ave"
+			layout="@layout/box_average" />
+
+		<EditText
+			android:id="@+id/awayPlayer3Name"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:hint="@string/player3"
+			android:inputType="textPersonName"
+			android:paddingLeft="4dp"
+			android:textSize="@dimen/player_text_size" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer3Round1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="3"
+			app:round="1" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer3Round2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="5"
+			app:round="2" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer3Round3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="1"
+			app:round="3" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayPlayer3Total"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<include
+			android:id="@+id/awayPlayer4Ave"
+			layout="@layout/box_average" />
+
+		<EditText
+			android:id="@+id/awayPlayer4Name"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:hint="@string/player4"
+			android:inputType="textPersonName"
+			android:paddingLeft="4dp"
+			android:textSize="@dimen/player_text_size" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer4Round1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="4"
+			app:round="1" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer4Round2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="2"
+			app:round="2" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer4Round3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="5"
+			app:round="3" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayPlayer4Total"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<include
+			android:id="@+id/awayPlayer5Ave"
+			layout="@layout/box_average" />
+
+		<EditText
+			android:id="@+id/awayPlayer5Name"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:hint="@string/player5"
+			android:inputType="textPersonName"
+			android:paddingLeft="4dp"
+			android:textSize="@dimen/player_text_size" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer5Round1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="5"
+			app:round="1" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer5Round2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="true"
+			app:game="4"
+			app:round="2" />
+
+		<com.derekjass.poolscoresheet.views.PlayerScoreView
+			android:id="@+id/awayPlayer5Round3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:onClick="onScoreBoxClicked"
+			app:breaks="false"
+			app:game="3"
+			app:round="3" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayPlayer5Total"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamAve"
+			android:layout_width="@dimen/ave_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/ave_text_size" />
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:gravity="center_vertical|right"
+			android:paddingRight="2dp"
+			android:text="@string/subtotals" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamSubtotalRound1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamSubtotalRound2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamSubtotalRound3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamSubtotalRound4"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:gravity="center_vertical|right"
+			android:paddingRight="2dp"
+			android:text="@string/round_ave" />
+
+		<com.derekjass.poolscoresheet.views.BasicIntegerView
+			android:id="@+id/awayTeamAveRound1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+
+		<com.derekjass.poolscoresheet.views.BasicIntegerView
+			android:id="@+id/awayTeamAveRound2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+
+		<com.derekjass.poolscoresheet.views.BasicIntegerView
+			android:id="@+id/awayTeamAveRound3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamAveRound4"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="not_when_missing" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/row_height" >
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:gravity="center_vertical|right"
+			android:paddingRight="2dp"
+			android:text="@string/totals" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamTotalRound1"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamTotalRound2"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamTotalRound3"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+
+		<com.derekjass.poolscoresheet.views.SumView
+			android:id="@+id/awayTeamTotalRound4"
+			android:layout_width="@dimen/score_box_width"
+			android:layout_height="match_parent"
+			android:textSize="@dimen/score_text_size"
+			app:sumRule="gray_when_missing" />
+	</LinearLayout>
+
+</LinearLayout>

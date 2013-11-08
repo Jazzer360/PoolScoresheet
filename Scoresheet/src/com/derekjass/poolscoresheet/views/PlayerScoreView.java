@@ -4,10 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -20,8 +17,8 @@ import com.derekjass.poolscoresheet.R;
 
 public class PlayerScoreView extends FrameLayout implements IntegerView {
 
-	private int game;
-	private int round;
+	private final int game;
+	private final int round;
 	private boolean ero;
 
 	private TextView score;
@@ -32,7 +29,6 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 
 	public PlayerScoreView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		setBackgroundResource(R.drawable.box_bg);
 
 		TypedArray a = context.getTheme().obtainStyledAttributes(
 				attrs,
@@ -48,20 +44,21 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 			a.recycle();
 		}
 
+		initBackground(game);
+
 		LayoutInflater li = (LayoutInflater)
 				context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
 		if (breaks) li.inflate(R.layout.textview_break, this);
 
-		score = (TextView) li.inflate(R.layout.textview_score, this, false);
-		addView(score);
+		li.inflate(R.layout.textview_score, this);
+		score = (TextView) findViewById(R.id.scoreText);
 
 		ero = false;
 		eroStub = new ViewStub(context);
 		eroStub.setLayoutResource(R.layout.textview_ero);
 		eroText = null;
 		addView(eroStub);
-
-		initBackground(game);
 
 		listeners = new HashSet<ValueChangedListener>();
 	}
@@ -114,17 +111,8 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 		return ero;
 	}
 
-	public void setRound(int round) {
-		this.round = round;
-	}
-
 	public int getRound() {
 		return round;
-	}
-
-	public void setGame(int game) {
-		this.game = game;
-		initBackground(game);
 	}
 
 	public int getGame() {
@@ -137,33 +125,29 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 		}
 	}
 
-	private void initBackground(int game) {
-		Resources res = getContext().getResources();
-		int color;
+	protected void initBackground(int game) {
 		switch (game) {
 		case 1:
-			color = res.getColor(R.color.pastel_red);
+			setBackgroundResource(R.drawable.score1_bg);
 			break;
 		case 2:
-			color = res.getColor(R.color.pastel_orange);
+			setBackgroundResource(R.drawable.score2_bg);
 			break;
 		case 3:
-			color = res.getColor(R.color.pastel_yellow);
+			setBackgroundResource(R.drawable.score3_bg);
 			break;
 		case 4:
-			color = res.getColor(R.color.pastel_green);
+			setBackgroundResource(R.drawable.score4_bg);
 			break;
 		case 5:
-			color = res.getColor(R.color.pastel_blue);
+			setBackgroundResource(R.drawable.score5_bg);
 			break;
 		default:
-			color = Color.WHITE;
+			setBackgroundResource(R.drawable.box_bg);
 		}
-		GradientDrawable bg = (GradientDrawable) getBackground();
-		bg.setColor(color);
 	}
 
-	private int stringToInt(String string) {
+	public static int stringToInt(String string) {
 		return !TextUtils.isEmpty(string) ? Integer.valueOf(string) : 0;
 	}
 }

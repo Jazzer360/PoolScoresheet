@@ -6,5 +6,12 @@
 		<attr name="round" format="integer" />
 		<attr name="breaks" format="boolean" />
 	</declare-styleable>
+	<declare-styleable name="SumView">
+		<attr name="sumRule">
+			<enum name="always" value="1" />
+			<enum name="gray_when_missing" value="2" />
+			<enum name="not_when_missing" value="3" />
+		</attr>
+	</declare-styleable>
 
 </resources>

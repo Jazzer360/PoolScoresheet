@@ -9,13 +9,13 @@
 		android:layout_height="match_parent"
 		android:layout_margin="4dp"
 		android:layout_weight="1"
-		layout="@layout/layout_home_team" />
+		layout="@layout/layout_home_players" />
 
 	<include
 		android:layout_width="0dp"
 		android:layout_height="fill_parent"
 		android:layout_margin="4dp"
 		android:layout_weight="1"
-		layout="@layout/layout_away_team" />
+		layout="@layout/layout_away_players" />
 
 </LinearLayout>

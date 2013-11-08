@@ -87,31 +87,31 @@ implements AveragePickerListener, ScoringListener {
 		};
 	private static final int[] homeTeamTotals =
 		{
-		R.id.homeTotalGame1,
-		R.id.homeTotalGame2,
-		R.id.homeTotalGame3,
-		R.id.homeTotalGame4
+		R.id.homeTeamTotalRound1,
+		R.id.homeTeamTotalRound2,
+		R.id.homeTeamTotalRound3,
+		R.id.homeTeamTotalRound4
 		};
 	private static final int[] awayTeamTotals =
 		{
-		R.id.awayTotalGame1,
-		R.id.awayTotalGame2,
-		R.id.awayTotalGame3,
-		R.id.awayTotalGame4
+		R.id.awayTeamTotalRound1,
+		R.id.awayTeamTotalRound2,
+		R.id.awayTeamTotalRound3,
+		R.id.awayTeamTotalRound4
 		};
 	private static final int[] homeTeamAves =
 		{
-		R.id.homeAveGame1,
-		R.id.homeAveGame2,
-		R.id.homeAveGame3,
-		R.id.homeAveGame4
+		R.id.homeTeamAveRound1,
+		R.id.homeTeamAveRound2,
+		R.id.homeTeamAveRound3,
+		R.id.homeTeamAveRound4
 		};
 	private static final int[] awayTeamAves =
 		{
-		R.id.awayAveGame1,
-		R.id.awayAveGame2,
-		R.id.awayAveGame3,
-		R.id.awayAveGame4
+		R.id.awayTeamAveRound1,
+		R.id.awayTeamAveRound2,
+		R.id.awayTeamAveRound3,
+		R.id.awayTeamAveRound4
 		};
 
 	@Override
@@ -120,17 +120,17 @@ implements AveragePickerListener, ScoringListener {
 		setContentView(R.layout.activity_scoresheet);
 
 		linkScoreBoxes();
-		recalculateAverages();
-		recalculatePlayerTotals();
-		recalculateRoundTotals();
+//		recalculateAverages();
+//		recalculatePlayerTotals();
+//		recalculateRoundTotals();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		recalculateAverages();
-		recalculatePlayerTotals();
-		recalculateRoundTotals();
+//		recalculateAverages();
+//		recalculatePlayerTotals();
+//		recalculateRoundTotals();
 	}
 
 	private void linkScoreBoxes() {
@@ -308,17 +308,17 @@ implements AveragePickerListener, ScoringListener {
 		int awayRoundBonus = Math.max(0, homeAveTotal - awayAveTotal);
 		int homeRoundBonus = Math.max(0, awayAveTotal - homeAveTotal);
 
-		setViewToInt(R.id.awayAveTotal, awayAveTotal);
-		setViewToInt(R.id.homeAveTotal, homeAveTotal);
+		setViewToInt(R.id.awayTeamAve, awayAveTotal);
+		setViewToInt(R.id.homeTeamAve, homeAveTotal);
 
-		setViewToInt(R.id.awayAveGame1, awayRoundBonus);
-		setViewToInt(R.id.awayAveGame2, awayRoundBonus);
-		setViewToInt(R.id.awayAveGame3, awayRoundBonus);
-		setViewToInt(R.id.awayAveGame4, awayRoundBonus * 3);
-		setViewToInt(R.id.homeAveGame1, homeRoundBonus);
-		setViewToInt(R.id.homeAveGame2, homeRoundBonus);
-		setViewToInt(R.id.homeAveGame3, homeRoundBonus);
-		setViewToInt(R.id.homeAveGame4, homeRoundBonus * 3);
+		setViewToInt(R.id.awayTeamAveRound1, awayRoundBonus);
+		setViewToInt(R.id.awayTeamAveRound2, awayRoundBonus);
+		setViewToInt(R.id.awayTeamAveRound3, awayRoundBonus);
+		setViewToInt(R.id.awayTeamAveRound4, awayRoundBonus * 3);
+		setViewToInt(R.id.homeTeamAveRound1, homeRoundBonus);
+		setViewToInt(R.id.homeTeamAveRound2, homeRoundBonus);
+		setViewToInt(R.id.homeTeamAveRound3, homeRoundBonus);
+		setViewToInt(R.id.homeTeamAveRound4, homeRoundBonus * 3);
 	}
 
 	private void recalculateRoundTotals() {
