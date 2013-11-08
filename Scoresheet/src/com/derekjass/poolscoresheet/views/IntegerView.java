@@ -7,7 +7,9 @@ public interface IntegerView {
 		public void onListenerRemoved(IntegerView subject);
 	}
 	public void setValue(int value);
+	public void setValue(CharSequence value);
 	public void clearValue();
 	public int getValue();
+	public String getValueAsString();
 	public boolean hasValue();
 }

@@ -70,6 +70,12 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 	}
 
 	@Override
+	public void setValue(CharSequence value) {
+		score.setText(value);
+		notifyListeners();
+	}
+
+	@Override
 	public void clearValue() {
 		score.setText("");
 		notifyListeners();
@@ -78,6 +84,11 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 	@Override
 	public int getValue() {
 		return stringToInt(score.getText().toString());
+	}
+
+	@Override
+	public String getValueAsString() {
+		return score.getText().toString();
 	}
 
 	@Override

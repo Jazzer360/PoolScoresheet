@@ -16,6 +16,9 @@ implements IntegerView.ValueChangedListener {
 	public static final int GRAY_SUM_WHEN_MISSING = 2;
 	public static final int NO_SUM_WHEN_MISSING = 3;
 	
+	private static final int BG = R.drawable.box_bg;
+	private static final int BG_CIRCLED = R.drawable.round_winner_bg;
+	
 	private Set<IntegerView> watchedViews;
 	private final int sumRule;
 
@@ -48,7 +51,7 @@ implements IntegerView.ValueChangedListener {
 				clearValue();
 				return;
 			}
-			sum += v.getValue();
+			sum += view.getValue();
 		}
 		
 		if (sumRule == ALWAYS_SUM) {
@@ -66,5 +69,9 @@ implements IntegerView.ValueChangedListener {
 	@Override
 	public void onListenerRemoved(IntegerView subject) {
 		watchedViews.remove(subject);
+	}
+	
+	public void setCircled(boolean circled) {
+		setBackgroundResource(circled ? BG_CIRCLED : BG);
 	}
 }

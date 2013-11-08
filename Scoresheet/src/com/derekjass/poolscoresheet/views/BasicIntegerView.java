@@ -27,6 +27,12 @@ public class BasicIntegerView extends TextView implements IntegerView {
 	}
 
 	@Override
+	public void setValue(CharSequence value) {
+		setText(value);
+		notifyListeners();
+	}
+
+	@Override
 	public void clearValue() {
 		setText("");
 		notifyListeners();
@@ -35,6 +41,11 @@ public class BasicIntegerView extends TextView implements IntegerView {
 	@Override
 	public int getValue() {
 		return stringToInt(getText().toString());
+	}
+
+	@Override
+	public String getValueAsString() {
+		return getText().toString();
 	}
 
 	@Override

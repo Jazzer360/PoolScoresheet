@@ -281,6 +281,7 @@
 			android:id="@+id/awayTeamAve"
 			android:layout_width="@dimen/ave_width"
 			android:layout_height="match_parent"
+			android:gravity="center"
 			android:textSize="@dimen/ave_text_size" />
 
 		<TextView
