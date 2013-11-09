@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
 	<color name="pastel_red">#FFB3B3</color>
 	<color name="pastel_orange">#FFD9B3</color>
 	<color name="pastel_yellow">#FFFFB3</color>
 	<color name="pastel_green">#B3FFB3</color>
 	<color name="pastel_blue">#B3B3FF</color>
-	
+	<color name="light_gray">#BFBFBF</color>
+
 </resources>

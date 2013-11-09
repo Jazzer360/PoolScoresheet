@@ -3,20 +3,60 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center"
-	android:baselineAligned="true" >
+	android:orientation="vertical" >
 
-	<include
-		android:layout_width="0dp"
-		android:layout_height="match_parent"
-		android:layout_margin="4dp"
-		android:layout_weight="1"
-		layout="@layout/layout_home_players" />
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="4dp" >
 
-	<include
-		android:layout_width="0dp"
-		android:layout_height="fill_parent"
-		android:layout_margin="4dp"
-		android:layout_weight="1"
-		layout="@layout/layout_away_players" />
+		<EditText
+			android:id="@+id/homeTeamName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:gravity="center"
+			android:hint="@string/home_team"
+			android:inputType="textCapWords" />
+
+		<TextView
+			android:id="@+id/dateView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="8dp"
+			android:paddingRight="8dp"
+			android:textSize="20sp" />
+
+		<EditText
+			android:id="@+id/awayTeamName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:background="@drawable/box_bg"
+			android:gravity="center"
+			android:hint="@string/away_team"
+			android:inputType="textCapWords" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:baselineAligned="false" >
+
+		<include
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_margin="4dp"
+			android:layout_weight="1"
+			layout="@layout/layout_home_players" />
+
+		<include
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_margin="4dp"
+			android:layout_weight="1"
+			layout="@layout/layout_away_players" />
+	</LinearLayout>
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -12,18 +13,31 @@ import com.derekjass.poolscoresheet.R;
 
 public class BasicIntegerView extends TextView implements IntegerView {
 
+	private final boolean alwaysHasValue;
 	private Set<ValueChangedListener> listeners;
 
 	public BasicIntegerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+
+		TypedArray a = context.getTheme().obtainStyledAttributes(
+				attrs,
+				R.styleable.BasicIntegerView,
+				0, 0);
+
+		try {
+			alwaysHasValue = a.getBoolean(
+					R.styleable.BasicIntegerView_alwaysHasValue, false);
+		} finally {
+			a.recycle();
+		}
+
 		setBackgroundResource(R.drawable.box_bg);
 		listeners = new HashSet<ValueChangedListener>();
 	}
 
 	@Override
 	public void setValue(int value) {
-		setText(String.valueOf(value));
-		notifyListeners();
+		setValue(String.valueOf(value));
 	}
 
 	@Override
@@ -50,7 +64,7 @@ public class BasicIntegerView extends TextView implements IntegerView {
 
 	@Override
 	public boolean hasValue() {
-		return !TextUtils.isEmpty(getText());
+		return alwaysHasValue || !TextUtils.isEmpty(getText());
 	}
 
 	public void addValueChangedListener(ValueChangedListener li) {
