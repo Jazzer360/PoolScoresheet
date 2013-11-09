@@ -89,7 +89,7 @@ implements IntegerView.ValueChangedListener {
 
 	@Override
 	public boolean hasValue() {
-		return super.hasValue() & setComplete;
+		return super.hasValue() && setComplete;
 	}
 
 	public void setCircled(boolean circled) {
