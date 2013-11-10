@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.derekjass.poolscoresheet.R;
 
-public class BasicIntegerView extends TextView implements IntegerView {
+public class BasicIntegerView extends TextView implements SummableIntegerView {
 
 	private int value;
 	private boolean hasValue;
-	private Set<ValueChangedListener> listeners;
+	private Set<OnValueChangedListener> listeners;
 
 	private final boolean mustSum;
 
@@ -33,10 +33,9 @@ public class BasicIntegerView extends TextView implements IntegerView {
 			a.recycle();
 		}
 
-		setBackgroundResource(R.drawable.box_bg);
 		value = 0;
 		hasValue = false;
-		listeners = new HashSet<ValueChangedListener>();
+		listeners = new HashSet<OnValueChangedListener>();
 	}
 
 	@Override
@@ -88,18 +87,20 @@ public class BasicIntegerView extends TextView implements IntegerView {
 		return mustSum;
 	}
 
-	public void addValueChangedListener(ValueChangedListener li) {
+	@Override
+	public void addOnValueChangedListener(OnValueChangedListener li) {
 		listeners.add(li);
 		li.onAttachListener(this);
 	}
 
-	public void removeValueChangedListener(ValueChangedListener li) {
+	@Override
+	public void removeOnValueChangedListener(OnValueChangedListener li) {
 		listeners.remove(li);
 		li.onAttachListener(this);
 	}
 
 	private void notifyListeners() {
-		for (ValueChangedListener listener : listeners) {
+		for (OnValueChangedListener listener : listeners) {
 			listener.onValueChanged(this);
 		}
 	}

@@ -20,6 +20,7 @@ public class ScoringDialog extends DialogFragment {
 	public interface ScoringListener {
 		public void onScorePicked(int winViewId, CharSequence winScore,
 				int lossViewId, CharSequence lossScore, boolean ero);
+		public void onScoreCleared(int viewId1, int viewId2);
 	}
 
 	static final String HOME_PLAYER_KEY = "home_player";
@@ -106,8 +107,7 @@ public class ScoringDialog extends DialogFragment {
 				}
 
 				if (!(winnerSelected && scoreSelected)) {
-					hostActivity.onScorePicked(
-							homeViewId, "", awayViewId, "", false);
+					hostActivity.onScoreCleared(homeViewId, awayViewId);
 					return;
 				}
 
@@ -131,8 +131,7 @@ public class ScoringDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostActivity.onScorePicked(
-						homeViewId, "", awayViewId, "", false);
+				hostActivity.onScoreCleared(homeViewId, awayViewId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);

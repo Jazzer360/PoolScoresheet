@@ -19,6 +19,7 @@ public class AveragePickerDialog extends DialogFragment {
 
 	public interface AveragePickerListener {
 		public void onAveragePicked(int viewId, CharSequence avg);
+		public void onAverageCleared(int viewId);
 	}
 
 	public static final String NAME_KEY = "name";
@@ -82,7 +83,7 @@ public class AveragePickerDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostActivity.onAveragePicked(viewClickedId, "");
+				hostActivity.onAverageCleared(viewClickedId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);

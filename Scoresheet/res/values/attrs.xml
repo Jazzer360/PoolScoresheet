@@ -7,6 +7,7 @@
 		<attr name="breaks" format="boolean" />
 	</declare-styleable>
 	<declare-styleable name="SumView">
+		<attr name="isCircled" format="boolean" />
 		<attr name="sumRule">
 			<enum name="always" value="1" />
 			<enum name="gray_when_missing" value="2" />

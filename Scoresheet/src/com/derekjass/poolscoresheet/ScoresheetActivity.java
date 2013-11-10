@@ -23,8 +23,8 @@ import android.widget.TextView;
 import com.derekjass.poolscoresheet.AveragePickerDialog.AveragePickerListener;
 import com.derekjass.poolscoresheet.ScoringDialog.ScoringListener;
 import com.derekjass.poolscoresheet.views.BasicIntegerView;
-import com.derekjass.poolscoresheet.views.IntegerView;
-import com.derekjass.poolscoresheet.views.IntegerView.ValueChangedListener;
+import com.derekjass.poolscoresheet.views.SummableIntegerView;
+import com.derekjass.poolscoresheet.views.SummableIntegerView.OnValueChangedListener;
 import com.derekjass.poolscoresheet.views.PlayerScoreView;
 import com.derekjass.poolscoresheet.views.SumView;
 
@@ -34,8 +34,8 @@ implements AveragePickerListener, ScoringListener {
 	private TextView date;
 	private List<EditText> homePlayers;
 	private List<EditText> awayPlayers;
-	private List<BasicIntegerView> homeAves;
-	private List<BasicIntegerView> awayAves;
+	private List<SummableIntegerView> homeAves;
+	private List<SummableIntegerView> awayAves;
 	private List<PlayerScoreView> homeScores;
 	private List<PlayerScoreView> awayScores;
 	private List<SumView> homeFinalRound;
@@ -49,10 +49,10 @@ implements AveragePickerListener, ScoringListener {
 	private SumView homeAve;
 	private SumView awayAve;
 
-	private ValueChangedListener avgChangedListener =
-			new ValueChangedListener() {
+	private OnValueChangedListener avgChangedListener =
+			new OnValueChangedListener() {
 		@Override
-		public void onValueChanged(IntegerView view) {
+		public void onValueChanged(SummableIntegerView view) {
 			BasicIntegerView homeRoundAve = null;
 			BasicIntegerView awayRoundAve = null;
 
@@ -76,9 +76,9 @@ implements AveragePickerListener, ScoringListener {
 		}
 
 		@Override
-		public void onAttachListener(IntegerView subject) {}
+		public void onAttachListener(SummableIntegerView subject) {}
 		@Override
-		public void onDetachListener(IntegerView subject) {}
+		public void onDetachListener(SummableIntegerView subject) {}
 	};
 
 	@Override
@@ -182,23 +182,28 @@ implements AveragePickerListener, ScoringListener {
 			int lossViewId, CharSequence lossScore, boolean ero) {
 		PlayerScoreView winner = (PlayerScoreView) findViewById(winViewId);
 		PlayerScoreView loser = (PlayerScoreView) findViewById(lossViewId);
-		if (!TextUtils.isEmpty(winScore)) {
-			winner.setValue(winScore);
-			winner.setEro(ero);
-			loser.setValue(lossScore);
-			loser.setEro(false);
-		} else {
-			winner.clearValue();
-			winner.setEro(false);
-			loser.clearValue();
-			loser.setEro(false);
-		}
+
+		winner.setValue(winScore);
+		winner.setEro(ero);
+		loser.setValue(lossScore);
+		loser.setEro(false);
 	}
 
 
 
+	@Override
+	public void onScoreCleared(int viewId1, int viewId2) {
+		PlayerScoreView view1 = (PlayerScoreView) findViewById(viewId1);
+		PlayerScoreView view2 = (PlayerScoreView) findViewById(viewId2);
+
+		view1.clearValue();
+		view1.setEro(false);
+		view2.clearValue();
+		view2.setEro(false);
+	}
+
 	public void onAverageBoxClicked(View v) {
-		IntegerView avgView = (IntegerView) v;
+		SummableIntegerView avgView = (SummableIntegerView) v;
 		TextView nameView = (TextView) ((ViewGroup) v.getParent())
 				.getChildAt(1);
 		String avg = avgView.getValueAsString();
@@ -224,11 +229,13 @@ implements AveragePickerListener, ScoringListener {
 	@Override
 	public void onAveragePicked(int viewId, CharSequence avg) {
 		BasicIntegerView view = (BasicIntegerView) findViewById(viewId);
-		if (!TextUtils.isEmpty(avg)) {
-			view.setValue(avg);
-		} else {
-			view.clearValue();
-		}
+		view.setValue(avg);
+	}
+
+	@Override
+	public void onAverageCleared(int viewId) {
+		BasicIntegerView view = (BasicIntegerView) findViewById(viewId);
+		view.clearValue();
 	}
 
 	private void setDate(Date date) {
@@ -239,8 +246,8 @@ implements AveragePickerListener, ScoringListener {
 	private void initLists() {
 		homePlayers = new ArrayList<EditText>(5);
 		awayPlayers = new ArrayList<EditText>(5);
-		homeAves = new ArrayList<BasicIntegerView>(5);
-		awayAves = new ArrayList<BasicIntegerView>(5);
+		homeAves = new ArrayList<SummableIntegerView>(5);
+		awayAves = new ArrayList<SummableIntegerView>(5);
 		homeScores = new ArrayList<PlayerScoreView>(15);
 		awayScores = new ArrayList<PlayerScoreView>(15);
 		homeFinalRound = new ArrayList<SumView>(8);
@@ -255,36 +262,36 @@ implements AveragePickerListener, ScoringListener {
 
 	private void setupListeners() {
 		for (int i = 0; i < homeAves.size(); i++) {
-			homeAves.get(i).addValueChangedListener(homeAve);
-			awayAves.get(i).addValueChangedListener(awayAve);
+			homeAves.get(i).addOnValueChangedListener(homeAve);
+			awayAves.get(i).addOnValueChangedListener(awayAve);
 		}
 
 		for (int i = 0; i < homeScores.size(); i++) {
 			PlayerScoreView home = homeScores.get(i);
 			PlayerScoreView away = awayScores.get(i);
 
-			home.addValueChangedListener(homeSubtotals.get(i / 5));
-			home.addValueChangedListener(homeFinalRound.get(i % 5));
-			away.addValueChangedListener(awaySubtotals.get(i / 5));
-			away.addValueChangedListener(awayFinalRound.get(i % 5));
+			home.addOnValueChangedListener(homeSubtotals.get(i / 5));
+			home.addOnValueChangedListener(homeFinalRound.get(i % 5));
+			away.addOnValueChangedListener(awaySubtotals.get(i / 5));
+			away.addOnValueChangedListener(awayFinalRound.get(i % 5));
 		}
 
 		for (int i = 0; i < homeTotals.size(); i++) {
-			homeSubtotals.get(i).addValueChangedListener(homeTotals.get(i));
-			awaySubtotals.get(i).addValueChangedListener(awayTotals.get(i));
-			homeRoundAves.get(i).addValueChangedListener(homeTotals.get(i));
-			awayRoundAves.get(i).addValueChangedListener(awayTotals.get(i));
+			homeSubtotals.get(i).addOnValueChangedListener(homeTotals.get(i));
+			awaySubtotals.get(i).addOnValueChangedListener(awayTotals.get(i));
+			homeRoundAves.get(i).addOnValueChangedListener(homeTotals.get(i));
+			awayRoundAves.get(i).addOnValueChangedListener(awayTotals.get(i));
 
-			homeSubtotals.get(i).addValueChangedListener(homeFinalRound.get(5));
-			homeRoundAves.get(i).addValueChangedListener(homeFinalRound.get(6));
-			homeTotals.get(i).addValueChangedListener(homeFinalRound.get(7));
-			awaySubtotals.get(i).addValueChangedListener(awayFinalRound.get(5));
-			awayRoundAves.get(i).addValueChangedListener(awayFinalRound.get(6));
-			awayTotals.get(i).addValueChangedListener(awayFinalRound.get(7));
+			homeSubtotals.get(i).addOnValueChangedListener(homeFinalRound.get(5));
+			homeRoundAves.get(i).addOnValueChangedListener(homeFinalRound.get(6));
+			homeTotals.get(i).addOnValueChangedListener(homeFinalRound.get(7));
+			awaySubtotals.get(i).addOnValueChangedListener(awayFinalRound.get(5));
+			awayRoundAves.get(i).addOnValueChangedListener(awayFinalRound.get(6));
+			awayTotals.get(i).addOnValueChangedListener(awayFinalRound.get(7));
 		}
 
-		homeAve.addValueChangedListener(avgChangedListener);
-		awayAve.addValueChangedListener(avgChangedListener);
+		homeAve.addOnValueChangedListener(avgChangedListener);
+		awayAve.addOnValueChangedListener(avgChangedListener);
 	}
 
 	private void setupLinks() {

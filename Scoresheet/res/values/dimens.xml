@@ -4,8 +4,8 @@
 	<dimen name="box_border_width">1dp</dimen>
 	<dimen name="row_height">32dp</dimen>
 	<dimen name="ave_width">32dp</dimen>
-	<dimen name="ave_text_size">24sp</dimen>
 	<dimen name="score_box_width">38dp</dimen>
+	<dimen name="ave_text_size">24sp</dimen>
 	<dimen name="score_text_size">24sp</dimen>
 	<dimen name="player_text_size">15sp</dimen>
 	<dimen name="ero_text_size">8sp</dimen>

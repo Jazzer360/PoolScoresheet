@@ -11,13 +11,14 @@ import android.widget.TextView;
 
 import com.derekjass.poolscoresheet.R;
 
-public class PlayerScoreView extends FrameLayout implements IntegerView {
+public class PlayerScoreView extends FrameLayout
+implements SummableIntegerView {
 
 	private final int game;
 	private final int round;
 	private boolean ero;
 
-	private BasicIntegerView score;
+	private SummableIntegerView score;
 	private TextView eroText;
 	private ViewStub eroStub;
 
@@ -44,8 +45,7 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 				context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		li.inflate(R.layout.textview_score, this);
-		score = (BasicIntegerView) findViewById(R.id.scoreText);
-		initBackground(game);
+		score = (SummableIntegerView) findViewById(R.id.scoreText);
 
 		if (breaks) li.inflate(R.layout.textview_break, this);
 
@@ -96,12 +96,14 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 		return score.mustSum();
 	}
 
-	public void addValueChangedListener(ValueChangedListener li) {
-		score.addValueChangedListener(li);
+	@Override
+	public void addOnValueChangedListener(OnValueChangedListener li) {
+		score.addOnValueChangedListener(li);
 	}
 
-	public void removeValueChangedListener(ValueChangedListener li) {
-		score.removeValueChangedListener(li);
+	@Override
+	public void removeOnValueChangedListener(OnValueChangedListener li) {
+		score.removeOnValueChangedListener(li);
 	}
 
 	public void setEro(boolean isEro) {
@@ -126,27 +128,5 @@ public class PlayerScoreView extends FrameLayout implements IntegerView {
 
 	public int getGame() {
 		return game;
-	}
-
-	protected void initBackground(int game) {
-		switch (game) {
-		case 1:
-			score.setBackgroundResource(R.drawable.score1_bg);
-			break;
-		case 2:
-			score.setBackgroundResource(R.drawable.score2_bg);
-			break;
-		case 3:
-			score.setBackgroundResource(R.drawable.score3_bg);
-			break;
-		case 4:
-			score.setBackgroundResource(R.drawable.score4_bg);
-			break;
-		case 5:
-			score.setBackgroundResource(R.drawable.score5_bg);
-			break;
-		default:
-			score.setBackgroundResource(R.drawable.box_bg);
-		}
 	}
 }

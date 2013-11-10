@@ -11,17 +11,17 @@ import android.util.AttributeSet;
 import com.derekjass.poolscoresheet.R;
 
 public class SumView extends BasicIntegerView
-implements IntegerView.ValueChangedListener {
+implements SummableIntegerView.OnValueChangedListener {
+
+	private static final int[] STATE_CIRCLED = {R.attr.isCircled};
 
 	public static final int ALWAYS_SUM = 1;
 	public static final int GRAY_SUM_WHEN_MISSING = 2;
 	public static final int NO_SUM_WHEN_MISSING = 3;
 
-	private static final int BG = R.drawable.box_bg;
-	private static final int BG_CIRCLED = R.drawable.round_winner_bg;
-
+	private boolean isCircled;
 	private boolean hasSoftValue;
-	private Set<IntegerView> watchedViews;
+	private Set<SummableIntegerView> watchedViews;
 
 	private final int sumRule;
 
@@ -35,22 +35,33 @@ implements IntegerView.ValueChangedListener {
 
 		try {
 			sumRule = a.getInt(R.styleable.SumView_sumRule, 1);
+			setCircled(a.getBoolean(R.styleable.SumView_isCircled, false));
 		} finally {
 			a.recycle();
 		}
 
 		hasSoftValue = false;
-		watchedViews = new HashSet<IntegerView>();
+		watchedViews = new HashSet<SummableIntegerView>();
 	}
 
 	@Override
-	public void onValueChanged(IntegerView v) {
-		boolean setComplete = !v.mustSum() || v.hasValue() && !v.hasSoftValue();
+	protected int[] onCreateDrawableState(int extraSpace) {
+		final int[] drawableState =
+				super.onCreateDrawableState(extraSpace + 1);
+		if (isCircled) mergeDrawableStates(drawableState, STATE_CIRCLED);
+		return drawableState;
+	}
+
+	@Override
+	public void onValueChanged(SummableIntegerView v) {
+		boolean setComplete = !v.mustSum() ||
+				(v.hasValue() && !v.hasSoftValue());
 		boolean atLeastOneHasValue = v.hasValue() || v.hasSoftValue();
 		int sum = 0;
 
-		for (IntegerView view : watchedViews) {
-			setComplete &= !view.mustSum() || view.hasValue() && !view.hasSoftValue();
+		for (SummableIntegerView view : watchedViews) {
+			setComplete &= !view.mustSum() ||
+					(view.hasValue() && !view.hasSoftValue());
 			atLeastOneHasValue |= view.hasValue() || view.hasSoftValue();
 			if (sumRule == NO_SUM_WHEN_MISSING && !setComplete) {
 				clearValue();
@@ -81,16 +92,19 @@ implements IntegerView.ValueChangedListener {
 	}
 
 	@Override
-	public void onAttachListener(IntegerView subject) {
+	public void onAttachListener(SummableIntegerView subject) {
 		watchedViews.add(subject);
 	}
 
 	@Override
-	public void onDetachListener(IntegerView subject) {
+	public void onDetachListener(SummableIntegerView subject) {
 		watchedViews.add(subject);
 	}
 
 	public void setCircled(boolean circled) {
-		setBackgroundResource(circled ? BG_CIRCLED : BG);
+		if (isCircled != circled) {
+			isCircled = circled;
+			refreshDrawableState();
+		}
 	}
 }

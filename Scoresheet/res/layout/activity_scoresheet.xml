@@ -15,7 +15,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:background="@drawable/box_bg"
+			android:background="@drawable/box_white"
 			android:gravity="center"
 			android:hint="@string/home_team"
 			android:inputType="textCapWords" />
@@ -33,7 +33,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:background="@drawable/box_bg"
+			android:background="@drawable/box_white"
 			android:gravity="center"
 			android:hint="@string/away_team"
 			android:inputType="textCapWords" />
