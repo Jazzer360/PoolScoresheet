@@ -7,7 +7,6 @@
 		<attr name="breaks" format="boolean" />
 	</declare-styleable>
 	<declare-styleable name="SumView">
-		<attr name="showZeroSum" format="boolean" />
 		<attr name="sumRule">
 			<enum name="always" value="1" />
 			<enum name="gray_when_missing" value="2" />
@@ -15,7 +14,7 @@
 		</attr>
 	</declare-styleable>
 	<declare-styleable name="BasicIntegerView">
-		<attr name="alwaysHasValue" format="boolean" />
+		<attr name="mustSum" format="boolean" />
 	</declare-styleable>
 
 </resources>

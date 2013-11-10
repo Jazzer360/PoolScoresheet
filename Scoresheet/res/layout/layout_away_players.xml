@@ -353,7 +353,7 @@
 			android:layout_height="match_parent"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
-			app:alwaysHasValue="true" />
+			app:mustSum="false" />
 
 		<com.derekjass.poolscoresheet.views.BasicIntegerView
 			android:id="@+id/awayTeamAveRound2"
@@ -361,7 +361,7 @@
 			android:layout_height="match_parent"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
-			app:alwaysHasValue="true" />
+			app:mustSum="false" />
 
 		<com.derekjass.poolscoresheet.views.BasicIntegerView
 			android:id="@+id/awayTeamAveRound3"
@@ -369,15 +369,14 @@
 			android:layout_height="match_parent"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
-			app:alwaysHasValue="true" />
+			app:mustSum="false" />
 
 		<com.derekjass.poolscoresheet.views.SumView
 			android:id="@+id/awayTeamAveRound4"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:gravity="center"
-			android:textSize="@dimen/score_text_size"
-			app:showZeroSum="false" />
+			android:textSize="@dimen/score_text_size" />
 	</LinearLayout>
 
 	<LinearLayout

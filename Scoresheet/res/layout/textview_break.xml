@@ -4,6 +4,4 @@
 	android:layout_height="wrap_content"
 	android:layout_gravity="bottom|center_horizontal"
 	android:text="@string/breaks"
-	android:textSize="@dimen/break_text_size" >
-
-</TextView>
+	android:textSize="@dimen/break_text_size" />

@@ -13,8 +13,11 @@ import com.derekjass.poolscoresheet.R;
 
 public class BasicIntegerView extends TextView implements IntegerView {
 
-	private final boolean alwaysHasValue;
+	private int value;
+	private boolean hasValue;
 	private Set<ValueChangedListener> listeners;
+
+	private final boolean mustSum;
 
 	public BasicIntegerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -25,36 +28,44 @@ public class BasicIntegerView extends TextView implements IntegerView {
 				0, 0);
 
 		try {
-			alwaysHasValue = a.getBoolean(
-					R.styleable.BasicIntegerView_alwaysHasValue, false);
+			mustSum = a.getBoolean(R.styleable.BasicIntegerView_mustSum, true);
 		} finally {
 			a.recycle();
 		}
 
 		setBackgroundResource(R.drawable.box_bg);
+		value = 0;
+		hasValue = false;
 		listeners = new HashSet<ValueChangedListener>();
 	}
 
 	@Override
 	public void setValue(int value) {
-		setValue(String.valueOf(value));
+		this.value = value;
+		hasValue = true;
+		setText(String.valueOf(value));
+		notifyListeners();
 	}
 
 	@Override
 	public void setValue(CharSequence value) {
+		this.value = stringToInt(value.toString());
+		hasValue = true;
 		setText(value);
 		notifyListeners();
 	}
 
 	@Override
 	public void clearValue() {
+		value = 0;
+		hasValue = false;
 		setText("");
 		notifyListeners();
 	}
 
 	@Override
 	public int getValue() {
-		return stringToInt(getText().toString());
+		return value;
 	}
 
 	@Override
@@ -64,26 +75,36 @@ public class BasicIntegerView extends TextView implements IntegerView {
 
 	@Override
 	public boolean hasValue() {
-		return alwaysHasValue || !TextUtils.isEmpty(getText());
+		return hasValue;
+	}
+
+	@Override
+	public boolean hasSoftValue() {
+		return false;
+	}
+
+	@Override
+	public boolean mustSum() {
+		return mustSum;
 	}
 
 	public void addValueChangedListener(ValueChangedListener li) {
 		listeners.add(li);
-		li.onListenerAttached(this);
+		li.onAttachListener(this);
 	}
 
 	public void removeValueChangedListener(ValueChangedListener li) {
 		listeners.remove(li);
-		li.onListenerRemoved(this);
+		li.onAttachListener(this);
 	}
 
-	protected void notifyListeners() {
+	private void notifyListeners() {
 		for (ValueChangedListener listener : listeners) {
 			listener.onValueChanged(this);
 		}
 	}
 
-	public static int stringToInt(String string) {
+	private static int stringToInt(String string) {
 		return !TextUtils.isEmpty(string) ? Integer.valueOf(string) : 0;
 	}
 }

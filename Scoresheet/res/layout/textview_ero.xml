@@ -5,6 +5,4 @@
 	android:layout_gravity="top|right"
 	android:padding="1dp"
 	android:text="@string/ero"
-	android:textSize="@dimen/ero_text_size" >
-
-</TextView>
+	android:textSize="@dimen/ero_text_size" />

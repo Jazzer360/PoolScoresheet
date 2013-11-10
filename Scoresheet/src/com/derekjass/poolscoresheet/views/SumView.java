@@ -3,12 +3,12 @@ package com.derekjass.poolscoresheet.views;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.derekjass.poolscoresheet.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+
+import com.derekjass.poolscoresheet.R;
 
 public class SumView extends BasicIntegerView
 implements IntegerView.ValueChangedListener {
@@ -20,10 +20,10 @@ implements IntegerView.ValueChangedListener {
 	private static final int BG = R.drawable.box_bg;
 	private static final int BG_CIRCLED = R.drawable.round_winner_bg;
 
+	private boolean hasSoftValue;
 	private Set<IntegerView> watchedViews;
+
 	private final int sumRule;
-	private final boolean showZeroSum;
-	private boolean setComplete;
 
 	public SumView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -35,25 +35,23 @@ implements IntegerView.ValueChangedListener {
 
 		try {
 			sumRule = a.getInt(R.styleable.SumView_sumRule, 1);
-			showZeroSum = a.getBoolean(R.styleable.SumView_showZeroSum, true);
 		} finally {
 			a.recycle();
 		}
 
+		hasSoftValue = false;
 		watchedViews = new HashSet<IntegerView>();
-		setComplete = false;
 	}
 
 	@Override
 	public void onValueChanged(IntegerView v) {
-		setComplete = v.hasValue();
-		boolean atLeastOneHasValue = v.hasValue();
-
+		boolean setComplete = !v.mustSum() || v.hasValue() && !v.hasSoftValue();
+		boolean atLeastOneHasValue = v.hasValue() || v.hasSoftValue();
 		int sum = 0;
 
 		for (IntegerView view : watchedViews) {
-			setComplete &= view.hasValue();
-			atLeastOneHasValue |= view.hasValue();
+			setComplete &= !view.mustSum() || view.hasValue() && !view.hasSoftValue();
+			atLeastOneHasValue |= view.hasValue() || view.hasSoftValue();
 			if (sumRule == NO_SUM_WHEN_MISSING && !setComplete) {
 				clearValue();
 				return;
@@ -62,34 +60,34 @@ implements IntegerView.ValueChangedListener {
 		}
 
 		if (atLeastOneHasValue) {
-			if (sum == 0 && !showZeroSum) {
-				clearValue();
-				return;
-			}
 			if (sumRule == GRAY_SUM_WHEN_MISSING && !setComplete) {
 				setTextColor(getResources().getColor(R.color.light_gray));
+				hasSoftValue = true;
+				setValue(sum);
 			} else {
 				setTextColor(Color.BLACK);
+				hasSoftValue = false;
+				setValue(sum);
 			}
-			setValue(sum);
 		} else {
+			hasSoftValue = false;
 			clearValue();
 		}
 	}
 
 	@Override
-	public void onListenerAttached(IntegerView subject) {
+	public boolean hasSoftValue() {
+		return hasSoftValue;
+	}
+
+	@Override
+	public void onAttachListener(IntegerView subject) {
 		watchedViews.add(subject);
 	}
 
 	@Override
-	public void onListenerRemoved(IntegerView subject) {
-		watchedViews.remove(subject);
-	}
-
-	@Override
-	public boolean hasValue() {
-		return super.hasValue() && setComplete;
+	public void onDetachListener(IntegerView subject) {
+		watchedViews.add(subject);
 	}
 
 	public void setCircled(boolean circled) {

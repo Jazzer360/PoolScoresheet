@@ -56,8 +56,8 @@ implements AveragePickerListener, ScoringListener {
 			BasicIntegerView homeRoundAve = null;
 			BasicIntegerView awayRoundAve = null;
 
-			int homeAvg = awayAve.getValue() - homeAve.getValue();
-			int awayAvg = homeAve.getValue() - awayAve.getValue();
+			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
+			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
 
 			for (int i = 0; i < homeRoundAves.size(); i++) {
 				homeRoundAve = homeRoundAves.get(i);
@@ -76,9 +76,9 @@ implements AveragePickerListener, ScoringListener {
 		}
 
 		@Override
-		public void onListenerRemoved(IntegerView subject) {}
+		public void onAttachListener(IntegerView subject) {}
 		@Override
-		public void onListenerAttached(IntegerView subject) {}
+		public void onDetachListener(IntegerView subject) {}
 	};
 
 	@Override
@@ -182,10 +182,17 @@ implements AveragePickerListener, ScoringListener {
 			int lossViewId, CharSequence lossScore, boolean ero) {
 		PlayerScoreView winner = (PlayerScoreView) findViewById(winViewId);
 		PlayerScoreView loser = (PlayerScoreView) findViewById(lossViewId);
-		winner.setValue(winScore);
-		winner.setEro(ero);
-		loser.setValue(lossScore);
-		loser.setEro(false);
+		if (!TextUtils.isEmpty(winScore)) {
+			winner.setValue(winScore);
+			winner.setEro(ero);
+			loser.setValue(lossScore);
+			loser.setEro(false);
+		} else {
+			winner.clearValue();
+			winner.setEro(false);
+			loser.clearValue();
+			loser.setEro(false);
+		}
 	}
 
 
@@ -216,7 +223,12 @@ implements AveragePickerListener, ScoringListener {
 
 	@Override
 	public void onAveragePicked(int viewId, CharSequence avg) {
-		((BasicIntegerView) findViewById(viewId)).setValue(avg);
+		BasicIntegerView view = (BasicIntegerView) findViewById(viewId);
+		if (!TextUtils.isEmpty(avg)) {
+			view.setValue(avg);
+		} else {
+			view.clearValue();
+		}
 	}
 
 	private void setDate(Date date) {
