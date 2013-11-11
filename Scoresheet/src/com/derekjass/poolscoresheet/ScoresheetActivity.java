@@ -34,8 +34,8 @@ implements AveragePickerListener, ScoringListener {
 	private TextView date;
 	private List<EditText> homePlayers;
 	private List<EditText> awayPlayers;
-	private List<SummableIntegerView> homeAves;
-	private List<SummableIntegerView> awayAves;
+	private List<BasicIntegerView> homeAves;
+	private List<BasicIntegerView> awayAves;
 	private List<PlayerScoreView> homeScores;
 	private List<PlayerScoreView> awayScores;
 	private List<SumView> homeFinalRound;
@@ -246,8 +246,8 @@ implements AveragePickerListener, ScoringListener {
 	private void initLists() {
 		homePlayers = new ArrayList<EditText>(5);
 		awayPlayers = new ArrayList<EditText>(5);
-		homeAves = new ArrayList<SummableIntegerView>(5);
-		awayAves = new ArrayList<SummableIntegerView>(5);
+		homeAves = new ArrayList<BasicIntegerView>(5);
+		awayAves = new ArrayList<BasicIntegerView>(5);
 		homeScores = new ArrayList<PlayerScoreView>(15);
 		awayScores = new ArrayList<PlayerScoreView>(15);
 		homeFinalRound = new ArrayList<SumView>(8);
