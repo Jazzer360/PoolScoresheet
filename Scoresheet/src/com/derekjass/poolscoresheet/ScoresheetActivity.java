@@ -36,6 +36,13 @@ implements AveragePickerListener, ScoringListener {
 	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
+	private static final String DATE_KEY = "date_key";
+	private static final String HOME_PLAYERS_KEY = "home_players_key";
+	private static final String AWAY_PLAYERS_KEY = "away_players_key";
+	private static final String HOME_AVERAGES_KEY = "home_averages_key";
+	private static final String AWAY_AVERAGES_KEY = "away_averages_key";
+	private static final String HOME_SCORES_KEY = "home_scores_key";
+	private static final String AWAY_SCORES_KEY = "away_scores_key";
 
 	private TextView date;
 	private List<EditText> homePlayers;
@@ -175,6 +182,142 @@ implements AveragePickerListener, ScoringListener {
 				setContentView(v);
 			}
 		}.execute(layout);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString(DATE_KEY, date.getText().toString());
+
+		ArrayList<String> homePlayers = new ArrayList<String>();
+		for (EditText view : this.homePlayers) {
+			if (!TextUtils.isEmpty(view.getText())) {
+				homePlayers.add(view.getText().toString());
+			} else {
+				homePlayers.add(null);
+			}
+		}
+		outState.putStringArrayList(HOME_PLAYERS_KEY, homePlayers);
+
+		ArrayList<String> awayPlayers = new ArrayList<String>();
+		for (EditText view : this.awayPlayers) {
+			if (!TextUtils.isEmpty(view.getText())) {
+				awayPlayers.add(view.getText().toString());
+			} else {
+				awayPlayers.add(view.getText().toString());
+			}
+		}
+		outState.putStringArrayList(AWAY_PLAYERS_KEY, awayPlayers);
+
+		ArrayList<Integer> homeAves = new ArrayList<Integer>();
+		for (IntegerView view : this.homeAves) {
+			if (view.hasValue()) {
+				homeAves.add(view.getValue());
+			} else {
+				homeAves.add(null);
+			}
+		}
+		outState.putIntegerArrayList(HOME_AVERAGES_KEY, homeAves);
+
+		ArrayList<Integer> awayAves = new ArrayList<Integer>();
+		for (IntegerView view : this.awayAves) {
+			if (view.hasValue()) {
+				awayAves.add(view.getValue());
+			} else {
+				awayAves.add(null);
+			}
+		}
+		outState.putIntegerArrayList(AWAY_AVERAGES_KEY, awayAves);
+
+		ArrayList<Integer> homeScores = new ArrayList<Integer>();
+		for (PlayerScoreView view : this.homeScores) {
+			if (view.hasValue()) {
+				homeScores.add(view.getValue());
+			} else {
+				homeScores.add(null);
+			}
+		}
+		outState.putIntegerArrayList(HOME_SCORES_KEY, homeScores);
+
+		ArrayList<Integer> awayScores = new ArrayList<Integer>();
+		for (PlayerScoreView view : this.awayScores) {
+			if (view.hasValue()) {
+				awayScores.add(view.getValue());
+			} else {
+				awayScores.add(null);
+			}
+		}
+		outState.putIntegerArrayList(AWAY_SCORES_KEY, awayScores);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		date.setText(savedInstanceState.getString(DATE_KEY, ""));
+
+		ArrayList<String> homePlayers =
+				savedInstanceState.getStringArrayList(HOME_PLAYERS_KEY);
+		if (homePlayers != null) {
+			for (int i = 0; i < homePlayers.size(); i++) {
+				String name = homePlayers.get(i);
+				if (name != null) {
+					this.homePlayers.get(i).setText(name);
+				}
+			}
+		}
+
+		ArrayList<String> awayPlayers =
+				savedInstanceState.getStringArrayList(AWAY_PLAYERS_KEY);
+		if (awayPlayers != null) {
+			for (int i = 0; i < awayPlayers.size(); i++) {
+				String name = awayPlayers.get(i);
+				if (name != null) {
+					this.awayPlayers.get(i).setText(name);
+				}
+			}
+		}
+
+		ArrayList<Integer> homeAves =
+				savedInstanceState.getIntegerArrayList(HOME_AVERAGES_KEY);
+		if (homeAves != null) {
+			for (int i = 0; i < homeAves.size(); i++) {
+				Integer ave = homeAves.get(i);
+				if (ave != null) {
+					this.homeAves.get(i).setValue(ave);
+				}
+			}
+		}
+
+		ArrayList<Integer> awayAves =
+				savedInstanceState.getIntegerArrayList(AWAY_AVERAGES_KEY);
+		if (awayAves != null) {
+			for (int i = 0; i < awayAves.size(); i++) {
+				Integer ave = awayAves.get(i);
+				if (ave != null) {
+					this.awayAves.get(i).setValue(ave);
+				}
+			}
+		}
+
+		ArrayList<Integer> homeScores =
+				savedInstanceState.getIntegerArrayList(HOME_SCORES_KEY);
+		if (homeScores != null) {
+			for (int i = 0; i < homeScores.size(); i++) {
+				Integer score = homeScores.get(i);
+				if (score != null) {
+					this.homeScores.get(i).setValue(score);
+				}
+			}
+		}
+
+		ArrayList<Integer> awayScores =
+				savedInstanceState.getIntegerArrayList(AWAY_SCORES_KEY);
+		if (awayScores != null) {
+			for (int i = 0; i < awayScores.size(); i++) {
+				Integer score = awayScores.get(i);
+				if (score != null) {
+					this.awayScores.get(i).setValue(score);
+				}
+			}
+		}
 	}
 
 	@Override
