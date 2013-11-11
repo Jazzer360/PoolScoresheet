@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 
 import com.derekjass.poolscoresheet.R;
 
-public class SumView extends BasicIntegerView
-implements SummableIntegerView.OnValueChangedListener {
+public class SumView extends IntegerView
+implements SummableInteger.OnValueChangedListener {
 
 	private static final int[] STATE_CIRCLED = {R.attr.isCircled};
 
@@ -21,7 +21,7 @@ implements SummableIntegerView.OnValueChangedListener {
 
 	private boolean isCircled;
 	private boolean hasSoftValue;
-	private Set<SummableIntegerView> watchedViews;
+	private Set<SummableInteger> watchedViews;
 
 	private final int sumRule;
 
@@ -41,7 +41,7 @@ implements SummableIntegerView.OnValueChangedListener {
 		}
 
 		hasSoftValue = false;
-		watchedViews = new HashSet<SummableIntegerView>();
+		watchedViews = new HashSet<SummableInteger>();
 	}
 
 	@Override
@@ -53,13 +53,13 @@ implements SummableIntegerView.OnValueChangedListener {
 	}
 
 	@Override
-	public void onValueChanged(SummableIntegerView v) {
+	public void onValueChanged(SummableInteger v) {
 		boolean setComplete = !v.mustSum() ||
 				(v.hasValue() && !v.hasSoftValue());
 		boolean atLeastOneHasValue = v.hasValue() || v.hasSoftValue();
 		int sum = 0;
 
-		for (SummableIntegerView view : watchedViews) {
+		for (SummableInteger view : watchedViews) {
 			setComplete &= !view.mustSum() ||
 					(view.hasValue() && !view.hasSoftValue());
 			atLeastOneHasValue |= view.hasValue() || view.hasSoftValue();
@@ -92,12 +92,12 @@ implements SummableIntegerView.OnValueChangedListener {
 	}
 
 	@Override
-	public void onAttachListener(SummableIntegerView subject) {
+	public void onAttachListener(SummableInteger subject) {
 		watchedViews.add(subject);
 	}
 
 	@Override
-	public void onDetachListener(SummableIntegerView subject) {
+	public void onDetachListener(SummableInteger subject) {
 		watchedViews.add(subject);
 	}
 

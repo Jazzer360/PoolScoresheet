@@ -1,10 +1,10 @@
 package com.derekjass.poolscoresheet.views;
 
-public interface SummableIntegerView {
+public interface SummableInteger {
 	public interface OnValueChangedListener {
-		public void onValueChanged(SummableIntegerView subject);
-		public void onAttachListener(SummableIntegerView subject);
-		public void onDetachListener(SummableIntegerView subject);
+		public void onValueChanged(SummableInteger subject);
+		public void onAttachListener(SummableInteger subject);
+		public void onDetachListener(SummableInteger subject);
 	}
 	public void setValue(int value);
 	public void setValue(CharSequence value);

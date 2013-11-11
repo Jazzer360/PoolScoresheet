@@ -14,7 +14,7 @@
 			<enum name="not_when_missing" value="3" />
 		</attr>
 	</declare-styleable>
-	<declare-styleable name="BasicIntegerView">
+	<declare-styleable name="IntegerView">
 		<attr name="mustSum" format="boolean" />
 	</declare-styleable>
 

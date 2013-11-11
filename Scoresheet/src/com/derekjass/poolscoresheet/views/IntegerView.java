@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.derekjass.poolscoresheet.R;
 
-public class BasicIntegerView extends TextView implements SummableIntegerView {
+public class IntegerView extends TextView implements SummableInteger {
 
 	private int value;
 	private boolean hasValue;
@@ -19,16 +19,16 @@ public class BasicIntegerView extends TextView implements SummableIntegerView {
 
 	private final boolean mustSum;
 
-	public BasicIntegerView(Context context, AttributeSet attrs) {
+	public IntegerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		TypedArray a = context.getTheme().obtainStyledAttributes(
 				attrs,
-				R.styleable.BasicIntegerView,
+				R.styleable.IntegerView,
 				0, 0);
 
 		try {
-			mustSum = a.getBoolean(R.styleable.BasicIntegerView_mustSum, true);
+			mustSum = a.getBoolean(R.styleable.IntegerView_mustSum, true);
 		} finally {
 			a.recycle();
 		}

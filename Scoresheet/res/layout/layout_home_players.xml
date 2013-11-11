@@ -13,11 +13,11 @@
 		android:layout_height="@dimen/row_height" >
 
 		<include
-			android:id="@+id/homePlayer1Ave"
+			android:id="@+id/homeP1Ave"
 			layout="@layout/box_average" />
 
 		<EditText
-			android:id="@+id/homePlayer1Name"
+			android:id="@+id/homeP1Name"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
@@ -28,7 +28,7 @@
 			android:textSize="@dimen/player_text_size" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer1Round1"
+			android:id="@+id/homeP1R1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game1"
@@ -38,7 +38,7 @@
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer1Round2"
+			android:id="@+id/homeP1R2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game1"
@@ -48,7 +48,7 @@
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer1Round3"
+			android:id="@+id/homeP1R3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game1"
@@ -58,7 +58,7 @@
 			app:round="3" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homePlayer1Total"
+			android:id="@+id/homeP1Total"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -72,11 +72,11 @@
 		android:layout_height="@dimen/row_height" >
 
 		<include
-			android:id="@+id/homePlayer2Ave"
+			android:id="@+id/homeP2Ave"
 			layout="@layout/box_average" />
 
 		<EditText
-			android:id="@+id/homePlayer2Name"
+			android:id="@+id/homeP2Name"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
@@ -87,7 +87,7 @@
 			android:textSize="@dimen/player_text_size" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer2Round1"
+			android:id="@+id/homeP2R1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game2"
@@ -97,7 +97,7 @@
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer2Round2"
+			android:id="@+id/homeP2R2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game2"
@@ -107,7 +107,7 @@
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer2Round3"
+			android:id="@+id/homeP2R3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game2"
@@ -117,7 +117,7 @@
 			app:round="3" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homePlayer2Total"
+			android:id="@+id/homeP2Total"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -131,11 +131,11 @@
 		android:layout_height="@dimen/row_height" >
 
 		<include
-			android:id="@+id/homePlayer3Ave"
+			android:id="@+id/homeP3Ave"
 			layout="@layout/box_average" />
 
 		<EditText
-			android:id="@+id/homePlayer3Name"
+			android:id="@+id/homeP3Name"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
@@ -146,7 +146,7 @@
 			android:textSize="@dimen/player_text_size" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer3Round1"
+			android:id="@+id/homeP3R1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game3"
@@ -156,7 +156,7 @@
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer3Round2"
+			android:id="@+id/homeP3R2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game3"
@@ -166,7 +166,7 @@
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer3Round3"
+			android:id="@+id/homeP3R3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game3"
@@ -176,7 +176,7 @@
 			app:round="3" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homePlayer3Total"
+			android:id="@+id/homeP3Total"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -190,11 +190,11 @@
 		android:layout_height="@dimen/row_height" >
 
 		<include
-			android:id="@+id/homePlayer4Ave"
+			android:id="@+id/homeP4Ave"
 			layout="@layout/box_average" />
 
 		<EditText
-			android:id="@+id/homePlayer4Name"
+			android:id="@+id/homeP4Name"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
@@ -205,7 +205,7 @@
 			android:textSize="@dimen/player_text_size" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer4Round1"
+			android:id="@+id/homeP4R1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game4"
@@ -215,7 +215,7 @@
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer4Round2"
+			android:id="@+id/homeP4R2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game4"
@@ -225,7 +225,7 @@
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer4Round3"
+			android:id="@+id/homeP4R3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game4"
@@ -235,7 +235,7 @@
 			app:round="3" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homePlayer4Total"
+			android:id="@+id/homeP4Total"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -249,11 +249,11 @@
 		android:layout_height="@dimen/row_height" >
 
 		<include
-			android:id="@+id/homePlayer5Ave"
+			android:id="@+id/homeP5Ave"
 			layout="@layout/box_average" />
 
 		<EditText
-			android:id="@+id/homePlayer5Name"
+			android:id="@+id/homeP5Name"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
@@ -264,7 +264,7 @@
 			android:textSize="@dimen/player_text_size" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer5Round1"
+			android:id="@+id/homeP5R1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game5"
@@ -274,7 +274,7 @@
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer5Round2"
+			android:id="@+id/homeP5R2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game5"
@@ -284,7 +284,7 @@
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
-			android:id="@+id/homePlayer5Round3"
+			android:id="@+id/homeP5R3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_game5"
@@ -294,7 +294,7 @@
 			app:round="3" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homePlayer5Total"
+			android:id="@+id/homeP5Total"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -308,7 +308,7 @@
 		android:layout_height="@dimen/row_height" >
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamAve"
+			android:id="@+id/homeAve"
 			android:layout_width="@dimen/ave_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -324,7 +324,7 @@
 			android:text="@string/subtotals" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamSubtotalRound1"
+			android:id="@+id/homeSubtotalR1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -333,7 +333,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamSubtotalRound2"
+			android:id="@+id/homeSubtotalR2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -342,7 +342,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamSubtotalRound3"
+			android:id="@+id/homeSubtotalR3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -351,7 +351,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamSubtotalRound4"
+			android:id="@+id/homeSubtotalR4"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -372,8 +372,8 @@
 			android:paddingRight="2dp"
 			android:text="@string/round_ave" />
 
-		<com.derekjass.poolscoresheet.views.BasicIntegerView
-			android:id="@+id/homeTeamAveRound1"
+		<com.derekjass.poolscoresheet.views.IntegerView
+			android:id="@+id/homeAveR1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -381,8 +381,8 @@
 			android:textSize="@dimen/score_text_size"
 			app:mustSum="false" />
 
-		<com.derekjass.poolscoresheet.views.BasicIntegerView
-			android:id="@+id/homeTeamAveRound2"
+		<com.derekjass.poolscoresheet.views.IntegerView
+			android:id="@+id/homeAveR2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -390,8 +390,8 @@
 			android:textSize="@dimen/score_text_size"
 			app:mustSum="false" />
 
-		<com.derekjass.poolscoresheet.views.BasicIntegerView
-			android:id="@+id/homeTeamAveRound3"
+		<com.derekjass.poolscoresheet.views.IntegerView
+			android:id="@+id/homeAveR3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -400,7 +400,7 @@
 			app:mustSum="false" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamAveRound4"
+			android:id="@+id/homeAveR4"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_white"
@@ -421,7 +421,7 @@
 			android:text="@string/totals" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamTotalRound1"
+			android:id="@+id/homeTotalR1"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_circleable"
@@ -430,7 +430,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamTotalRound2"
+			android:id="@+id/homeTotalR2"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_circleable"
@@ -439,7 +439,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamTotalRound3"
+			android:id="@+id/homeTotalR3"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_circleable"
@@ -448,7 +448,7 @@
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
-			android:id="@+id/homeTeamTotalRound4"
+			android:id="@+id/homeTotalR4"
 			android:layout_width="@dimen/score_box_width"
 			android:layout_height="match_parent"
 			android:background="@drawable/box_circleable"

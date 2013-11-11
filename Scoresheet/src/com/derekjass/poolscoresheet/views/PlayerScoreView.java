@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.derekjass.poolscoresheet.R;
 
 public class PlayerScoreView extends FrameLayout
-implements SummableIntegerView {
+implements SummableInteger {
 
 	private final int game;
 	private final int round;
 	private boolean ero;
 
-	private SummableIntegerView score;
+	private SummableInteger score;
 	private TextView eroText;
 	private ViewStub eroStub;
 
@@ -39,21 +39,19 @@ implements SummableIntegerView {
 			a.recycle();
 		}
 
-
-
 		LayoutInflater li = (LayoutInflater)
 				context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		li.inflate(R.layout.textview_score, this);
-		score = (SummableIntegerView) findViewById(R.id.scoreText);
+		li.inflate(R.layout.view_player_score, this);
+		score = (SummableInteger) findViewById(R.id.scoreText);
+		eroStub = (ViewStub) findViewById(R.id.eroStub);
 
-		if (breaks) li.inflate(R.layout.textview_break, this);
+		if (breaks) {
+			((ViewStub) findViewById(R.id.breakStub)).inflate();
+		}
 
 		ero = false;
-		eroStub = new ViewStub(context);
-		eroStub.setLayoutResource(R.layout.textview_ero);
 		eroText = null;
-		addView(eroStub);
 	}
 
 	@Override
