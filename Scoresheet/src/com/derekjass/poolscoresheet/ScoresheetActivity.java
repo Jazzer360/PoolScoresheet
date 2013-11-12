@@ -330,17 +330,16 @@ implements AveragePickerListener, ScoringListener {
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
 		.setIcon(android.R.drawable.ic_dialog_alert)
-		.setTitle("Closing Activity")
-		.setMessage("Are you sure you want to close this activity? " +
-				"Doing so will clear the score boxes.")
-				.setPositiveButton("Yes", new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						ScoresheetActivity.super.onBackPressed();
-					}
-				})
-				.setNegativeButton("No", null)
-				.show();
+		.setTitle("Are you sure?")
+		.setMessage("Continuing will clear the scoreboxes.")
+		.setPositiveButton("Yes", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				ScoresheetActivity.super.onBackPressed();
+			}
+		})
+		.setNegativeButton("No", null)
+		.show();
 	}
 
 	public void onScoreBoxClicked(View v) {
