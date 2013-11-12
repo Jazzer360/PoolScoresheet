@@ -254,7 +254,10 @@ implements AveragePickerListener, ScoringListener {
 		new AsyncTask<Bundle, Void, Void>() {
 			@Override
 			protected Void doInBackground(Bundle... bundle) {
-				date.setText(bundle[0].getString(DATE_KEY, ""));
+				String dateString = bundle[0].getString(DATE_KEY);
+				if (dateString != null) {
+					date.setText(dateString);
+				}
 
 				ArrayList<String> hPlayers =
 						bundle[0].getStringArrayList(HOME_PLAYERS_KEY);
