@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.derekjass.poolscoresheet.views.IntegerView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="@dimen/ave_width"
-	android:layout_height="match_parent"
-	android:background="@drawable/box_white"
-	android:clickable="true"
-	android:gravity="center"
-	android:onClick="onAverageBoxClicked"
-	android:textSize="@dimen/ave_text_size" />

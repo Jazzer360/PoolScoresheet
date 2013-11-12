@@ -12,47 +12,35 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/row_height" >
 
-		<include
+		<com.derekjass.poolscoresheet.views.IntegerView
 			android:id="@+id/awayP1Ave"
-			layout="@layout/box_average" />
+			style="@style/PlayerAve" />
 
 		<EditText
 			android:id="@+id/awayP1Name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:background="@drawable/box_white"
-			android:hint="@string/player1"
-			android:inputType="textPersonName"
-			android:paddingLeft="4dp"
-			android:textSize="@dimen/player_text_size" />
+			style="@style/PlayerName"
+			android:hint="@string/player1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP1R1"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game1"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="1"
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP1R2"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game3"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="3"
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP1R3"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game2"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="2"
 			app:round="3" />
@@ -71,47 +59,35 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/row_height" >
 
-		<include
+		<com.derekjass.poolscoresheet.views.IntegerView
 			android:id="@+id/awayP2Ave"
-			layout="@layout/box_average" />
+			style="@style/PlayerAve" />
 
 		<EditText
 			android:id="@+id/awayP2Name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:background="@drawable/box_white"
-			android:hint="@string/player2"
-			android:inputType="textPersonName"
-			android:paddingLeft="4dp"
-			android:textSize="@dimen/player_text_size" />
+			style="@style/PlayerName"
+			android:hint="@string/player2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP2R1"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game2"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="2"
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP2R2"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game1"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="1"
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP2R3"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game4"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="4"
 			app:round="3" />
@@ -130,47 +106,35 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/row_height" >
 
-		<include
+		<com.derekjass.poolscoresheet.views.IntegerView
 			android:id="@+id/awayP3Ave"
-			layout="@layout/box_average" />
+			style="@style/PlayerAve" />
 
 		<EditText
 			android:id="@+id/awayP3Name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:background="@drawable/box_white"
-			android:hint="@string/player3"
-			android:inputType="textPersonName"
-			android:paddingLeft="4dp"
-			android:textSize="@dimen/player_text_size" />
+			style="@style/PlayerName"
+			android:hint="@string/player3" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP3R1"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game3"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="3"
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP3R2"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game5"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="5"
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP3R3"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game1"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="1"
 			app:round="3" />
@@ -189,47 +153,35 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/row_height" >
 
-		<include
+		<com.derekjass.poolscoresheet.views.IntegerView
 			android:id="@+id/awayP4Ave"
-			layout="@layout/box_average" />
+			style="@style/PlayerAve" />
 
 		<EditText
 			android:id="@+id/awayP4Name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:background="@drawable/box_white"
-			android:hint="@string/player4"
-			android:inputType="textPersonName"
-			android:paddingLeft="4dp"
-			android:textSize="@dimen/player_text_size" />
+			style="@style/PlayerName"
+			android:hint="@string/player4" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP4R1"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game4"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="4"
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP4R2"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game2"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="2"
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP4R3"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game5"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="5"
 			app:round="3" />
@@ -248,47 +200,35 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/row_height" >
 
-		<include
+		<com.derekjass.poolscoresheet.views.IntegerView
 			android:id="@+id/awayP5Ave"
-			layout="@layout/box_average" />
+			style="@style/PlayerAve" />
 
 		<EditText
 			android:id="@+id/awayP5Name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:background="@drawable/box_white"
-			android:hint="@string/player5"
-			android:inputType="textPersonName"
-			android:paddingLeft="4dp"
-			android:textSize="@dimen/player_text_size" />
+			style="@style/PlayerName"
+			android:hint="@string/player5" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP5R1"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game5"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="5"
 			app:round="1" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP5R2"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game4"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="true"
 			app:game="4"
 			app:round="2" />
 
 		<com.derekjass.poolscoresheet.views.PlayerScoreView
 			android:id="@+id/awayP5R3"
-			android:layout_width="@dimen/score_box_width"
-			android:layout_height="match_parent"
+			style="@style/PlayerScore"
 			android:background="@drawable/box_game3"
-			android:onClick="onScoreBoxClicked"
 			app:breaks="false"
 			app:game="3"
 			app:round="3" />
