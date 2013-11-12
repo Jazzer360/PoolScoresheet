@@ -37,6 +37,8 @@ implements AveragePickerListener, ScoringListener {
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
 	private static final String DATE_KEY = "date_key";
+	private static final String HOME_TEAM_KEY = "home_team_key";
+	private static final String AWAY_TEAM_KEY = "away_team_key";
 	private static final String HOME_PLAYERS_KEY = "home_players_key";
 	private static final String AWAY_PLAYERS_KEY = "away_players_key";
 	private static final String HOME_AVERAGES_KEY = "home_averages_key";
@@ -45,6 +47,8 @@ implements AveragePickerListener, ScoringListener {
 	private static final String AWAY_SCORES_KEY = "away_scores_key";
 
 	private TextView date;
+	private EditText homeTeam;
+	private EditText awayTeam;
 	private List<EditText> homePlayers;
 	private List<EditText> awayPlayers;
 	private List<IntegerView> homeAves;
@@ -72,7 +76,7 @@ implements AveragePickerListener, ScoringListener {
 			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
 			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
 
-			for (int i = 0; i < homeRoundAves.size(); i++) {
+			for (int i = 0; i < ROUNDS; i++) {
 				homeRoundAve = homeRoundAves.get(i);
 				awayRoundAve = awayRoundAves.get(i);
 				if (homeAvg > 0) {
@@ -142,7 +146,6 @@ implements AveragePickerListener, ScoringListener {
 		@Override
 		public void onAttachListener(SummableInteger subject) {}
 	};
-
 	private static int getWinCount(Set<SummableInteger> views) {
 		int wins = 0;
 		for (SummableInteger view : views) {
@@ -187,6 +190,8 @@ implements AveragePickerListener, ScoringListener {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putString(DATE_KEY, date.getText().toString());
+		outState.putString(HOME_TEAM_KEY, homeTeam.getText().toString());
+		outState.putString(AWAY_TEAM_KEY, awayTeam.getText().toString());
 
 		ArrayList<String> homePlayers = new ArrayList<String>();
 		for (EditText view : this.homePlayers) {
@@ -257,6 +262,16 @@ implements AveragePickerListener, ScoringListener {
 				String dateString = bundle[0].getString(DATE_KEY);
 				if (dateString != null) {
 					date.setText(dateString);
+				}
+
+				String homeTeamString = bundle[0].getString(HOME_TEAM_KEY);
+				if (homeTeamString != null) {
+					homeTeam.setText(homeTeamString);
+				}
+
+				String awayTeamString = bundle[0].getString(AWAY_TEAM_KEY);
+				if (awayTeamString != null) {
+					awayTeam.setText(awayTeamString);
 				}
 
 				ArrayList<String> hPlayers =
@@ -578,6 +593,9 @@ implements AveragePickerListener, ScoringListener {
 		initLists();
 
 		date = (TextView) v.findViewById(R.id.dateView);
+
+		homeTeam = (EditText) v.findViewById(R.id.homeTeamName);
+		awayTeam = (EditText) v.findViewById(R.id.awayTeamName);
 
 		homePlayers.add((EditText) v.findViewById(R.id.homeP1Name));
 		homePlayers.add((EditText) v.findViewById(R.id.homeP2Name));
