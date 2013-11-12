@@ -20,11 +20,15 @@
 		<item name="android:onClick">onAverageBoxClicked</item>
 		<item name="android:textSize">@dimen/ave_text_size</item>
 	</style>
-	
+
 	<style name="PlayerScore">
 		<item name="android:layout_width">@dimen/score_box_width</item>
 		<item name="android:layout_height">match_parent</item>
 		<item name="android:onClick">onScoreBoxClicked</item>
+	</style>
+
+	<style name="ScoresheetActivity">
+		<item name="android:layout_width">match_parent</item>
 	</style>
 
 </resources>
