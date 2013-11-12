@@ -251,73 +251,79 @@ implements AveragePickerListener, ScoringListener {
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		date.setText(savedInstanceState.getString(DATE_KEY, ""));
+		new AsyncTask<Bundle, Void, Void>() {
+			@Override
+			protected Void doInBackground(Bundle... bundle) {
+				date.setText(bundle[0].getString(DATE_KEY, ""));
 
-		ArrayList<String> homePlayers =
-				savedInstanceState.getStringArrayList(HOME_PLAYERS_KEY);
-		if (homePlayers != null) {
-			for (int i = 0; i < homePlayers.size(); i++) {
-				String name = homePlayers.get(i);
-				if (name != null) {
-					this.homePlayers.get(i).setText(name);
+				ArrayList<String> hPlayers =
+						bundle[0].getStringArrayList(HOME_PLAYERS_KEY);
+				if (hPlayers != null) {
+					for (int i = 0; i < hPlayers.size(); i++) {
+						String name = hPlayers.get(i);
+						if (name != null) {
+							homePlayers.get(i).setText(name);
+						}
+					}
 				}
-			}
-		}
 
-		ArrayList<String> awayPlayers =
-				savedInstanceState.getStringArrayList(AWAY_PLAYERS_KEY);
-		if (awayPlayers != null) {
-			for (int i = 0; i < awayPlayers.size(); i++) {
-				String name = awayPlayers.get(i);
-				if (name != null) {
-					this.awayPlayers.get(i).setText(name);
+				ArrayList<String> aPlayers =
+						bundle[0].getStringArrayList(AWAY_PLAYERS_KEY);
+				if (aPlayers != null) {
+					for (int i = 0; i < aPlayers.size(); i++) {
+						String name = aPlayers.get(i);
+						if (name != null) {
+							awayPlayers.get(i).setText(name);
+						}
+					}
 				}
-			}
-		}
 
-		ArrayList<Integer> homeAves =
-				savedInstanceState.getIntegerArrayList(HOME_AVERAGES_KEY);
-		if (homeAves != null) {
-			for (int i = 0; i < homeAves.size(); i++) {
-				Integer ave = homeAves.get(i);
-				if (ave != null) {
-					this.homeAves.get(i).setValue(ave);
+				ArrayList<Integer> hAves =
+						bundle[0].getIntegerArrayList(HOME_AVERAGES_KEY);
+				if (hAves != null) {
+					for (int i = 0; i < hAves.size(); i++) {
+						Integer ave = hAves.get(i);
+						if (ave != null) {
+							homeAves.get(i).setValue(ave);
+						}
+					}
 				}
-			}
-		}
 
-		ArrayList<Integer> awayAves =
-				savedInstanceState.getIntegerArrayList(AWAY_AVERAGES_KEY);
-		if (awayAves != null) {
-			for (int i = 0; i < awayAves.size(); i++) {
-				Integer ave = awayAves.get(i);
-				if (ave != null) {
-					this.awayAves.get(i).setValue(ave);
+				ArrayList<Integer> aAves =
+						bundle[0].getIntegerArrayList(AWAY_AVERAGES_KEY);
+				if (aAves != null) {
+					for (int i = 0; i < aAves.size(); i++) {
+						Integer ave = aAves.get(i);
+						if (ave != null) {
+							awayAves.get(i).setValue(ave);
+						}
+					}
 				}
-			}
-		}
 
-		ArrayList<Integer> homeScores =
-				savedInstanceState.getIntegerArrayList(HOME_SCORES_KEY);
-		if (homeScores != null) {
-			for (int i = 0; i < homeScores.size(); i++) {
-				Integer score = homeScores.get(i);
-				if (score != null) {
-					this.homeScores.get(i).setValue(score);
+				ArrayList<Integer> hScores =
+						bundle[0].getIntegerArrayList(HOME_SCORES_KEY);
+				if (hScores != null) {
+					for (int i = 0; i < hScores.size(); i++) {
+						Integer score = hScores.get(i);
+						if (score != null) {
+							homeScores.get(i).setValue(score);
+						}
+					}
 				}
-			}
-		}
 
-		ArrayList<Integer> awayScores =
-				savedInstanceState.getIntegerArrayList(AWAY_SCORES_KEY);
-		if (awayScores != null) {
-			for (int i = 0; i < awayScores.size(); i++) {
-				Integer score = awayScores.get(i);
-				if (score != null) {
-					this.awayScores.get(i).setValue(score);
+				ArrayList<Integer> aScores =
+						bundle[0].getIntegerArrayList(AWAY_SCORES_KEY);
+				if (aScores != null) {
+					for (int i = 0; i < aScores.size(); i++) {
+						Integer score = aScores.get(i);
+						if (score != null) {
+							awayScores.get(i).setValue(score);
+						}
+					}
 				}
+				return null;
 			}
-		}
+		}.execute(savedInstanceState);
 	}
 
 	@Override
@@ -508,6 +514,11 @@ implements AveragePickerListener, ScoringListener {
 			awayTotals.get(i).addOnValueChangedListener(totalChangedListener);
 		}
 
+		homeFinalRound.get(r4Total).addOnValueChangedListener(
+				totalChangedListener);
+		awayFinalRound.get(r4Total).addOnValueChangedListener(
+				totalChangedListener);
+
 		homeAve.addOnValueChangedListener(avgChangedListener);
 		awayAve.addOnValueChangedListener(avgChangedListener);
 	}
@@ -516,7 +527,7 @@ implements AveragePickerListener, ScoringListener {
 		value.addOnValueChangedListener(sum);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	private void setupTags() {
 		SumView homeR4 = homeFinalRound.get(PLAYERS + 2);
 		SumView awayR4 = awayFinalRound.get(PLAYERS + 2);
@@ -547,10 +558,12 @@ implements AveragePickerListener, ScoringListener {
 			SumView homeRoundTotal = homeTotals.get(home.getRound() - 1);
 			SumView awayRoundTotal = awayTotals.get(away.getRound() - 1);
 
-			((Set) homeRoundTotal.getTag(GAME_SET_TAG_KEY)).add(home);
-			((Set) awayRoundTotal.getTag(GAME_SET_TAG_KEY)).add(away);
-			((Set) homeR4.getTag(GAME_SET_TAG_KEY)).add(home);
-			((Set) awayR4.getTag(GAME_SET_TAG_KEY)).add(away);
+			((Set<SummableInteger>) homeRoundTotal.getTag(
+					GAME_SET_TAG_KEY)).add(home);
+			((Set<SummableInteger>) awayRoundTotal.getTag(
+					GAME_SET_TAG_KEY)).add(away);
+			((Set<SummableInteger>) homeR4.getTag(GAME_SET_TAG_KEY)).add(home);
+			((Set<SummableInteger>) awayR4.getTag(GAME_SET_TAG_KEY)).add(away);
 		}
 	}
 
