@@ -66,96 +66,6 @@ implements AveragePickerListener, ScoringListener {
 	private SumView homeAve;
 	private SumView awayAve;
 
-	private OnValueChangedListener avgChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			IntegerView homeRoundAve = null;
-			IntegerView awayRoundAve = null;
-
-			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
-			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
-
-			for (int i = 0; i < ROUNDS; i++) {
-				homeRoundAve = homeRoundAves.get(i);
-				awayRoundAve = awayRoundAves.get(i);
-				if (homeAvg > 0) {
-					homeRoundAve.setValue(homeAvg);
-					awayRoundAve.clearValue();
-				} else if (awayAvg > 0) {
-					awayRoundAve.setValue(awayAvg);
-					homeRoundAve.clearValue();
-				} else {
-					homeRoundAve.clearValue();
-					awayRoundAve.clearValue();
-				}
-			}
-		}
-
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-	};
-	private OnValueChangedListener totalChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			SumView view1 = (SumView) subject;
-			SumView view2 = (SumView) view1.getTag();
-
-			if (!view1.hasValue() || view1.hasSoftValue() ||
-					!view2.hasValue() || view2.hasSoftValue()) {
-				view1.setCircled(false);
-				view2.setCircled(false);
-				return;
-			} else {
-				int total1 = view1.getValue();
-				int total2 = view2.getValue();
-
-				if (total1 > total2) {
-					view1.setCircled(true);
-					view2.setCircled(false);
-				} else if (total2 > total1) {
-					view2.setCircled(true);
-					view1.setCircled(false);
-				} else {
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
-					.getTag(GAME_SET_TAG_KEY);
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
-					.getTag(GAME_SET_TAG_KEY);
-
-					int wins1 = getWinCount(games1);
-					int wins2 = getWinCount(games2);
-
-					if (wins1 > wins2) {
-						view1.setCircled(true);
-						view2.setCircled(false);
-					} else {
-						view2.setCircled(true);
-						view1.setCircled(false);
-					}
-				}
-			}
-		}
-
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-	};
-	private static int getWinCount(Set<SummableInteger> views) {
-		int wins = 0;
-		for (SummableInteger view : views) {
-			if (view.getValue() == 10) {
-				wins++;
-			}
-		}
-		return wins;
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -185,6 +95,9 @@ implements AveragePickerListener, ScoringListener {
 				setContentView(v);
 			}
 		}.execute(layout);
+
+		if (savedInstanceState != null)
+			restoreViewsTask.execute(savedInstanceState);
 	}
 
 	@Override
@@ -254,95 +167,93 @@ implements AveragePickerListener, ScoringListener {
 		outState.putIntegerArrayList(AWAY_SCORES_KEY, awayScores);
 	}
 
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		new AsyncTask<Bundle, Void, Void>() {
-			@Override
-			protected Void doInBackground(Bundle... bundle) {
-				String dateString = bundle[0].getString(DATE_KEY);
-				if (dateString != null) {
-					date.setText(dateString);
-				}
-
-				String homeTeamString = bundle[0].getString(HOME_TEAM_KEY);
-				if (homeTeamString != null) {
-					homeTeam.setText(homeTeamString);
-				}
-
-				String awayTeamString = bundle[0].getString(AWAY_TEAM_KEY);
-				if (awayTeamString != null) {
-					awayTeam.setText(awayTeamString);
-				}
-
-				ArrayList<String> hPlayers =
-						bundle[0].getStringArrayList(HOME_PLAYERS_KEY);
-				if (hPlayers != null) {
-					for (int i = 0; i < hPlayers.size(); i++) {
-						String name = hPlayers.get(i);
-						if (name != null) {
-							homePlayers.get(i).setText(name);
-						}
-					}
-				}
-
-				ArrayList<String> aPlayers =
-						bundle[0].getStringArrayList(AWAY_PLAYERS_KEY);
-				if (aPlayers != null) {
-					for (int i = 0; i < aPlayers.size(); i++) {
-						String name = aPlayers.get(i);
-						if (name != null) {
-							awayPlayers.get(i).setText(name);
-						}
-					}
-				}
-
-				ArrayList<Integer> hAves =
-						bundle[0].getIntegerArrayList(HOME_AVERAGES_KEY);
-				if (hAves != null) {
-					for (int i = 0; i < hAves.size(); i++) {
-						Integer ave = hAves.get(i);
-						if (ave != null) {
-							homeAves.get(i).setValue(ave);
-						}
-					}
-				}
-
-				ArrayList<Integer> aAves =
-						bundle[0].getIntegerArrayList(AWAY_AVERAGES_KEY);
-				if (aAves != null) {
-					for (int i = 0; i < aAves.size(); i++) {
-						Integer ave = aAves.get(i);
-						if (ave != null) {
-							awayAves.get(i).setValue(ave);
-						}
-					}
-				}
-
-				ArrayList<Integer> hScores =
-						bundle[0].getIntegerArrayList(HOME_SCORES_KEY);
-				if (hScores != null) {
-					for (int i = 0; i < hScores.size(); i++) {
-						Integer score = hScores.get(i);
-						if (score != null) {
-							homeScores.get(i).setValue(score);
-						}
-					}
-				}
-
-				ArrayList<Integer> aScores =
-						bundle[0].getIntegerArrayList(AWAY_SCORES_KEY);
-				if (aScores != null) {
-					for (int i = 0; i < aScores.size(); i++) {
-						Integer score = aScores.get(i);
-						if (score != null) {
-							awayScores.get(i).setValue(score);
-						}
-					}
-				}
-				return null;
+	private AsyncTask<Bundle, Void, Void> restoreViewsTask =
+			new AsyncTask<Bundle, Void, Void>() {
+		@Override
+		protected Void doInBackground(Bundle... bundle) {
+			String dateString = bundle[0].getString(DATE_KEY);
+			if (dateString != null) {
+				date.setText(dateString);
 			}
-		}.execute(savedInstanceState);
-	}
+
+			String homeTeamString = bundle[0].getString(HOME_TEAM_KEY);
+			if (homeTeamString != null) {
+				homeTeam.setText(homeTeamString);
+			}
+
+			String awayTeamString = bundle[0].getString(AWAY_TEAM_KEY);
+			if (awayTeamString != null) {
+				awayTeam.setText(awayTeamString);
+			}
+
+			ArrayList<String> hPlayers =
+					bundle[0].getStringArrayList(HOME_PLAYERS_KEY);
+			if (hPlayers != null) {
+				for (int i = 0; i < hPlayers.size(); i++) {
+					String name = hPlayers.get(i);
+					if (name != null) {
+						homePlayers.get(i).setText(name);
+					}
+				}
+			}
+
+			ArrayList<String> aPlayers =
+					bundle[0].getStringArrayList(AWAY_PLAYERS_KEY);
+			if (aPlayers != null) {
+				for (int i = 0; i < aPlayers.size(); i++) {
+					String name = aPlayers.get(i);
+					if (name != null) {
+						awayPlayers.get(i).setText(name);
+					}
+				}
+			}
+
+			ArrayList<Integer> hAves =
+					bundle[0].getIntegerArrayList(HOME_AVERAGES_KEY);
+			if (hAves != null) {
+				for (int i = 0; i < hAves.size(); i++) {
+					Integer ave = hAves.get(i);
+					if (ave != null) {
+						homeAves.get(i).setValue(ave);
+					}
+				}
+			}
+
+			ArrayList<Integer> aAves =
+					bundle[0].getIntegerArrayList(AWAY_AVERAGES_KEY);
+			if (aAves != null) {
+				for (int i = 0; i < aAves.size(); i++) {
+					Integer ave = aAves.get(i);
+					if (ave != null) {
+						awayAves.get(i).setValue(ave);
+					}
+				}
+			}
+
+			ArrayList<Integer> hScores =
+					bundle[0].getIntegerArrayList(HOME_SCORES_KEY);
+			if (hScores != null) {
+				for (int i = 0; i < hScores.size(); i++) {
+					Integer score = hScores.get(i);
+					if (score != null) {
+						homeScores.get(i).setValue(score);
+					}
+				}
+			}
+
+			ArrayList<Integer> aScores =
+					bundle[0].getIntegerArrayList(AWAY_SCORES_KEY);
+			if (aScores != null) {
+				for (int i = 0; i < aScores.size(); i++) {
+					Integer score = aScores.get(i);
+					if (score != null) {
+						awayScores.get(i).setValue(score);
+					}
+				}
+			}
+			return null;
+		}
+	};
 
 	@Override
 	public void onBackPressed() {
@@ -420,8 +331,6 @@ implements AveragePickerListener, ScoringListener {
 		loser.setEro(false);
 	}
 
-
-
 	@Override
 	public void onScoreCleared(int viewId1, int viewId2) {
 		PlayerScoreView view1 = (PlayerScoreView) findViewById(viewId1);
@@ -489,6 +398,100 @@ implements AveragePickerListener, ScoringListener {
 		awayRoundAves = new ArrayList<IntegerView>(ROUNDS);
 		homeTotals = new ArrayList<SumView>(ROUNDS);
 		awayTotals = new ArrayList<SumView>(ROUNDS);
+	}
+
+	private OnValueChangedListener avgChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			IntegerView homeRoundAve = null;
+			IntegerView awayRoundAve = null;
+
+			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
+			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
+
+			for (int i = 0; i < ROUNDS; i++) {
+				homeRoundAve = homeRoundAves.get(i);
+				awayRoundAve = awayRoundAves.get(i);
+				if (homeAvg > 0) {
+					homeRoundAve.setValue(homeAvg);
+					awayRoundAve.clearValue();
+				} else if (awayAvg > 0) {
+					awayRoundAve.setValue(awayAvg);
+					homeRoundAve.clearValue();
+				} else {
+					homeRoundAve.clearValue();
+					awayRoundAve.clearValue();
+				}
+			}
+		}
+
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+	};
+
+
+	private OnValueChangedListener totalChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			SumView view1 = (SumView) subject;
+			SumView view2 = (SumView) view1.getTag();
+
+			if (!view1.hasValue() || view1.hasSoftValue() ||
+					!view2.hasValue() || view2.hasSoftValue()) {
+				view1.setCircled(false);
+				view2.setCircled(false);
+				return;
+			} else {
+				int total1 = view1.getValue();
+				int total2 = view2.getValue();
+
+				if (total1 > total2) {
+					view1.setCircled(true);
+					view2.setCircled(false);
+				} else if (total2 > total1) {
+					view2.setCircled(true);
+					view1.setCircled(false);
+				} else {
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
+					.getTag(GAME_SET_TAG_KEY);
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
+					.getTag(GAME_SET_TAG_KEY);
+
+					int wins1 = getWinCount(games1);
+					int wins2 = getWinCount(games2);
+
+					if (wins1 > wins2) {
+						view1.setCircled(true);
+						view2.setCircled(false);
+					} else {
+						view2.setCircled(true);
+						view1.setCircled(false);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+	};
+
+
+	private static int getWinCount(Set<SummableInteger> views) {
+		int wins = 0;
+		for (SummableInteger view : views) {
+			if (view.getValue() == 10) {
+				wins++;
+			}
+		}
+		return wins;
 	}
 
 	private void setupListeners() {
