@@ -1,10 +1,12 @@
 package com.derekjass.poolscoresheet.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -74,15 +76,18 @@ public class LeagueProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
+		String table = null;
 		String matchSelection = null;
 		String orderBy = TextUtils.isEmpty(sortOrder) ?
 				Match.COLUMN_DATE + " DESC" : sortOrder;
 
 		switch (uriMatcher.match(uri)) {
 		case URI_MATCHES:
+			table = uri.getPathSegments().get(0);
 			matchSelection = selection;
 			break;
 		case URI_MATCH_ID:
+			table = uri.getPathSegments().get(0);
 			matchSelection = Match._ID + "=" + uri.getPathSegments().get(1);
 			break;
 		default:
@@ -90,7 +95,7 @@ public class LeagueProvider extends ContentProvider {
 		}
 
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		return db.query(uri.getPathSegments().get(0),
+		return db.query(table,
 				projection,
 				matchSelection,
 				selectionArgs,
@@ -113,15 +118,32 @@ public class LeagueProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
-		if (uriMatcher.match(uri) != URI_MATCHES) {
+		String table = null;
+
+		switch (uriMatcher.match(uri)) {
+		case URI_MATCHES:
+			table = uri.getPathSegments().get(0);
+			break;
+		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 
 		ContentValues values = (initialValues != null ?
 				new ContentValues(initialValues) : new ContentValues());
-		
+
 		if (!values.containsKey(Match.COLUMN_DATE))
 			values.put(Match.COLUMN_DATE, System.currentTimeMillis());
+
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		long rowId = db.insert(table, null, values);
+
+		if (rowId > 0) {
+			Uri matchUri = ContentUris.withAppendedId(uri, rowId);
+			getContext().getContentResolver().notifyChange(matchUri, null);
+			return matchUri;
+		}
+
+		throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	@Override
