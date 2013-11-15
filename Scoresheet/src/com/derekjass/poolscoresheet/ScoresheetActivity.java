@@ -72,7 +72,7 @@ implements AveragePickerListener, ScoringListener {
 		setContentView(R.layout.progressbar);
 
 		View layout = getLayoutInflater()
-				.inflate(R.layout.activity_scoresheet, null);
+				.inflate(R.layout.fragment_scoresheet, null);
 
 		new AsyncTask<View, Void, View>() {
 			@Override
