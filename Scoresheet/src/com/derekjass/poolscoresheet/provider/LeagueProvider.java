@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.derekjass.poolscoresheet.provider.League.Match;
+import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
 public class LeagueProvider extends ContentProvider {
 
@@ -22,20 +22,20 @@ public class LeagueProvider extends ContentProvider {
 		private static final String DATABASE_NAME = "League.db";
 
 		private static final String SQL_CREATE_MATCHES =
-				"CREATE TABLE" + Match.TABLE_NAME + " (" +
-						Match._ID + " INTEGER PRIMARY KEY," +
-						Match.COLUMN_DATE + " INTEGER," +
-						Match.COLUMN_TEAM_HOME + " TEXT," +
-						Match.COLUMN_TEAM_AWAY + " TEXT," +
-						Match.COLUMN_PLAYER_AVES_HOME + " TEXT," +
-						Match.COLUMN_PLAYER_AVES_AWAY + " TEXT," +
-						Match.COLUMN_PLAYER_NAMES_HOME + " TEXT," +
-						Match.COLUMN_PLAYER_NAMES_AWAY + " TEXT," +
-						Match.COLUMN_PLAYER_SCORES_HOME + " TEXT," +
-						Match.COLUMN_PLAYER_SCORES_AWAY + " TEXT," +
-						Match.COLUMN_ERO_BITMASK + " INTEGER," +
-						Match.COLUMN_ROUND_WINS_HOME + " INTEGER," +
-						Match.COLUMN_ROUND_WINS_AWAY + " INTEGER)";
+				"CREATE TABLE" + Matches.TABLE_NAME + " (" +
+						Matches._ID + " INTEGER PRIMARY KEY," +
+						Matches.COLUMN_DATE + " INTEGER," +
+						Matches.COLUMN_TEAM_HOME + " TEXT," +
+						Matches.COLUMN_TEAM_AWAY + " TEXT," +
+						Matches.COLUMN_PLAYER_AVES_HOME + " TEXT," +
+						Matches.COLUMN_PLAYER_AVES_AWAY + " TEXT," +
+						Matches.COLUMN_PLAYER_NAMES_HOME + " TEXT," +
+						Matches.COLUMN_PLAYER_NAMES_AWAY + " TEXT," +
+						Matches.COLUMN_PLAYER_SCORES_HOME + " TEXT," +
+						Matches.COLUMN_PLAYER_SCORES_AWAY + " TEXT," +
+						Matches.COLUMN_ERO_BITMASK + " INTEGER," +
+						Matches.COLUMN_ROUND_WINS_HOME + " INTEGER," +
+						Matches.COLUMN_ROUND_WINS_AWAY + " INTEGER)";
 
 		private DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -61,10 +61,10 @@ public class LeagueProvider extends ContentProvider {
 
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(League.AUTHORITY,
-				Match.TABLE_NAME, URI_MATCHES);
-		uriMatcher.addURI(League.AUTHORITY,
-				Match.TABLE_NAME + "/#", URI_MATCH_ID);
+		uriMatcher.addURI(LeagueContract.AUTHORITY,
+				Matches.TABLE_NAME, URI_MATCHES);
+		uriMatcher.addURI(LeagueContract.AUTHORITY,
+				Matches.TABLE_NAME + "/#", URI_MATCH_ID);
 	}
 
 	@Override
@@ -77,18 +77,20 @@ public class LeagueProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		String table = null;
-		String matchSelection = null;
+		String where = null;
 		String orderBy = TextUtils.isEmpty(sortOrder) ?
-				Match.COLUMN_DATE + " DESC" : sortOrder;
+				Matches.COLUMN_DATE + " DESC" : sortOrder;
 
 		switch (uriMatcher.match(uri)) {
 		case URI_MATCHES:
-			table = uri.getPathSegments().get(0);
-			matchSelection = selection;
+			table = Matches.TABLE_NAME;
+			where = selection;
 			break;
 		case URI_MATCH_ID:
-			table = uri.getPathSegments().get(0);
-			matchSelection = Match._ID + "=" + uri.getPathSegments().get(1);
+			table = Matches.TABLE_NAME;
+			where = Matches._ID + "=" + uri.getPathSegments().get(1);
+			if (selection != null)
+				where += " AND " + selection;
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -97,7 +99,7 @@ public class LeagueProvider extends ContentProvider {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		return db.query(table,
 				projection,
-				matchSelection,
+				where,
 				selectionArgs,
 				null,
 				null,
@@ -108,9 +110,9 @@ public class LeagueProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		switch (uriMatcher.match(uri)) {
 		case URI_MATCHES:
-			return Match.CONTENT_TYPE;
+			return Matches.CONTENT_TYPE;
 		case URI_MATCH_ID:
-			return Match.CONTENT_ITEM_TYPE;
+			return Matches.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -122,7 +124,7 @@ public class LeagueProvider extends ContentProvider {
 
 		switch (uriMatcher.match(uri)) {
 		case URI_MATCHES:
-			table = uri.getPathSegments().get(0);
+			table = Matches.TABLE_NAME;
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -131,8 +133,8 @@ public class LeagueProvider extends ContentProvider {
 		ContentValues values = (initialValues != null ?
 				new ContentValues(initialValues) : new ContentValues());
 
-		if (!values.containsKey(Match.COLUMN_DATE))
-			values.put(Match.COLUMN_DATE, System.currentTimeMillis());
+		if (!values.containsKey(Matches.COLUMN_DATE))
+			values.put(Matches.COLUMN_DATE, System.currentTimeMillis());
 
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		long rowId = db.insert(table, null, values);
@@ -148,15 +150,59 @@ public class LeagueProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		String table = null;
+		String where = null;
+
+		switch (uriMatcher.match(uri)) {
+		case URI_MATCHES:
+			table = Matches.TABLE_NAME;
+			where = selection;
+			break;
+		case URI_MATCH_ID:
+			table = Matches.TABLE_NAME;
+			where = Matches._ID + "=" + uri.getPathSegments().get(1);
+			if (selection != null)
+				where += selection;
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int rowsDeleted = db.delete(table, where, selectionArgs);
+
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return rowsDeleted;
 	}
 
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		String table = null;
+		String where = null;
+
+		switch (uriMatcher.match(uri)) {
+		case URI_MATCHES:
+			table = Matches.TABLE_NAME;
+			where = selection;
+			break;
+		case URI_MATCH_ID:
+			table = Matches.TABLE_NAME;
+			where = Matches._ID + "=" + uri.getPathSegments().get(1);
+			if (selection != null)
+				where += " AND " + selection;
+			break;
+		default:
+			throw new IllegalArgumentException("Uknown URI " + uri);
+		}
+
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int rowsUpdated = db.update(table, values, where, selectionArgs);
+
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return rowsUpdated;
 	}
 
 }

@@ -7,6 +7,16 @@
 		android:minSdkVersion="13"
 		android:targetSdkVersion="19" />
 
+	<permission
+		android:name="com.derekjass.poolscoresheet.READ_MATCH_DATA"
+		android:protectionLevel="signature" />
+	<permission
+		android:name="com.derekjass.poolscoresheet.WRITE_MATCH_DATA"
+		android:protectionLevel="signature" />
+
+	<uses-permission android:name="com.derekjass.poolscoresheet.READ_MATCH_DATA" />
+	<uses-permission android:name="com.derekjass.poolscoresheet.WRITE_MATCH_DATA" />
+
 	<application
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
@@ -21,6 +31,14 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+		<provider
+			android:name=".provider.LeagueProvider"
+			android:authorities="com.derekjass.poolscoresheet.provider"
+			android:exported="true"
+			android:readPermission="com.derekjass.poolscoresheet.READ_MATCH_DATA"
+			android:writePermission="com.derekjass.poolscoresheet.WRITE_MATCH_DATA" >
+		</provider>
 	</application>
 
 </manifest>
