@@ -36,5 +36,6 @@
 	<string name="breaks">Break</string>
 	<string name="round_ave">Round Ave</string>
 	<string name="jackson_tuesday_night">Jackson Area Tuesday Night</string>
+	<string name="no_match_selected">No match selected</string>
 
 </resources>

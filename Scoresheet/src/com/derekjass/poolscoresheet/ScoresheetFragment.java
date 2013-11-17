@@ -9,7 +9,12 @@ import java.util.Locale;
 import java.util.Set;
 
 import android.app.Fragment;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,6 +25,7 @@ import android.widget.TextView;
 
 import com.derekjass.poolscoresheet.AveragePickerDialog.AveragePickerListener;
 import com.derekjass.poolscoresheet.ScoringDialog.ScoringListener;
+import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 import com.derekjass.poolscoresheet.views.IntegerView;
 import com.derekjass.poolscoresheet.views.PlayerScoreView;
 import com.derekjass.poolscoresheet.views.SumView;
@@ -27,11 +33,15 @@ import com.derekjass.poolscoresheet.views.SummableInteger;
 import com.derekjass.poolscoresheet.views.SummableInteger.OnValueChangedListener;
 
 public class ScoresheetFragment extends Fragment
-implements AveragePickerListener, ScoringListener{
+implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 
 	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
+
+	private View progress;
+	private View noDataText;
+	private View scoresheet;
 
 	private TextView date;
 	private EditText homeTeam;
@@ -52,7 +62,7 @@ implements AveragePickerListener, ScoringListener{
 	private List<SumView> awayTotals;
 	private SumView homeAve;
 	private SumView awayAve;
-	
+
 	private Uri matchUri;
 
 	@Override
@@ -60,19 +70,57 @@ implements AveragePickerListener, ScoringListener{
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(
 				R.layout.fragment_scoresheet, container, false);
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		getViewReferences(v);
-		setupTags();
-		setupListeners();
-		setDate(new Date());
+		new AsyncTask<View, Void, Void>() {
+			@Override
+			protected Void doInBackground(View... params) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				getViewReferences(params[0]);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				initTags();
+				initListeners();
+				setDate(new Date());
+			}
+		}.execute(v);
 		return v;
 	}
-	
-	
+
+	public void loadUri(Uri matchUri) {
+		if (matchUri == null) {
+			progress.setVisibility(View.GONE);
+			scoresheet.setVisibility(View.GONE);
+			noDataText.setVisibility(View.VISIBLE);
+			return;
+		}
+
+		if (matchUri.getPathSegments().size() != 2)
+			throw new IllegalArgumentException("Uri must include match id");
+
+		this.matchUri = matchUri;
+		getLoaderManager().initLoader(0, null, this);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new CursorLoader(getActivity(), matchUri,
+				null, null, null, null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		fillViews(data);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {}
+
 	public void onScoreBoxClicked(View v) {
 		boolean homeClicked = getView().findViewById(R.id.homeTeamViews)
 				.findViewById(v.getId()) != null;
@@ -184,220 +232,109 @@ implements AveragePickerListener, ScoringListener{
 		view.clearValue();
 	}
 
+	private void fillViews(Cursor data) {
+		new AsyncTask<Cursor, Void, Void>() {
+			private Date tDate;
+			private String tHomeTeam;
+			private String tAwayTeam;
+			private String[] tHomePlayers;
+			private String[] tAwayPlayers;
+			private String[] tHomeAves;
+			private String[] tAwayAves;
+			private String[] tHomeScores;
+			private String[] tAwayScores;
+			private long eroBitmask;
+
+			@Override
+			protected void onPreExecute() {
+				scoresheet.setVisibility(View.GONE);
+				noDataText.setVisibility(View.GONE);
+				progress.setVisibility(View.VISIBLE);
+			}
+
+			@Override
+			protected Void doInBackground(Cursor... cursor) {
+				Cursor c = cursor[0];
+				tDate = new Date(c.getLong(c.getColumnIndexOrThrow(
+						Matches.COLUMN_DATE)));
+				tHomeTeam = c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_TEAM_HOME));
+				tAwayTeam = c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_TEAM_AWAY));
+				tHomePlayers = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_NAMES_HOME)));
+				tAwayPlayers = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_NAMES_AWAY)));
+				tHomeAves = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_AVES_HOME)));
+				tAwayAves = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_AVES_AWAY)));
+				tHomeScores = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_SCORES_HOME)));
+				tAwayScores = splitString(c.getString(c.getColumnIndexOrThrow(
+						Matches.COLUMN_PLAYER_SCORES_AWAY)));
+				eroBitmask = c.getLong(c.getColumnIndexOrThrow(
+						Matches.COLUMN_ERO_BITMASK));
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void c) {
+				setDate(tDate);
+				homeTeam.setText(tHomeTeam);
+				awayTeam.setText(tAwayTeam);
+				fillNames(homePlayers, tHomePlayers);
+				fillNames(awayPlayers, tAwayPlayers);
+				fillSummableIntegers(homeAves, tHomeAves);
+				fillSummableIntegers(awayAves, tAwayAves);
+				fillSummableIntegers(homeScores, tHomeScores);
+				fillSummableIntegers(awayScores, tAwayScores);
+				setEroFromBitmask(eroBitmask);
+
+				progress.setVisibility(View.GONE);
+				noDataText.setVisibility(View.GONE);
+				scoresheet.setVisibility(View.VISIBLE);
+			}
+		}.execute(data);
+	}
+
+	private void setEroFromBitmask(long eroBitmask) {
+		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
+			if (((1 << i) & eroBitmask) > 0) {
+				if (homeScores.get(i).getValue() == 10) {
+					homeScores.get(i).setEro(true);
+				} else {
+					awayScores.get(i).setEro(true);
+				}
+			}
+		}
+	}
+
+	private static void fillNames(
+			List<EditText> nameViews, String[] names) {
+		for (int i = 0; i < names.length; i++) {
+			nameViews.get(i).setText(names[i]);
+		}
+	}
+
+	private static void fillSummableIntegers(
+			List<? extends SummableInteger> intViews, String[] data) {
+		for (int i = 0; i < data.length; i++) {
+			intViews.get(i).setValue(data[i]);
+		}
+	}
+
 	private void setDate(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
 		this.date.setText(sdf.format(date));
 	}
-	
-	private void initLists() {
-		homePlayers = new ArrayList<EditText>(PLAYERS);
-		awayPlayers = new ArrayList<EditText>(PLAYERS);
-		homeAves = new ArrayList<IntegerView>(PLAYERS);
-		awayAves = new ArrayList<IntegerView>(PLAYERS);
-		homeScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
-		awayScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
-		homeFinalRound = new ArrayList<SumView>(PLAYERS + 3);
-		awayFinalRound = new ArrayList<SumView>(PLAYERS + 3);
-		homeSubtotals = new ArrayList<SumView>(ROUNDS);
-		awaySubtotals = new ArrayList<SumView>(ROUNDS);
-		homeRoundAves = new ArrayList<IntegerView>(ROUNDS);
-		awayRoundAves = new ArrayList<IntegerView>(ROUNDS);
-		homeTotals = new ArrayList<SumView>(ROUNDS);
-		awayTotals = new ArrayList<SumView>(ROUNDS);
-	}
-
-	private OnValueChangedListener avgChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			IntegerView homeRoundAve = null;
-			IntegerView awayRoundAve = null;
-
-			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
-			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
-
-			for (int i = 0; i < ROUNDS; i++) {
-				homeRoundAve = homeRoundAves.get(i);
-				awayRoundAve = awayRoundAves.get(i);
-				if (homeAvg > 0) {
-					homeRoundAve.setValue(homeAvg);
-					awayRoundAve.clearValue();
-				} else if (awayAvg > 0) {
-					awayRoundAve.setValue(awayAvg);
-					homeRoundAve.clearValue();
-				} else {
-					homeRoundAve.clearValue();
-					awayRoundAve.clearValue();
-				}
-			}
-		}
-
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-	};
-
-	private OnValueChangedListener totalChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			SumView view1 = (SumView) subject;
-			SumView view2 = (SumView) view1.getTag();
-
-			if (!view1.hasValue() || view1.hasSoftValue() ||
-					!view2.hasValue() || view2.hasSoftValue()) {
-				view1.setCircled(false);
-				view2.setCircled(false);
-				return;
-			} else {
-				int total1 = view1.getValue();
-				int total2 = view2.getValue();
-
-				if (total1 > total2) {
-					view1.setCircled(true);
-					view2.setCircled(false);
-				} else if (total2 > total1) {
-					view2.setCircled(true);
-					view1.setCircled(false);
-				} else {
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
-					.getTag(GAME_SET_TAG_KEY);
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
-					.getTag(GAME_SET_TAG_KEY);
-
-					int wins1 = getWinCount(games1);
-					int wins2 = getWinCount(games2);
-
-					if (wins1 > wins2) {
-						view1.setCircled(true);
-						view2.setCircled(false);
-					} else {
-						view2.setCircled(true);
-						view1.setCircled(false);
-					}
-				}
-			}
-		}
-
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-	};
-
-	private static int getWinCount(Set<SummableInteger> views) {
-		int wins = 0;
-		for (SummableInteger view : views) {
-			if (view.getValue() == 10) {
-				wins++;
-			}
-		}
-		return wins;
-	}
-
-	private void setupListeners() {
-		for (int i = 0; i < PLAYERS; i++) {
-			addViewToSum(homeAve, homeAves.get(i));
-			addViewToSum(awayAve, awayAves.get(i));
-		}
-
-		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
-			PlayerScoreView homeScore = homeScores.get(i);
-			PlayerScoreView awayScore = awayScores.get(i);
-
-			int round = i / PLAYERS;
-			int game = i % PLAYERS;
-
-			addViewToSum(homeSubtotals.get(round), homeScore);
-			addViewToSum(homeFinalRound.get(game), homeScore);
-			addViewToSum(awaySubtotals.get(round), awayScore);
-			addViewToSum(awayFinalRound.get(game), awayScore);
-		}
-
-		final int r4Subtotal = PLAYERS + 0;
-		final int r4AveTotal = PLAYERS + 1;
-		final int r4Total = PLAYERS + 2;
-
-		for (int i = 0; i < ROUNDS; i++) {
-			addViewToSum(homeTotals.get(i), homeSubtotals.get(i));
-			addViewToSum(homeTotals.get(i), homeRoundAves.get(i));
-			addViewToSum(homeFinalRound.get(r4Subtotal), homeSubtotals.get(i));
-			addViewToSum(homeFinalRound.get(r4AveTotal), homeRoundAves.get(i));
-			addViewToSum(homeFinalRound.get(r4Total), homeTotals.get(i));
-
-			addViewToSum(awayTotals.get(i), awaySubtotals.get(i));
-			addViewToSum(awayTotals.get(i), awayRoundAves.get(i));
-			addViewToSum(awayFinalRound.get(r4Subtotal), awaySubtotals.get(i));
-			addViewToSum(awayFinalRound.get(r4AveTotal), awayRoundAves.get(i));
-			addViewToSum(awayFinalRound.get(r4Total), awayTotals.get(i));
-
-			homeTotals.get(i).addOnValueChangedListener(totalChangedListener);
-			awayTotals.get(i).addOnValueChangedListener(totalChangedListener);
-		}
-
-		homeFinalRound.get(r4Total).addOnValueChangedListener(
-				totalChangedListener);
-		awayFinalRound.get(r4Total).addOnValueChangedListener(
-				totalChangedListener);
-
-		homeAve.addOnValueChangedListener(avgChangedListener);
-		awayAve.addOnValueChangedListener(avgChangedListener);
-	}
-
-	private static void addViewToSum(SumView sum, SummableInteger value) {
-		value.addOnValueChangedListener(sum);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void setupTags() {
-		SumView homeR4 = homeFinalRound.get(PLAYERS + 2);
-		SumView awayR4 = awayFinalRound.get(PLAYERS + 2);
-		homeR4.setTag(awayR4);
-		awayR4.setTag(homeR4);
-		homeR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-		awayR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-
-		for (int i = 0; i < ROUNDS; i++) {
-			SumView homeTotal = homeTotals.get(i);
-			SumView awayTotal = awayTotals.get(i);
-
-			homeTotal.setTag(awayTotal);
-			awayTotal.setTag(homeTotal);
-			homeTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-			awayTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-		}
-
-		for (PlayerScoreView home : homeScores) {
-			PlayerScoreView away = null;
-			for (PlayerScoreView view : awayScores) {
-				if (home.getRound() == view.getRound()
-						&& home.getGame() == view.getGame()) {
-					away = view;
-					linkViewsByTags(home, view);
-				}
-			}
-			SumView homeRoundTotal = homeTotals.get(home.getRound() - 1);
-			SumView awayRoundTotal = awayTotals.get(away.getRound() - 1);
-
-			((Set<SummableInteger>) homeRoundTotal.getTag(
-					GAME_SET_TAG_KEY)).add(home);
-			((Set<SummableInteger>) awayRoundTotal.getTag(
-					GAME_SET_TAG_KEY)).add(away);
-			((Set<SummableInteger>) homeR4.getTag(GAME_SET_TAG_KEY)).add(home);
-			((Set<SummableInteger>) awayR4.getTag(GAME_SET_TAG_KEY)).add(away);
-		}
-	}
-
-	private static void linkViewsByTags(View view1, View view2) {
-		view1.setTag(view2);
-		view2.setTag(view1);
-	}
 
 	private void getViewReferences(View v) {
 		initLists();
+
+		progress = (View) v.findViewById(R.id.scoresheetProgressBar);
+		noDataText = (View) v.findViewById(R.id.scoresheetNoDataText);
+		scoresheet = (View) v.findViewById(R.id.scoresheet);
 
 		date = (TextView) v.findViewById(R.id.dateView);
 
@@ -497,5 +434,220 @@ implements AveragePickerListener, ScoringListener{
 
 		homeAve = (SumView) v.findViewById(R.id.homeAve);
 		awayAve = (SumView) v.findViewById(R.id.awayAve);
+	}
+
+	private void initLists() {
+		homePlayers = new ArrayList<EditText>(PLAYERS);
+		awayPlayers = new ArrayList<EditText>(PLAYERS);
+		homeAves = new ArrayList<IntegerView>(PLAYERS);
+		awayAves = new ArrayList<IntegerView>(PLAYERS);
+		homeScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
+		awayScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
+		homeFinalRound = new ArrayList<SumView>(PLAYERS + 3);
+		awayFinalRound = new ArrayList<SumView>(PLAYERS + 3);
+		homeSubtotals = new ArrayList<SumView>(ROUNDS);
+		awaySubtotals = new ArrayList<SumView>(ROUNDS);
+		homeRoundAves = new ArrayList<IntegerView>(ROUNDS);
+		awayRoundAves = new ArrayList<IntegerView>(ROUNDS);
+		homeTotals = new ArrayList<SumView>(ROUNDS);
+		awayTotals = new ArrayList<SumView>(ROUNDS);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initTags() {
+		SumView homeR4 = homeFinalRound.get(PLAYERS + 2);
+		SumView awayR4 = awayFinalRound.get(PLAYERS + 2);
+		homeR4.setTag(awayR4);
+		awayR4.setTag(homeR4);
+		homeR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+		awayR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+
+		for (int i = 0; i < ROUNDS; i++) {
+			SumView homeTotal = homeTotals.get(i);
+			SumView awayTotal = awayTotals.get(i);
+
+			homeTotal.setTag(awayTotal);
+			awayTotal.setTag(homeTotal);
+			homeTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+			awayTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+		}
+
+		for (PlayerScoreView home : homeScores) {
+			PlayerScoreView away = null;
+			for (PlayerScoreView view : awayScores) {
+				if (home.getRound() == view.getRound()
+						&& home.getGame() == view.getGame()) {
+					away = view;
+					linkViewsByTags(home, view);
+				}
+			}
+			SumView homeRoundTotal = homeTotals.get(home.getRound() - 1);
+			SumView awayRoundTotal = awayTotals.get(away.getRound() - 1);
+
+			((Set<SummableInteger>) homeRoundTotal.getTag(
+					GAME_SET_TAG_KEY)).add(home);
+			((Set<SummableInteger>) awayRoundTotal.getTag(
+					GAME_SET_TAG_KEY)).add(away);
+			((Set<SummableInteger>) homeR4.getTag(GAME_SET_TAG_KEY)).add(home);
+			((Set<SummableInteger>) awayR4.getTag(GAME_SET_TAG_KEY)).add(away);
+		}
+	}
+
+	private void initListeners() {
+		for (int i = 0; i < PLAYERS; i++) {
+			addViewToSum(homeAve, homeAves.get(i));
+			addViewToSum(awayAve, awayAves.get(i));
+		}
+
+		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
+			PlayerScoreView homeScore = homeScores.get(i);
+			PlayerScoreView awayScore = awayScores.get(i);
+
+			int round = i / PLAYERS;
+			int game = i % PLAYERS;
+
+			addViewToSum(homeSubtotals.get(round), homeScore);
+			addViewToSum(homeFinalRound.get(game), homeScore);
+			addViewToSum(awaySubtotals.get(round), awayScore);
+			addViewToSum(awayFinalRound.get(game), awayScore);
+		}
+
+		final int r4Subtotal = PLAYERS + 0;
+		final int r4AveTotal = PLAYERS + 1;
+		final int r4Total = PLAYERS + 2;
+
+		for (int i = 0; i < ROUNDS; i++) {
+			addViewToSum(homeTotals.get(i), homeSubtotals.get(i));
+			addViewToSum(homeTotals.get(i), homeRoundAves.get(i));
+			addViewToSum(homeFinalRound.get(r4Subtotal), homeSubtotals.get(i));
+			addViewToSum(homeFinalRound.get(r4AveTotal), homeRoundAves.get(i));
+			addViewToSum(homeFinalRound.get(r4Total), homeTotals.get(i));
+
+			addViewToSum(awayTotals.get(i), awaySubtotals.get(i));
+			addViewToSum(awayTotals.get(i), awayRoundAves.get(i));
+			addViewToSum(awayFinalRound.get(r4Subtotal), awaySubtotals.get(i));
+			addViewToSum(awayFinalRound.get(r4AveTotal), awayRoundAves.get(i));
+			addViewToSum(awayFinalRound.get(r4Total), awayTotals.get(i));
+
+			homeTotals.get(i).addOnValueChangedListener(totalChangedListener);
+			awayTotals.get(i).addOnValueChangedListener(totalChangedListener);
+		}
+
+		homeFinalRound.get(r4Total).addOnValueChangedListener(
+				totalChangedListener);
+		awayFinalRound.get(r4Total).addOnValueChangedListener(
+				totalChangedListener);
+
+		homeAve.addOnValueChangedListener(avgChangedListener);
+		awayAve.addOnValueChangedListener(avgChangedListener);
+	}
+
+	private OnValueChangedListener avgChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			IntegerView homeRoundAve = null;
+			IntegerView awayRoundAve = null;
+
+			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
+			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
+
+			for (int i = 0; i < ROUNDS; i++) {
+				homeRoundAve = homeRoundAves.get(i);
+				awayRoundAve = awayRoundAves.get(i);
+				if (homeAvg > 0) {
+					homeRoundAve.setValue(homeAvg);
+					awayRoundAve.clearValue();
+				} else if (awayAvg > 0) {
+					awayRoundAve.setValue(awayAvg);
+					homeRoundAve.clearValue();
+				} else {
+					homeRoundAve.clearValue();
+					awayRoundAve.clearValue();
+				}
+			}
+		}
+
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+	};
+
+	private OnValueChangedListener totalChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			SumView view1 = (SumView) subject;
+			SumView view2 = (SumView) view1.getTag();
+
+			if (!view1.hasValue() || view1.hasSoftValue() ||
+					!view2.hasValue() || view2.hasSoftValue()) {
+				view1.setCircled(false);
+				view2.setCircled(false);
+				return;
+			} else {
+				int total1 = view1.getValue();
+				int total2 = view2.getValue();
+
+				if (total1 > total2) {
+					view1.setCircled(true);
+					view2.setCircled(false);
+				} else if (total2 > total1) {
+					view2.setCircled(true);
+					view1.setCircled(false);
+				} else {
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
+					.getTag(GAME_SET_TAG_KEY);
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
+					.getTag(GAME_SET_TAG_KEY);
+
+					int wins1 = getWinCount(games1);
+					int wins2 = getWinCount(games2);
+
+					if (wins1 > wins2) {
+						view1.setCircled(true);
+						view2.setCircled(false);
+					} else {
+						view2.setCircled(true);
+						view1.setCircled(false);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+	};
+
+	private static String[] splitString(String s) {
+		String[] result = s.split("(?<!\\\\),");
+		for (String string : result) {
+			string = string.replaceAll("\\\\,", ",");
+		}
+		return result;
+	}
+
+	private static int getWinCount(Set<SummableInteger> views) {
+		int wins = 0;
+		for (SummableInteger view : views) {
+			if (view.getValue() == 10) {
+				wins++;
+			}
+		}
+		return wins;
+	}
+
+	private static void linkViewsByTags(View view1, View view2) {
+		view1.setTag(view2);
+		view2.setTag(view1);
+	}
+
+	private static void addViewToSum(SumView sum, SummableInteger value) {
+		value.addOnValueChangedListener(sum);
 	}
 }
