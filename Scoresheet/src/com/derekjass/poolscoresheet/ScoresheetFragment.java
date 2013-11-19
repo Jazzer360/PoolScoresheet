@@ -48,6 +48,7 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	private View noDataText;
 	private View scoresheet;
 
+	private long dateMs;
 	private TextView date;
 	private EditText homeTeam;
 	private EditText awayTeam;
@@ -102,16 +103,9 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	private void saveData() {
 		ContentValues cv = new ContentValues();
 
-		long date = 0;
-		try {
-			date = sdf.parse(this.date.getText().toString()).getTime();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		cv.put(Matches.COLUMN_DATE, date);
+		cv.put(Matches.COLUMN_DATE, dateMs);
 		cv.put(Matches.COLUMN_TEAM_HOME, homeTeam.getText().toString());
-		cv.put(Matches.COLUMN_TEAM_AWAY, homeTeam.getText().toString());
+		cv.put(Matches.COLUMN_TEAM_AWAY, awayTeam.getText().toString());
 		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(homeAves));
 		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(awayAves));
 		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(homePlayers));
@@ -190,8 +184,9 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			protected Void doInBackground(Cursor... cursor) {
 				Cursor c = cursor[0];
 				c.moveToFirst();
-				tDate = new Date(c.getLong(c.getColumnIndexOrThrow(
-						Matches.COLUMN_DATE)));
+				dateMs = c.getLong(c.getColumnIndexOrThrow(
+						Matches.COLUMN_DATE));
+				tDate = new Date(dateMs);
 				tHomeTeam = c.getString(c.getColumnIndexOrThrow(
 						Matches.COLUMN_TEAM_HOME));
 				tAwayTeam = c.getString(c.getColumnIndexOrThrow(
