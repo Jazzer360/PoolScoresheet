@@ -22,7 +22,7 @@ public class LeagueProvider extends ContentProvider {
 		private static final String DATABASE_NAME = "League.db";
 
 		private static final String SQL_CREATE_MATCHES =
-				"CREATE TABLE" + Matches.TABLE_NAME + " (" +
+				"CREATE TABLE " + Matches.TABLE_NAME + " (" +
 						Matches._ID + " INTEGER PRIMARY KEY," +
 						Matches.COLUMN_DATE + " INTEGER," +
 						Matches.COLUMN_TEAM_HOME + " TEXT," +

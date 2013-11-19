@@ -27,7 +27,7 @@ public class AveragePickerDialog extends DialogFragment {
 	public static final String AVG_KEY = "avg";
 
 	private int viewClickedId;
-	private AveragePickerListener hostActivity;
+	private AveragePickerListener hostFragment;
 
 	private Set<RadioButton> buttons = new HashSet<RadioButton>();
 	private View.OnClickListener buttonListener = new View.OnClickListener() {
@@ -45,9 +45,9 @@ public class AveragePickerDialog extends DialogFragment {
 		super.onAttach(activity);
 
 		try {
-			hostActivity = (AveragePickerListener) activity;
+			hostFragment = (AveragePickerListener) getTargetFragment();
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() +
+			throw new ClassCastException(getTargetFragment().toString() +
 					" must implement AveragePickerListener");
 		}
 	}
@@ -71,11 +71,11 @@ public class AveragePickerDialog extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				for (RadioButton button : buttons) {
 					if (button.isChecked()) {
-						hostActivity.onAveragePicked(viewClickedId,
+						hostFragment.onAveragePicked(viewClickedId,
 								button.getText());
 						return;
 					}
-					hostActivity.onAveragePicked(viewClickedId, "");
+					hostFragment.onAveragePicked(viewClickedId, "");
 				}
 			}
 		})
@@ -83,7 +83,7 @@ public class AveragePickerDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostActivity.onAverageCleared(viewClickedId);
+				hostFragment.onAverageCleared(viewClickedId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);

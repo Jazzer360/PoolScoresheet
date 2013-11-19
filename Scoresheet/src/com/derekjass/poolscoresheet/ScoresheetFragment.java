@@ -1,5 +1,6 @@
 package com.derekjass.poolscoresheet;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +41,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
+	private static SimpleDateFormat sdf =
+			new SimpleDateFormat("M-d-yyyy", Locale.US);
 
 	private View progress;
 	private View noDataText;
@@ -70,18 +75,13 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(
 				R.layout.fragment_scoresheet, container, false);
+
 		new AsyncTask<View, Void, Void>() {
 			@Override
 			protected Void doInBackground(View... params) {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				getViewReferences(params[0]);
 				return null;
 			}
-
 			@Override
 			protected void onPostExecute(Void result) {
 				initTags();
@@ -89,21 +89,73 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 				setDate(new Date());
 			}
 		}.execute(v);
+
 		return v;
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		saveData();
+	}
+
+	private void saveData() {
+		ContentValues cv = new ContentValues();
+
+		long date = 0;
+		try {
+			date = sdf.parse(this.date.getText().toString()).getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		cv.put(Matches.COLUMN_DATE, date);
+		cv.put(Matches.COLUMN_TEAM_HOME, homeTeam.getText().toString());
+		cv.put(Matches.COLUMN_TEAM_AWAY, homeTeam.getText().toString());
+		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(homeAves));
+		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(awayAves));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(homePlayers));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_AWAY, getNamesString(awayPlayers));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_HOME, getValuesString(homeScores));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_AWAY, getValuesString(awayScores));
+		cv.put(Matches.COLUMN_ERO_BITMASK, getEroBitmask());
+
+		int homeWins = 0;
+		for (SumView view : homeTotals) {
+			if (view.isCircled()) homeWins++;
+		}
+		if (homeFinalRound.get(PLAYERS + 2).isCircled()) homeWins++;
+		cv.put(Matches.COLUMN_ROUND_WINS_HOME, homeWins);
+
+		int awayWins = 0;
+		for (SumView view : awayTotals) {
+			if (view.isCircled()) awayWins++;
+		}
+		if (awayFinalRound.get(PLAYERS + 2).isCircled()) awayWins++;
+		cv.put(Matches.COLUMN_ROUND_WINS_AWAY, awayWins);
+
+		getActivity().getContentResolver().update(matchUri, cv, null, null);
+	}
+
 	public void loadUri(Uri matchUri) {
+		this.matchUri = matchUri;
+
 		if (matchUri == null) {
-			progress.setVisibility(View.GONE);
-			scoresheet.setVisibility(View.GONE);
-			noDataText.setVisibility(View.VISIBLE);
+			new AsyncTask<Void, Void, Void>() {
+				@Override
+				protected Void doInBackground(Void... params) {
+					return null;
+				}
+				@Override
+				protected void onPostExecute(Void result) {
+					scoresheet.setVisibility(View.GONE);
+					progress.setVisibility(View.GONE);
+					noDataText.setVisibility(View.VISIBLE);
+				};
+			}.execute();
 			return;
 		}
 
-		if (matchUri.getPathSegments().size() != 2)
-			throw new IllegalArgumentException("Uri must include match id");
-
-		this.matchUri = matchUri;
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -115,124 +167,6 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		fillViews(data);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {}
-
-	public void onScoreBoxClicked(View v) {
-		boolean homeClicked = getView().findViewById(R.id.homeTeamViews)
-				.findViewById(v.getId()) != null;
-
-		PlayerScoreView homeView =
-				(PlayerScoreView) (homeClicked ? v : v.getTag());
-		PlayerScoreView awayView =
-				(PlayerScoreView) (homeClicked ? v.getTag() : v);
-		String homeScore = homeView.getValueAsString();
-		String awayScore = awayView.getValueAsString();
-
-		TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
-				.getChildAt(1);
-		TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
-				.getChildAt(1);
-		String homeName = homePlayer.getText().toString();
-		String awayName = awayPlayer.getText().toString();
-
-		Bundle args = new Bundle();
-		if (!TextUtils.isEmpty(homeName)) {
-			args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
-		} else {
-			args.putString(ScoringDialog.HOME_PLAYER_KEY,
-					homePlayer.getHint().toString());
-		}
-		if (!TextUtils.isEmpty(awayName)) {
-			args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
-		} else {
-			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
-					awayPlayer.getHint().toString());
-		}
-		if (!TextUtils.isEmpty(homeScore)) {
-			args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
-		}
-		if (!TextUtils.isEmpty(awayScore)) {
-			args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
-		}
-		args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
-		args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
-
-		args.putBoolean(ScoringDialog.ERO_KEY,
-				homeView.isEro() || awayView.isEro());
-
-		ScoringDialog dialog = new ScoringDialog();
-		dialog.setArguments(args);
-		dialog.show(getFragmentManager(), "ScoringDialog");
-	}
-
-	@Override
-	public void onScorePicked(int winViewId, CharSequence winScore,
-			int lossViewId, CharSequence lossScore, boolean ero) {
-		PlayerScoreView winner = (PlayerScoreView) getView()
-				.findViewById(winViewId);
-		PlayerScoreView loser = (PlayerScoreView) getView()
-				.findViewById(lossViewId);
-
-		winner.setValue(winScore);
-		winner.setEro(ero);
-		loser.setValue(lossScore);
-		loser.setEro(false);
-	}
-
-	@Override
-	public void onScoreCleared(int viewId1, int viewId2) {
-		PlayerScoreView view1 = (PlayerScoreView) getView()
-				.findViewById(viewId1);
-		PlayerScoreView view2 = (PlayerScoreView) getView()
-				.findViewById(viewId2);
-
-		view1.clearValue();
-		view1.setEro(false);
-		view2.clearValue();
-		view2.setEro(false);
-	}
-
-	public void onAverageBoxClicked(View v) {
-		SummableInteger avgView = (SummableInteger) v;
-		TextView nameView = (TextView) ((ViewGroup) v.getParent())
-				.getChildAt(1);
-		String avg = avgView.getValueAsString();
-		String name = nameView.getText().toString();
-
-		Bundle args = new Bundle();
-		args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
-		if (!TextUtils.isEmpty(name)) {
-			args.putString(AveragePickerDialog.NAME_KEY, name);
-		} else {
-			args.putString(AveragePickerDialog.NAME_KEY,
-					nameView.getHint().toString());
-		}
-		if (!TextUtils.isEmpty(avg)) {
-			args.putString(AveragePickerDialog.AVG_KEY, avg);
-		}
-
-		AveragePickerDialog dialog = new AveragePickerDialog();
-		dialog.setArguments(args);
-		dialog.show(getFragmentManager(), "AverageDialog");
-	}
-
-	@Override
-	public void onAveragePicked(int viewId, CharSequence avg) {
-		IntegerView view = (IntegerView) getView().findViewById(viewId);
-		view.setValue(avg);
-	}
-
-	@Override
-	public void onAverageCleared(int viewId) {
-		IntegerView view = (IntegerView) getView().findViewById(viewId);
-		view.clearValue();
-	}
-
-	private void fillViews(Cursor data) {
 		new AsyncTask<Cursor, Void, Void>() {
 			private Date tDate;
 			private String tHomeTeam;
@@ -255,6 +189,7 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			@Override
 			protected Void doInBackground(Cursor... cursor) {
 				Cursor c = cursor[0];
+				c.moveToFirst();
 				tDate = new Date(c.getLong(c.getColumnIndexOrThrow(
 						Matches.COLUMN_DATE)));
 				tHomeTeam = c.getString(c.getColumnIndexOrThrow(
@@ -298,7 +233,50 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		}.execute(data);
 	}
 
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {}
+
+	@Override
+	public void onScorePicked(int winViewId, CharSequence winScore,
+			int lossViewId, CharSequence lossScore, boolean ero) {
+		PlayerScoreView winner = (PlayerScoreView) getView()
+				.findViewById(winViewId);
+		PlayerScoreView loser = (PlayerScoreView) getView()
+				.findViewById(lossViewId);
+
+		winner.setValue(winScore);
+		winner.setEro(ero);
+		loser.setValue(lossScore);
+		loser.setEro(false);
+	}
+
+	@Override
+	public void onScoreCleared(int viewId1, int viewId2) {
+		PlayerScoreView view1 = (PlayerScoreView) getView()
+				.findViewById(viewId1);
+		PlayerScoreView view2 = (PlayerScoreView) getView()
+				.findViewById(viewId2);
+
+		view1.clearValue();
+		view1.setEro(false);
+		view2.clearValue();
+		view2.setEro(false);
+	}
+
+	@Override
+	public void onAveragePicked(int viewId, CharSequence avg) {
+		IntegerView view = (IntegerView) getView().findViewById(viewId);
+		view.setValue(avg);
+	}
+
+	@Override
+	public void onAverageCleared(int viewId) {
+		IntegerView view = (IntegerView) getView().findViewById(viewId);
+		view.clearValue();
+	}
+
 	private void setEroFromBitmask(long eroBitmask) {
+		if (eroBitmask == 0) return;
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
 			if (((1 << i) & eroBitmask) > 0) {
 				if (homeScores.get(i).getValue() == 10) {
@@ -310,22 +288,18 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		}
 	}
 
-	private static void fillNames(
-			List<EditText> nameViews, String[] names) {
-		for (int i = 0; i < names.length; i++) {
-			nameViews.get(i).setText(names[i]);
-		}
-	}
+	private long getEroBitmask() {
+		long mask = 0;
 
-	private static void fillSummableIntegers(
-			List<? extends SummableInteger> intViews, String[] data) {
-		for (int i = 0; i < data.length; i++) {
-			intViews.get(i).setValue(data[i]);
+		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
+			if (homeScores.get(i).isEro() || awayScores.get(i).isEro())
+				mask |= 1 << i;
 		}
+
+		return mask;
 	}
 
 	private void setDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
 		this.date.setText(sdf.format(date));
 	}
 
@@ -497,6 +471,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		for (int i = 0; i < PLAYERS; i++) {
 			addViewToSum(homeAve, homeAves.get(i));
 			addViewToSum(awayAve, awayAves.get(i));
+			homeAves.get(i).setOnClickListener(averageBoxClickListener);
+			awayAves.get(i).setOnClickListener(averageBoxClickListener);
 		}
 
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
@@ -510,6 +486,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			addViewToSum(homeFinalRound.get(game), homeScore);
 			addViewToSum(awaySubtotals.get(round), awayScore);
 			addViewToSum(awayFinalRound.get(game), awayScore);
+			homeScores.get(i).setOnClickListener(scoreBoxClickListener);
+			awayScores.get(i).setOnClickListener(scoreBoxClickListener);
 		}
 
 		final int r4Subtotal = PLAYERS + 0;
@@ -541,6 +519,88 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		homeAve.addOnValueChangedListener(avgChangedListener);
 		awayAve.addOnValueChangedListener(avgChangedListener);
 	}
+
+	private View.OnClickListener averageBoxClickListener =
+			new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			SummableInteger avgView = (SummableInteger) v;
+			TextView nameView = (TextView) ((ViewGroup) v.getParent())
+					.getChildAt(1);
+			String avg = avgView.getValueAsString();
+			String name = nameView.getText().toString();
+
+			Bundle args = new Bundle();
+			args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
+			if (!TextUtils.isEmpty(name)) {
+				args.putString(AveragePickerDialog.NAME_KEY, name);
+			} else {
+				args.putString(AveragePickerDialog.NAME_KEY,
+						nameView.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(avg)) {
+				args.putString(AveragePickerDialog.AVG_KEY, avg);
+			}
+
+			AveragePickerDialog dialog = new AveragePickerDialog();
+			dialog.setArguments(args);
+			dialog.setTargetFragment(ScoresheetFragment.this, 0);
+			dialog.show(getFragmentManager(), "AverageDialog");
+		}
+	};
+
+	private View.OnClickListener scoreBoxClickListener =
+			new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			boolean homeClicked = getView().findViewById(R.id.homeTeamViews)
+					.findViewById(v.getId()) != null;
+
+			PlayerScoreView homeView =
+					(PlayerScoreView) (homeClicked ? v : v.getTag());
+			PlayerScoreView awayView =
+					(PlayerScoreView) (homeClicked ? v.getTag() : v);
+			String homeScore = homeView.getValueAsString();
+			String awayScore = awayView.getValueAsString();
+
+			TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
+					.getChildAt(1);
+			TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
+					.getChildAt(1);
+			String homeName = homePlayer.getText().toString();
+			String awayName = awayPlayer.getText().toString();
+
+			Bundle args = new Bundle();
+			if (!TextUtils.isEmpty(homeName)) {
+				args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
+			} else {
+				args.putString(ScoringDialog.HOME_PLAYER_KEY,
+						homePlayer.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(awayName)) {
+				args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
+			} else {
+				args.putString(ScoringDialog.AWAY_PLAYER_KEY,
+						awayPlayer.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(homeScore)) {
+				args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
+			}
+			if (!TextUtils.isEmpty(awayScore)) {
+				args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
+			}
+			args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
+			args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
+
+			args.putBoolean(ScoringDialog.ERO_KEY,
+					homeView.isEro() || awayView.isEro());
+
+			ScoringDialog dialog = new ScoringDialog();
+			dialog.setArguments(args);
+			dialog.setTargetFragment(ScoresheetFragment.this, 0);
+			dialog.show(getFragmentManager(), "ScoringDialog");
+		}
+	};
 
 	private OnValueChangedListener avgChangedListener =
 			new OnValueChangedListener() {
@@ -624,7 +684,49 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		public void onAttachListener(SummableInteger subject) {}
 	};
 
+	private static String getNamesString(List<EditText> nameViews) {
+		StringBuilder sb = new StringBuilder();
+
+		for (EditText view : nameViews) {
+			sb.append(view.getText().toString().replaceAll(",", "\\\\,"));
+			if (view != nameViews.get(nameViews.size() - 1))
+				sb.append(",");
+		}
+
+		return sb.toString();
+	}
+
+	private static String getValuesString(
+			List<? extends SummableInteger> intViews) {
+		StringBuilder sb = new StringBuilder();
+
+		for (SummableInteger view : intViews) {
+			sb.append(view.getValueAsString());
+			if (view != intViews.get(intViews.size() - 1))
+				sb.append(",");
+		}
+
+		return sb.toString();
+	}
+
+	private static void fillNames(
+			List<EditText> nameViews, String[] names) {
+		if (names == null) return;
+		for (int i = 0; i < names.length; i++) {
+			nameViews.get(i).setText(names[i]);
+		}
+	}
+
+	private static void fillSummableIntegers(
+			List<? extends SummableInteger> intViews, String[] data) {
+		if (data == null) return;
+		for (int i = 0; i < data.length; i++) {
+			intViews.get(i).setValue(data[i]);
+		}
+	}
+
 	private static String[] splitString(String s) {
+		if (s == null) return null;
 		String[] result = s.split("(?<!\\\\),");
 		for (String string : result) {
 			string = string.replaceAll("\\\\,", ",");

@@ -107,4 +107,8 @@ implements SummableInteger.OnValueChangedListener {
 			refreshDrawableState();
 		}
 	}
+
+	public boolean isCircled() {
+		return isCircled;
+	}
 }

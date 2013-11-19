@@ -17,14 +17,12 @@
 		<item name="android:background">@drawable/box_white</item>
 		<item name="android:clickable">true</item>
 		<item name="android:gravity">center</item>
-		<item name="android:onClick">onAverageBoxClicked</item>
 		<item name="android:textSize">@dimen/ave_text_size</item>
 	</style>
 
 	<style name="PlayerScore">
 		<item name="android:layout_width">@dimen/score_box_width</item>
 		<item name="android:layout_height">match_parent</item>
-		<item name="android:onClick">onScoreBoxClicked</item>
 	</style>
 
 </resources>

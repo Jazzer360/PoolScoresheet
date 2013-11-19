@@ -33,7 +33,7 @@ public class ScoringDialog extends DialogFragment {
 
 	private int homeViewId;
 	private int awayViewId;
-	private ScoringListener hostActivity;
+	private ScoringListener hostFragment;
 
 	private CheckBox eroBox;
 	private Set<RadioButton> scoreButtons = new HashSet<RadioButton>();
@@ -64,9 +64,9 @@ public class ScoringDialog extends DialogFragment {
 		super.onAttach(activity);
 
 		try {
-			hostActivity = (ScoringListener) activity;
+			hostFragment = (ScoringListener) getTargetFragment();
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() +
+			throw new ClassCastException(getTargetFragment().toString() +
 					" must implement ScoringListener");
 		}
 	}
@@ -107,7 +107,7 @@ public class ScoringDialog extends DialogFragment {
 				}
 
 				if (!(winnerSelected && scoreSelected)) {
-					hostActivity.onScoreCleared(homeViewId, awayViewId);
+					hostFragment.onScoreCleared(homeViewId, awayViewId);
 					return;
 				}
 
@@ -115,12 +115,12 @@ public class ScoringDialog extends DialogFragment {
 						(winner.getId() == R.id.homeRadio) ? true : false;
 
 				if (homeWins) {
-					hostActivity.onScorePicked(
+					hostFragment.onScorePicked(
 							homeViewId, getActivity().getText(R.string.n10),
 							awayViewId, score,
 							eroBox.isChecked());
 				} else {
-					hostActivity.onScorePicked(
+					hostFragment.onScorePicked(
 							awayViewId, getActivity().getText(R.string.n10),
 							homeViewId, score,
 							eroBox.isChecked());
@@ -131,7 +131,7 @@ public class ScoringDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostActivity.onScoreCleared(homeViewId, awayViewId);
+				hostFragment.onScoreCleared(homeViewId, awayViewId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);
@@ -184,5 +184,4 @@ public class ScoringDialog extends DialogFragment {
 		eroBox = (CheckBox) v.findViewById(R.id.eroCheckbox);
 		eroBox.setChecked(getArguments().getBoolean(ERO_KEY));
 	}
-
 }
