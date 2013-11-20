@@ -2,12 +2,15 @@ package com.derekjass.poolscoresheet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
@@ -22,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -35,12 +39,13 @@ import com.derekjass.poolscoresheet.views.SummableInteger;
 import com.derekjass.poolscoresheet.views.SummableInteger.OnValueChangedListener;
 
 public class ScoresheetFragment extends Fragment
-implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
+implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>,
+OnDateSetListener {
 
 	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
-	private static SimpleDateFormat sdf =
+	static SimpleDateFormat sdf =
 			new SimpleDateFormat("M-d-yyyy", Locale.US);
 
 	private View progress;
@@ -86,7 +91,7 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			protected void onPostExecute(Void result) {
 				initTags();
 				initListeners();
-				setDate(new Date());
+				setDate(System.currentTimeMillis());
 			}
 		}.execute(v);
 
@@ -96,10 +101,6 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	@Override
 	public void onPause() {
 		super.onPause();
-		saveData();
-	}
-
-	private void saveData() {
 		ContentValues cv = new ContentValues();
 
 		cv.put(Matches.COLUMN_DATE, dateMs);
@@ -161,7 +162,7 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		new AsyncTask<Cursor, Void, Void>() {
-			private Date tDate;
+			private long tDate;
 			private String tHomeTeam;
 			private String tAwayTeam;
 			private String[] tHomePlayers;
@@ -173,7 +174,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			private long eroBitmask;
 
 			@Override
-			protected void onPreExecute() {
+			protected void onProgressUpdate(Void... values) {
+				super.onProgressUpdate(values);
 				scoresheet.setVisibility(View.GONE);
 				noDataText.setVisibility(View.GONE);
 				progress.setVisibility(View.VISIBLE);
@@ -181,11 +183,12 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 
 			@Override
 			protected Void doInBackground(Cursor... cursor) {
+				publishProgress();
+
 				Cursor c = cursor[0];
 				c.moveToFirst();
-				dateMs = c.getLong(c.getColumnIndexOrThrow(
+				tDate = c.getLong(c.getColumnIndexOrThrow(
 						Matches.COLUMN_DATE));
-				tDate = new Date(dateMs);
 				tHomeTeam = c.getString(c.getColumnIndexOrThrow(
 						Matches.COLUMN_TEAM_HOME));
 				tAwayTeam = c.getString(c.getColumnIndexOrThrow(
@@ -208,7 +211,7 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			}
 
 			@Override
-			protected void onPostExecute(Void c) {
+			protected void onPostExecute(Void result) {
 				setDate(tDate);
 				homeTeam.setText(tHomeTeam);
 				awayTeam.setText(tAwayTeam);
@@ -229,6 +232,59 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {}
+
+	private View.OnClickListener scoreBoxClickListener =
+			new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			boolean homeClicked = getView().findViewById(R.id.homeTeamViews)
+					.findViewById(v.getId()) != null;
+
+			PlayerScoreView homeView =
+					(PlayerScoreView) (homeClicked ? v : v.getTag());
+			PlayerScoreView awayView =
+					(PlayerScoreView) (homeClicked ? v.getTag() : v);
+			String homeScore = homeView.getValueAsString();
+			String awayScore = awayView.getValueAsString();
+
+			TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
+					.getChildAt(1);
+			TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
+					.getChildAt(1);
+			String homeName = homePlayer.getText().toString();
+			String awayName = awayPlayer.getText().toString();
+
+			Bundle args = new Bundle();
+			if (!TextUtils.isEmpty(homeName)) {
+				args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
+			} else {
+				args.putString(ScoringDialog.HOME_PLAYER_KEY,
+						homePlayer.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(awayName)) {
+				args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
+			} else {
+				args.putString(ScoringDialog.AWAY_PLAYER_KEY,
+						awayPlayer.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(homeScore)) {
+				args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
+			}
+			if (!TextUtils.isEmpty(awayScore)) {
+				args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
+			}
+			args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
+			args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
+
+			args.putBoolean(ScoringDialog.ERO_KEY,
+					homeView.isEro() || awayView.isEro());
+
+			ScoringDialog dialog = new ScoringDialog();
+			dialog.setArguments(args);
+			dialog.setTargetFragment(ScoresheetFragment.this, 0);
+			dialog.show(getFragmentManager(), "ScoringDialog");
+		}
+	};
 
 	@Override
 	public void onScorePicked(int winViewId, CharSequence winScore,
@@ -257,6 +313,85 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		view2.setEro(false);
 	}
 
+	private OnValueChangedListener totalChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			SumView view1 = (SumView) subject;
+			SumView view2 = (SumView) view1.getTag();
+
+			if (!view1.hasValue() || view1.hasSoftValue() ||
+					!view2.hasValue() || view2.hasSoftValue()) {
+				view1.setCircled(false);
+				view2.setCircled(false);
+				return;
+			} else {
+				int total1 = view1.getValue();
+				int total2 = view2.getValue();
+
+				if (total1 > total2) {
+					view1.setCircled(true);
+					view2.setCircled(false);
+				} else if (total2 > total1) {
+					view2.setCircled(true);
+					view1.setCircled(false);
+				} else {
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
+					.getTag(GAME_SET_TAG_KEY);
+					@SuppressWarnings("unchecked")
+					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
+					.getTag(GAME_SET_TAG_KEY);
+
+					int wins1 = getWinCount(games1);
+					int wins2 = getWinCount(games2);
+
+					if (wins1 > wins2) {
+						view1.setCircled(true);
+						view2.setCircled(false);
+					} else {
+						view2.setCircled(true);
+						view1.setCircled(false);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+	};
+
+	private View.OnClickListener averageBoxClickListener =
+			new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			SummableInteger avgView = (SummableInteger) v;
+			TextView nameView = (TextView) ((ViewGroup) v.getParent())
+					.getChildAt(1);
+			String avg = avgView.getValueAsString();
+			String name = nameView.getText().toString();
+
+			Bundle args = new Bundle();
+			args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
+			if (!TextUtils.isEmpty(name)) {
+				args.putString(AveragePickerDialog.NAME_KEY, name);
+			} else {
+				args.putString(AveragePickerDialog.NAME_KEY,
+						nameView.getHint().toString());
+			}
+			if (!TextUtils.isEmpty(avg)) {
+				args.putString(AveragePickerDialog.AVG_KEY, avg);
+			}
+
+			AveragePickerDialog dialog = new AveragePickerDialog();
+			dialog.setArguments(args);
+			dialog.setTargetFragment(ScoresheetFragment.this, 0);
+			dialog.show(getFragmentManager(), "AverageDialog");
+		}
+	};
+
 	@Override
 	public void onAveragePicked(int viewId, CharSequence avg) {
 		IntegerView view = (IntegerView) getView().findViewById(viewId);
@@ -267,6 +402,63 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	public void onAverageCleared(int viewId) {
 		IntegerView view = (IntegerView) getView().findViewById(viewId);
 		view.clearValue();
+	}
+
+	private OnValueChangedListener avgChangedListener =
+			new OnValueChangedListener() {
+		@Override
+		public void onValueChanged(SummableInteger subject) {
+			IntegerView homeRoundAve = null;
+			IntegerView awayRoundAve = null;
+
+			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
+			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
+
+			for (int i = 0; i < ROUNDS; i++) {
+				homeRoundAve = homeRoundAves.get(i);
+				awayRoundAve = awayRoundAves.get(i);
+				if (homeAvg > 0) {
+					homeRoundAve.setValue(homeAvg);
+					awayRoundAve.clearValue();
+				} else if (awayAvg > 0) {
+					awayRoundAve.setValue(awayAvg);
+					homeRoundAve.clearValue();
+				} else {
+					homeRoundAve.clearValue();
+					awayRoundAve.clearValue();
+				}
+			}
+		}
+
+		@Override
+		public void onAttachListener(SummableInteger subject) {}
+		@Override
+		public void onDetachListener(SummableInteger subject) {}
+	};
+
+	private View.OnClickListener dateBoxClickListener =
+			new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(dateMs);
+			DatePickerDialog dialog = new DatePickerDialog(
+					getActivity(), ScoresheetFragment.this,
+					c.get(Calendar.YEAR),
+					c.get(Calendar.MONTH),
+					c.get(Calendar.DATE));
+			dialog.show();
+		}
+	};
+
+	@Override
+	public void onDateSet(DatePicker view, int year, int monthOfYear,
+			int dayOfMonth) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, monthOfYear);
+		c.set(Calendar.DAY_OF_MONTH, monthOfYear);
+		setDate(c.getTimeInMillis());
 	}
 
 	private void setEroFromBitmask(long eroBitmask) {
@@ -293,8 +485,9 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		return mask;
 	}
 
-	private void setDate(Date date) {
-		this.date.setText(sdf.format(date));
+	private void setDate(long millis) {
+		dateMs = millis;
+		date.setText(sdf.format(new Date(millis)));
 	}
 
 	private void getViewReferences(View v) {
@@ -462,6 +655,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 	}
 
 	private void initListeners() {
+		date.setOnClickListener(dateBoxClickListener);
+
 		for (int i = 0; i < PLAYERS; i++) {
 			addViewToSum(homeAve, homeAves.get(i));
 			addViewToSum(awayAve, awayAves.get(i));
@@ -514,175 +709,11 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 		awayAve.addOnValueChangedListener(avgChangedListener);
 	}
 
-	private View.OnClickListener averageBoxClickListener =
-			new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			SummableInteger avgView = (SummableInteger) v;
-			TextView nameView = (TextView) ((ViewGroup) v.getParent())
-					.getChildAt(1);
-			String avg = avgView.getValueAsString();
-			String name = nameView.getText().toString();
-
-			Bundle args = new Bundle();
-			args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
-			if (!TextUtils.isEmpty(name)) {
-				args.putString(AveragePickerDialog.NAME_KEY, name);
-			} else {
-				args.putString(AveragePickerDialog.NAME_KEY,
-						nameView.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(avg)) {
-				args.putString(AveragePickerDialog.AVG_KEY, avg);
-			}
-
-			AveragePickerDialog dialog = new AveragePickerDialog();
-			dialog.setArguments(args);
-			dialog.setTargetFragment(ScoresheetFragment.this, 0);
-			dialog.show(getFragmentManager(), "AverageDialog");
-		}
-	};
-
-	private View.OnClickListener scoreBoxClickListener =
-			new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			boolean homeClicked = getView().findViewById(R.id.homeTeamViews)
-					.findViewById(v.getId()) != null;
-
-			PlayerScoreView homeView =
-					(PlayerScoreView) (homeClicked ? v : v.getTag());
-			PlayerScoreView awayView =
-					(PlayerScoreView) (homeClicked ? v.getTag() : v);
-			String homeScore = homeView.getValueAsString();
-			String awayScore = awayView.getValueAsString();
-
-			TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
-					.getChildAt(1);
-			TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
-					.getChildAt(1);
-			String homeName = homePlayer.getText().toString();
-			String awayName = awayPlayer.getText().toString();
-
-			Bundle args = new Bundle();
-			if (!TextUtils.isEmpty(homeName)) {
-				args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
-			} else {
-				args.putString(ScoringDialog.HOME_PLAYER_KEY,
-						homePlayer.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(awayName)) {
-				args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
-			} else {
-				args.putString(ScoringDialog.AWAY_PLAYER_KEY,
-						awayPlayer.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(homeScore)) {
-				args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
-			}
-			if (!TextUtils.isEmpty(awayScore)) {
-				args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
-			}
-			args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
-			args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
-
-			args.putBoolean(ScoringDialog.ERO_KEY,
-					homeView.isEro() || awayView.isEro());
-
-			ScoringDialog dialog = new ScoringDialog();
-			dialog.setArguments(args);
-			dialog.setTargetFragment(ScoresheetFragment.this, 0);
-			dialog.show(getFragmentManager(), "ScoringDialog");
-		}
-	};
-
-	private OnValueChangedListener avgChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			IntegerView homeRoundAve = null;
-			IntegerView awayRoundAve = null;
-
-			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
-			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
-
-			for (int i = 0; i < ROUNDS; i++) {
-				homeRoundAve = homeRoundAves.get(i);
-				awayRoundAve = awayRoundAves.get(i);
-				if (homeAvg > 0) {
-					homeRoundAve.setValue(homeAvg);
-					awayRoundAve.clearValue();
-				} else if (awayAvg > 0) {
-					awayRoundAve.setValue(awayAvg);
-					homeRoundAve.clearValue();
-				} else {
-					homeRoundAve.clearValue();
-					awayRoundAve.clearValue();
-				}
-			}
-		}
-
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-	};
-
-	private OnValueChangedListener totalChangedListener =
-			new OnValueChangedListener() {
-		@Override
-		public void onValueChanged(SummableInteger subject) {
-			SumView view1 = (SumView) subject;
-			SumView view2 = (SumView) view1.getTag();
-
-			if (!view1.hasValue() || view1.hasSoftValue() ||
-					!view2.hasValue() || view2.hasSoftValue()) {
-				view1.setCircled(false);
-				view2.setCircled(false);
-				return;
-			} else {
-				int total1 = view1.getValue();
-				int total2 = view2.getValue();
-
-				if (total1 > total2) {
-					view1.setCircled(true);
-					view2.setCircled(false);
-				} else if (total2 > total1) {
-					view2.setCircled(true);
-					view1.setCircled(false);
-				} else {
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
-					.getTag(GAME_SET_TAG_KEY);
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
-					.getTag(GAME_SET_TAG_KEY);
-
-					int wins1 = getWinCount(games1);
-					int wins2 = getWinCount(games2);
-
-					if (wins1 > wins2) {
-						view1.setCircled(true);
-						view2.setCircled(false);
-					} else {
-						view2.setCircled(true);
-						view1.setCircled(false);
-					}
-				}
-			}
-		}
-
-		@Override
-		public void onDetachListener(SummableInteger subject) {}
-		@Override
-		public void onAttachListener(SummableInteger subject) {}
-	};
-
 	private static String getNamesString(List<EditText> nameViews) {
 		StringBuilder sb = new StringBuilder();
 
 		for (EditText view : nameViews) {
-			sb.append(view.getText().toString().replaceAll(",", "\\\\,"));
+			sb.append(view.getText().toString().replaceAll(",", "\\,"));
 			if (view != nameViews.get(nameViews.size() - 1))
 				sb.append(",");
 		}
@@ -715,7 +746,8 @@ implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>{
 			List<? extends SummableInteger> intViews, String[] data) {
 		if (data == null) return;
 		for (int i = 0; i < data.length; i++) {
-			intViews.get(i).setValue(data[i]);
+			if (!TextUtils.isEmpty(data[i]))
+				intViews.get(i).setValue(data[i]);
 		}
 	}
 

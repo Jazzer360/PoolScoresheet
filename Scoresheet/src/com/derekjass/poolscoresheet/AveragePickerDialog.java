@@ -27,7 +27,7 @@ public class AveragePickerDialog extends DialogFragment {
 	public static final String AVG_KEY = "avg";
 
 	private int viewClickedId;
-	private AveragePickerListener hostFragment;
+	private AveragePickerListener listener;
 
 	private Set<RadioButton> buttons = new HashSet<RadioButton>();
 	private View.OnClickListener buttonListener = new View.OnClickListener() {
@@ -44,11 +44,21 @@ public class AveragePickerDialog extends DialogFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		try {
-			hostFragment = (AveragePickerListener) getTargetFragment();
-		} catch (ClassCastException e) {
-			throw new ClassCastException(getTargetFragment().toString() +
-					" must implement AveragePickerListener");
+		if (getTargetFragment() == null) {
+			try {
+				listener = (AveragePickerListener) activity;
+			} catch (ClassCastException e) {
+				throw new ClassCastException(activity.toString() +
+						" must implement AveragePickerListener or" +
+						" dialog must setTargetFragment()");
+			}
+		} else {
+			try {
+				listener = (AveragePickerListener) getTargetFragment();
+			} catch (ClassCastException e) {
+				throw new ClassCastException(getTargetFragment().toString() +
+						" must implement AveragePickerListener");
+			}
 		}
 	}
 
@@ -71,11 +81,11 @@ public class AveragePickerDialog extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				for (RadioButton button : buttons) {
 					if (button.isChecked()) {
-						hostFragment.onAveragePicked(viewClickedId,
+						listener.onAveragePicked(viewClickedId,
 								button.getText());
 						return;
 					}
-					hostFragment.onAveragePicked(viewClickedId, "");
+					listener.onAveragePicked(viewClickedId, "");
 				}
 			}
 		})
@@ -83,7 +93,7 @@ public class AveragePickerDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostFragment.onAverageCleared(viewClickedId);
+				listener.onAverageCleared(viewClickedId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);

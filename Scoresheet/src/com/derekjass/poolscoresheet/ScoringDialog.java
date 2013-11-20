@@ -33,7 +33,7 @@ public class ScoringDialog extends DialogFragment {
 
 	private int homeViewId;
 	private int awayViewId;
-	private ScoringListener hostFragment;
+	private ScoringListener listener;
 
 	private CheckBox eroBox;
 	private Set<RadioButton> scoreButtons = new HashSet<RadioButton>();
@@ -63,11 +63,21 @@ public class ScoringDialog extends DialogFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		try {
-			hostFragment = (ScoringListener) getTargetFragment();
-		} catch (ClassCastException e) {
-			throw new ClassCastException(getTargetFragment().toString() +
-					" must implement ScoringListener");
+		if (getTargetFragment() == null) {
+			try {
+				listener = (ScoringListener) activity;
+			} catch (ClassCastException e) {
+				throw new ClassCastException(activity.toString() +
+						" must implement ScoringListener or" +
+						" dialog must setTargetFragment()");
+			}
+		} else {
+			try {
+				listener = (ScoringListener) getTargetFragment();
+			} catch (ClassCastException e) {
+				throw new ClassCastException(getTargetFragment().toString() +
+						" must implement ScoringListener");
+			}
 		}
 	}
 
@@ -107,7 +117,7 @@ public class ScoringDialog extends DialogFragment {
 				}
 
 				if (!(winnerSelected && scoreSelected)) {
-					hostFragment.onScoreCleared(homeViewId, awayViewId);
+					listener.onScoreCleared(homeViewId, awayViewId);
 					return;
 				}
 
@@ -115,12 +125,12 @@ public class ScoringDialog extends DialogFragment {
 						(winner.getId() == R.id.homeRadio) ? true : false;
 
 				if (homeWins) {
-					hostFragment.onScorePicked(
+					listener.onScorePicked(
 							homeViewId, getActivity().getText(R.string.n10),
 							awayViewId, score,
 							eroBox.isChecked());
 				} else {
-					hostFragment.onScorePicked(
+					listener.onScorePicked(
 							awayViewId, getActivity().getText(R.string.n10),
 							homeViewId, score,
 							eroBox.isChecked());
@@ -131,7 +141,7 @@ public class ScoringDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				hostFragment.onScoreCleared(homeViewId, awayViewId);
+				listener.onScoreCleared(homeViewId, awayViewId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);

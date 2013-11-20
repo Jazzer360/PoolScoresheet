@@ -97,13 +97,15 @@ public class LeagueProvider extends ContentProvider {
 		}
 
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		return db.query(table,
+		Cursor c = db.query(table,
 				projection,
 				where,
 				selectionArgs,
 				null,
 				null,
 				orderBy);
+		c.setNotificationUri(getContext().getContentResolver(), uri);
+		return c;
 	}
 
 	@Override

@@ -1,15 +1,17 @@
 package com.derekjass.poolscoresheet;
 
+import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
+
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-
-import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
 public class ScoresheetActivity extends Activity {
 
+	public static final String EXTRA_MATCH_URI =
+			"com.derekjass.poolscoresheet.EXTRA_MATCH_URI";
+
+	private Uri matchUri;
 	private ScoresheetFragment scoresheet;
 
 	@Override
@@ -17,19 +19,17 @@ public class ScoresheetActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scoresheet);
 
+		Bundle extras = getIntent().getExtras();
+
+		if (extras == null) {
+			matchUri = getContentResolver().insert(Matches.CONTENT_URI, null);
+		} else {
+			matchUri = extras.getParcelable(EXTRA_MATCH_URI);
+		}
+
 		scoresheet = (ScoresheetFragment) getFragmentManager()
 				.findFragmentById(R.id.scoresheetFragment);
 
-		SharedPreferences prefs =
-				PreferenceManager.getDefaultSharedPreferences(this);
-
-		if (prefs.getString("match_uri", null) == null) {
-			Uri uri = getContentResolver().insert(Matches.CONTENT_URI, null);
-			prefs.edit().putString("match_uri", uri.toString()).commit();
-			scoresheet.loadUri(uri);
-		} else {
-			Uri uri = Uri.parse(prefs.getString("match_uri", null));
-			scoresheet.loadUri(uri);
-		}
+		scoresheet.loadUri(matchUri);
 	}
 }

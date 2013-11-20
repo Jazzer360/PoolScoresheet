@@ -17,19 +17,26 @@
 	<uses-permission android:name="com.derekjass.poolscoresheet.READ_MATCH_DATA" />
 	<uses-permission android:name="com.derekjass.poolscoresheet.WRITE_MATCH_DATA" />
 
+	<uses-feature android:name="android.hardware.screen.landscape" />
+
 	<application
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
-		android:label="@string/app_name"
-		android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
+		android:label="@string/app_name" >
 		<activity
-			android:name=".ScoresheetActivity"
-			android:screenOrientation="landscape" >
+			android:name=".MatchListActivity"
+			android:theme="@android:style/Theme.Holo.Light" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+		</activity>
+		<activity
+			android:name=".ScoresheetActivity"
+			android:configChanges="orientation|screenSize"
+			android:screenOrientation="landscape"
+			android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
 		</activity>
 
 		<provider

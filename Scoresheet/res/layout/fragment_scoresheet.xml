@@ -51,8 +51,11 @@
 				android:id="@+id/dateView"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:paddingLeft="8dp"
-				android:paddingRight="8dp"
+				android:layout_marginLeft="6dp"
+				android:layout_marginRight="6dp"
+				android:background="@drawable/box_white"
+				android:paddingLeft="2dp"
+				android:paddingRight="2dp"
 				android:textSize="20sp" />
 
 			<EditText

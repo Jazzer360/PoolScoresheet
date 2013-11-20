@@ -15,7 +15,6 @@
 		<item name="android:layout_width">@dimen/ave_width</item>
 		<item name="android:layout_height">match_parent</item>
 		<item name="android:background">@drawable/box_white</item>
-		<item name="android:clickable">true</item>
 		<item name="android:gravity">center</item>
 		<item name="android:textSize">@dimen/ave_text_size</item>
 	</style>
