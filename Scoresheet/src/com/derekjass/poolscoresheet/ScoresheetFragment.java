@@ -113,37 +113,6 @@ OnDateSetListener {
 			saveData();
 	}
 
-	private void saveData() {
-		ContentValues cv = new ContentValues();
-
-		cv.put(Matches.COLUMN_DATE, dateMs);
-		cv.put(Matches.COLUMN_TEAM_HOME, homeTeam.getText().toString());
-		cv.put(Matches.COLUMN_TEAM_AWAY, awayTeam.getText().toString());
-		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(homeAves));
-		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(awayAves));
-		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(homePlayers));
-		cv.put(Matches.COLUMN_PLAYER_NAMES_AWAY, getNamesString(awayPlayers));
-		cv.put(Matches.COLUMN_PLAYER_SCORES_HOME, getValuesString(homeScores));
-		cv.put(Matches.COLUMN_PLAYER_SCORES_AWAY, getValuesString(awayScores));
-		cv.put(Matches.COLUMN_ERO_BITMASK, getEroBitmask());
-
-		int homeWins = 0;
-		for (SumView view : homeTotals) {
-			if (view.isCircled()) homeWins++;
-		}
-		if (homeFinalRound.get(PLAYERS + 2).isCircled()) homeWins++;
-		cv.put(Matches.COLUMN_ROUND_WINS_HOME, homeWins);
-
-		int awayWins = 0;
-		for (SumView view : awayTotals) {
-			if (view.isCircled()) awayWins++;
-		}
-		if (awayFinalRound.get(PLAYERS + 2).isCircled()) awayWins++;
-		cv.put(Matches.COLUMN_ROUND_WINS_AWAY, awayWins);
-
-		getActivity().getContentResolver().update(matchUri, cv, null, null);
-	}
-
 	public void loadUri(Uri matchUri) {
 		this.matchUri = matchUri;
 
@@ -478,6 +447,37 @@ OnDateSetListener {
 		c.set(Calendar.MONTH, monthOfYear);
 		c.set(Calendar.DAY_OF_MONTH, monthOfYear);
 		setDate(c.getTimeInMillis());
+	}
+
+	private void saveData() {
+		ContentValues cv = new ContentValues();
+
+		cv.put(Matches.COLUMN_DATE, dateMs);
+		cv.put(Matches.COLUMN_TEAM_HOME, homeTeam.getText().toString());
+		cv.put(Matches.COLUMN_TEAM_AWAY, awayTeam.getText().toString());
+		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(homeAves));
+		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(awayAves));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(homePlayers));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_AWAY, getNamesString(awayPlayers));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_HOME, getValuesString(homeScores));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_AWAY, getValuesString(awayScores));
+		cv.put(Matches.COLUMN_ERO_BITMASK, getEroBitmask());
+
+		int homeWins = 0;
+		for (SumView view : homeTotals) {
+			if (view.isCircled()) homeWins++;
+		}
+		if (homeFinalRound.get(PLAYERS + 2).isCircled()) homeWins++;
+		cv.put(Matches.COLUMN_ROUND_WINS_HOME, homeWins);
+
+		int awayWins = 0;
+		for (SumView view : awayTotals) {
+			if (view.isCircled()) awayWins++;
+		}
+		if (awayFinalRound.get(PLAYERS + 2).isCircled()) awayWins++;
+		cv.put(Matches.COLUMN_ROUND_WINS_AWAY, awayWins);
+
+		getActivity().getContentResolver().update(matchUri, cv, null, null);
 	}
 
 	private void setEroFromBitmask(long eroBitmask) {
