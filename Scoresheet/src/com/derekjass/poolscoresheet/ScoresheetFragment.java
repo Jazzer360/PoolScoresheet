@@ -45,8 +45,7 @@ OnDateSetListener {
 	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
-	static SimpleDateFormat sdf =
-			new SimpleDateFormat("M-d-yyyy", Locale.US);
+	static SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
 
 	private View progress;
 	private View noDataText;
@@ -75,6 +74,15 @@ OnDateSetListener {
 
 	private Uri matchUri;
 
+	private AsyncTask<Cursor, Void, Void> loadTask;
+	private boolean matchDataLoaded;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		matchDataLoaded = false;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -101,6 +109,11 @@ OnDateSetListener {
 	@Override
 	public void onPause() {
 		super.onPause();
+		if (matchDataLoaded)
+			saveData();
+	}
+
+	private void saveData() {
 		ContentValues cv = new ContentValues();
 
 		cv.put(Matches.COLUMN_DATE, dateMs);
@@ -161,7 +174,8 @@ OnDateSetListener {
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		new AsyncTask<Cursor, Void, Void>() {
+		matchDataLoaded = false;
+		loadTask = new AsyncTask<Cursor, Void, Void>() {
 			private long tDate;
 			private String tHomeTeam;
 			private String tAwayTeam;
@@ -223,6 +237,9 @@ OnDateSetListener {
 				fillSummableIntegers(awayScores, tAwayScores);
 				setEroFromBitmask(eroBitmask);
 
+				matchDataLoaded = true;
+				loadTask = null;
+
 				progress.setVisibility(View.GONE);
 				noDataText.setVisibility(View.GONE);
 				scoresheet.setVisibility(View.VISIBLE);
@@ -231,7 +248,9 @@ OnDateSetListener {
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {}
+	public void onLoaderReset(Loader<Cursor> loader) {
+		if (loadTask != null) loadTask.cancel(false);
+	}
 
 	private View.OnClickListener scoreBoxClickListener =
 			new View.OnClickListener() {

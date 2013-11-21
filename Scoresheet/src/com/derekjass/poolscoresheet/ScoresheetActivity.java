@@ -21,7 +21,7 @@ public class ScoresheetActivity extends Activity {
 
 		Bundle extras = getIntent().getExtras();
 
-		if (extras == null) {
+		if (extras == null || extras.getParcelable(EXTRA_MATCH_URI) == null) {
 			matchUri = getContentResolver().insert(Matches.CONTENT_URI, null);
 		} else {
 			matchUri = extras.getParcelable(EXTRA_MATCH_URI);
