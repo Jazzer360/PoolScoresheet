@@ -445,7 +445,7 @@ OnDateSetListener {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, monthOfYear);
-		c.set(Calendar.DAY_OF_MONTH, monthOfYear);
+		c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 		setDate(c.getTimeInMillis());
 	}
 
