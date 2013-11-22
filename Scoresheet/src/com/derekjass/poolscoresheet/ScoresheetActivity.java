@@ -8,9 +8,6 @@ import android.os.Bundle;
 
 public class ScoresheetActivity extends Activity {
 
-	public static final String EXTRA_MATCH_URI =
-			"com.derekjass.poolscoresheet.EXTRA_MATCH_URI";
-
 	private Uri matchUri;
 	private ScoresheetFragment scoresheet;
 
@@ -19,12 +16,10 @@ public class ScoresheetActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scoresheet);
 
-		Bundle extras = getIntent().getExtras();
+		matchUri = getIntent().getData();
 
-		if (extras == null || extras.getParcelable(EXTRA_MATCH_URI) == null) {
+		if (matchUri == null) {
 			matchUri = getContentResolver().insert(Matches.CONTENT_URI, null);
-		} else {
-			matchUri = extras.getParcelable(EXTRA_MATCH_URI);
 		}
 
 		scoresheet = (ScoresheetFragment) getFragmentManager()

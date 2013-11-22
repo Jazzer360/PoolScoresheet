@@ -81,7 +81,7 @@ implements LoaderCallbacks<Cursor>, MatchSelectedListener {
 		Uri uri = Uri.withAppendedPath(Matches.CONTENT_URI,
 				String.valueOf(id));
 
-		i.putExtra(ScoresheetActivity.EXTRA_MATCH_URI, uri);
+		i.setData(uri);
 		startActivity(i);
 	}
 }

@@ -23,13 +23,13 @@ public class ScoringDialog extends DialogFragment {
 		public void onScoreCleared(int viewId1, int viewId2);
 	}
 
-	static final String HOME_PLAYER_KEY = "home_player";
-	static final String AWAY_PLAYER_KEY = "away_player";
-	static final String HOME_VIEW_ID_KEY = "home_view_id";
-	static final String AWAY_VIEW_ID_KEY = "away_view_id";
-	static final String HOME_SCORE_KEY = "home_score";
-	static final String AWAY_SCORE_KEY = "away_score";
-	static final String ERO_KEY = "ero";
+	public static final String HOME_PLAYER_KEY = "home_player";
+	public static final String AWAY_PLAYER_KEY = "away_player";
+	public static final String HOME_VIEW_ID_KEY = "home_view_id";
+	public static final String AWAY_VIEW_ID_KEY = "away_view_id";
+	public static final String HOME_SCORE_KEY = "home_score";
+	public static final String AWAY_SCORE_KEY = "away_score";
+	public static final String ERO_KEY = "ero";
 
 	private int homeViewId;
 	private int awayViewId;

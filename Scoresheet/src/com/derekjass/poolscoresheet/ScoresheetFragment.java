@@ -107,8 +107,8 @@ OnDateSetListener {
 	}
 
 	@Override
-	public void onPause() {
-		super.onPause();
+	public void onStop() {
+		super.onStop();
 		if (matchDataLoaded)
 			saveData();
 	}
