@@ -4,10 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -42,7 +40,6 @@ public class ScoresheetFragment extends Fragment
 implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>,
 OnDateSetListener {
 
-	private static final int GAME_SET_TAG_KEY = R.id.scoreSetTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
 	static SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
@@ -324,15 +321,8 @@ OnDateSetListener {
 					view2.setCircled(true);
 					view1.setCircled(false);
 				} else {
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games1 = (Set<SummableInteger>) view1
-					.getTag(GAME_SET_TAG_KEY);
-					@SuppressWarnings("unchecked")
-					Set<SummableInteger> games2 = (Set<SummableInteger>) view2
-					.getTag(GAME_SET_TAG_KEY);
-
-					int wins1 = getWinCount(games1);
-					int wins2 = getWinCount(games2);
+					int wins1 = view1.countAddendOccurrences(10);
+					int wins2 = view2.countAddendOccurrences(10);
 
 					if (wins1 > wins2) {
 						view1.setCircled(true);
@@ -633,43 +623,21 @@ OnDateSetListener {
 		awayTotals = new ArrayList<SumView>(ROUNDS);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initTags() {
-		SumView homeR4 = homeFinalRound.get(PLAYERS + 2);
-		SumView awayR4 = awayFinalRound.get(PLAYERS + 2);
-		homeR4.setTag(awayR4);
-		awayR4.setTag(homeR4);
-		homeR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-		awayR4.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+		linkViewsByTags(homeFinalRound.get(PLAYERS + 2),
+				awayFinalRound.get(PLAYERS + 2));
 
 		for (int i = 0; i < ROUNDS; i++) {
-			SumView homeTotal = homeTotals.get(i);
-			SumView awayTotal = awayTotals.get(i);
-
-			homeTotal.setTag(awayTotal);
-			awayTotal.setTag(homeTotal);
-			homeTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
-			awayTotal.setTag(GAME_SET_TAG_KEY, new HashSet<SummableInteger>());
+			linkViewsByTags(homeTotals.get(i), awayTotals.get(i));
 		}
 
 		for (PlayerScoreView home : homeScores) {
-			PlayerScoreView away = null;
 			for (PlayerScoreView view : awayScores) {
 				if (home.getRound() == view.getRound()
 						&& home.getGame() == view.getGame()) {
-					away = view;
 					linkViewsByTags(home, view);
 				}
 			}
-			SumView homeRoundTotal = homeTotals.get(home.getRound() - 1);
-			SumView awayRoundTotal = awayTotals.get(away.getRound() - 1);
-
-			((Set<SummableInteger>) homeRoundTotal.getTag(
-					GAME_SET_TAG_KEY)).add(home);
-			((Set<SummableInteger>) awayRoundTotal.getTag(
-					GAME_SET_TAG_KEY)).add(away);
-			((Set<SummableInteger>) homeR4.getTag(GAME_SET_TAG_KEY)).add(home);
-			((Set<SummableInteger>) awayR4.getTag(GAME_SET_TAG_KEY)).add(away);
 		}
 	}
 
@@ -777,16 +745,6 @@ OnDateSetListener {
 			string = string.replaceAll("\\\\,", ",");
 		}
 		return result;
-	}
-
-	private static int getWinCount(Set<SummableInteger> views) {
-		int wins = 0;
-		for (SummableInteger view : views) {
-			if (view.getValue() == 10) {
-				wins++;
-			}
-		}
-		return wins;
 	}
 
 	private static void linkViewsByTags(View view1, View view2) {

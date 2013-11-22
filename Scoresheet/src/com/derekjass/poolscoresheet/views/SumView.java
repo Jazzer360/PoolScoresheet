@@ -101,6 +101,18 @@ implements SummableInteger.OnValueChangedListener {
 		watchedViews.add(subject);
 	}
 
+	public int countAddendOccurrences(int value) {
+		int occurrences = 0;
+		for (SummableInteger view : watchedViews) {
+			if (view instanceof SumView) {
+				occurrences += ((SumView) view).countAddendOccurrences(value);
+			} else if (view.getValue() == value) {
+				occurrences++;
+			}
+		}
+		return occurrences;
+	}
+
 	public void setCircled(boolean circled) {
 		if (isCircled != circled) {
 			isCircled = circled;
