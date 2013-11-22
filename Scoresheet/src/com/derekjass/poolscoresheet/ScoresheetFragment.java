@@ -99,7 +99,7 @@ OnDateSetListener {
 			protected void onPostExecute(Void result) {
 				initTags();
 				initListeners();
-				setDate(System.currentTimeMillis());
+				setDate(new Date(System.currentTimeMillis()));
 			}
 		}.execute(v);
 
@@ -195,7 +195,7 @@ OnDateSetListener {
 
 			@Override
 			protected void onPostExecute(Void result) {
-				setDate(tDate);
+				setDate(new Date(tDate));
 				homeTeam.setText(tHomeTeam);
 				awayTeam.setText(tAwayTeam);
 				fillNames(homePlayers, tHomePlayers);
@@ -446,7 +446,7 @@ OnDateSetListener {
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, monthOfYear);
 		c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-		setDate(c.getTimeInMillis());
+		setDate(c.getTime());
 	}
 
 	private void saveData() {
@@ -504,9 +504,9 @@ OnDateSetListener {
 		return mask;
 	}
 
-	private void setDate(long millis) {
-		dateMs = millis;
-		date.setText(sdf.format(new Date(millis)));
+	private void setDate(Date newDate) {
+		dateMs = newDate.getTime();
+		date.setText(sdf.format(newDate));
 	}
 
 	private void getViewReferences(View v) {
