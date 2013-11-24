@@ -40,7 +40,7 @@ public class ScoresheetFragment extends Fragment
 implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>,
 OnDateSetListener {
 
-	private static final int PLAYER_TAG_KEY = R.id.playerTag;
+	private static final int PLAYER_TAG_KEY = R.id.playerTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
 	static SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
@@ -238,24 +238,16 @@ OnDateSetListener {
 			String awayName = awayPlayer.getText().toString();
 
 			Bundle args = new Bundle();
-			if (!TextUtils.isEmpty(homeName)) {
-				args.putString(ScoringDialog.HOME_PLAYER_KEY, homeName);
-			} else {
-				args.putString(ScoringDialog.HOME_PLAYER_KEY,
-						homePlayer.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(awayName)) {
-				args.putString(ScoringDialog.AWAY_PLAYER_KEY, awayName);
-			} else {
-				args.putString(ScoringDialog.AWAY_PLAYER_KEY,
-						awayPlayer.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(homeScore)) {
+			args.putString(ScoringDialog.HOME_PLAYER_KEY,
+					!TextUtils.isEmpty(homeName) ?
+							homeName : homePlayer.getHint().toString());
+			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
+					!TextUtils.isEmpty(awayName) ?
+							awayName : awayPlayer.getHint().toString());
+			if (!TextUtils.isEmpty(homeScore))
 				args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
-			}
-			if (!TextUtils.isEmpty(awayScore)) {
+			if (!TextUtils.isEmpty(awayScore))
 				args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
-			}
 			args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
 			args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
 
@@ -350,15 +342,11 @@ OnDateSetListener {
 
 			Bundle args = new Bundle();
 			args.putInt(AveragePickerDialog.VIEW_ID_KEY, v.getId());
-			if (!TextUtils.isEmpty(name)) {
-				args.putString(AveragePickerDialog.NAME_KEY, name);
-			} else {
-				args.putString(AveragePickerDialog.NAME_KEY,
-						nameView.getHint().toString());
-			}
-			if (!TextUtils.isEmpty(avg)) {
+			args.putString(AveragePickerDialog.NAME_KEY,
+					!TextUtils.isEmpty(name) ?
+							name : nameView.getHint().toString());
+			if (!TextUtils.isEmpty(avg))
 				args.putString(AveragePickerDialog.AVG_KEY, avg);
-			}
 
 			AveragePickerDialog dialog = new AveragePickerDialog();
 			dialog.setArguments(args);
