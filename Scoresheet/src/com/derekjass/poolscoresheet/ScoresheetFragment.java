@@ -40,6 +40,7 @@ public class ScoresheetFragment extends Fragment
 implements AveragePickerListener, ScoringListener, LoaderCallbacks<Cursor>,
 OnDateSetListener {
 
+	private static final int PLAYER_TAG_KEY = R.id.playerTag;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
 	static SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
@@ -126,10 +127,9 @@ OnDateSetListener {
 					noDataText.setVisibility(View.VISIBLE);
 				};
 			}.execute();
-			return;
+		} else {
+			getLoaderManager().initLoader(0, null, this);
 		}
-
-		getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -232,10 +232,8 @@ OnDateSetListener {
 			String homeScore = homeView.getValueAsString();
 			String awayScore = awayView.getValueAsString();
 
-			TextView homePlayer = (TextView) ((ViewGroup) homeView.getParent())
-					.getChildAt(1);
-			TextView awayPlayer = (TextView) ((ViewGroup) awayView.getParent())
-					.getChildAt(1);
+			TextView homePlayer = (TextView) homeView.getTag(PLAYER_TAG_KEY);
+			TextView awayPlayer = (TextView) awayView.getTag(PLAYER_TAG_KEY);
 			String homeName = homePlayer.getText().toString();
 			String awayName = awayPlayer.getText().toString();
 
@@ -346,8 +344,7 @@ OnDateSetListener {
 		@Override
 		public void onClick(View v) {
 			SummableInteger avgView = (SummableInteger) v;
-			TextView nameView = (TextView) ((ViewGroup) v.getParent())
-					.getChildAt(1);
+			TextView nameView = (TextView) v.getTag(PLAYER_TAG_KEY);
 			String avg = avgView.getValueAsString();
 			String name = nameView.getText().toString();
 
@@ -624,18 +621,31 @@ OnDateSetListener {
 	}
 
 	private void initTags() {
-		linkViewsByTags(homeFinalRound.get(PLAYERS + 2),
-				awayFinalRound.get(PLAYERS + 2));
+		int r4total = PLAYERS + 2;
+		linkViewsByTags(homeFinalRound.get(r4total),
+				awayFinalRound.get(r4total));
 
 		for (int i = 0; i < ROUNDS; i++) {
 			linkViewsByTags(homeTotals.get(i), awayTotals.get(i));
 		}
 
-		for (PlayerScoreView home : homeScores) {
-			for (PlayerScoreView view : awayScores) {
-				if (home.getRound() == view.getRound()
-						&& home.getGame() == view.getGame()) {
-					linkViewsByTags(home, view);
+		for (int i = 0; i < PLAYERS; i++) {
+			linkViewsByTags(homeAves.get(i), homePlayers.get(i),
+					PLAYER_TAG_KEY);
+			linkViewsByTags(awayAves.get(i), awayPlayers.get(i),
+					PLAYER_TAG_KEY);
+		}
+
+		for (int i = 0; i < ROUNDS * PLAYERS; i++) {
+			linkViewsByTags(homeScores.get(i), homePlayers.get(i % PLAYERS),
+					PLAYER_TAG_KEY);
+			linkViewsByTags(awayScores.get(i), homePlayers.get(i % PLAYERS),
+					PLAYER_TAG_KEY);
+			PlayerScoreView home = homeScores.get(i);
+			for (PlayerScoreView away : awayScores) {
+				if (home.getRound() == away.getRound() &&
+						home.getGame() == away.getGame()) {
+					linkViewsByTags(home, away);
 				}
 			}
 		}
@@ -750,6 +760,11 @@ OnDateSetListener {
 	private static void linkViewsByTags(View view1, View view2) {
 		view1.setTag(view2);
 		view2.setTag(view1);
+	}
+
+	private static void linkViewsByTags(View view1, View view2, int key) {
+		view1.setTag(key, view2);
+		view2.setTag(key, view1);
 	}
 
 	private static void addViewToSum(SumView sum, SummableInteger value) {
