@@ -627,7 +627,7 @@ OnDateSetListener {
 		for (int i = 0; i < ROUNDS * PLAYERS; i++) {
 			linkViewsByTags(homeScores.get(i), homePlayers.get(i % PLAYERS),
 					PLAYER_TAG_KEY);
-			linkViewsByTags(awayScores.get(i), homePlayers.get(i % PLAYERS),
+			linkViewsByTags(awayScores.get(i), awayPlayers.get(i % PLAYERS),
 					PLAYER_TAG_KEY);
 			PlayerScoreView home = homeScores.get(i);
 			for (PlayerScoreView away : awayScores) {
