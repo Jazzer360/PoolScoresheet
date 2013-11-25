@@ -197,10 +197,10 @@ OnDateSetListener {
 				awayTeam.setText(tAwayTeam);
 				fillNames(homePlayers, tHomePlayers);
 				fillNames(awayPlayers, tAwayPlayers);
-				fillSummableIntegers(homeAves, tHomeAves);
-				fillSummableIntegers(awayAves, tAwayAves);
-				fillSummableIntegers(homeScores, tHomeScores);
-				fillSummableIntegers(awayScores, tAwayScores);
+				fillValues(homeAves, tHomeAves);
+				fillValues(awayAves, tAwayAves);
+				fillValues(homeScores, tHomeScores);
+				fillValues(awayScores, tAwayScores);
 				setEroFromBitmask(eroBitmask);
 
 				matchDataLoaded = true;
@@ -371,15 +371,12 @@ OnDateSetListener {
 			new OnValueChangedListener() {
 		@Override
 		public void onValueChanged(SummableInteger subject) {
-			IntegerView homeRoundAve = null;
-			IntegerView awayRoundAve = null;
-
 			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
 			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
 
 			for (int i = 0; i < ROUNDS; i++) {
-				homeRoundAve = homeRoundAves.get(i);
-				awayRoundAve = awayRoundAves.get(i);
+				SummableInteger homeRoundAve = homeRoundAves.get(i);
+				SummableInteger awayRoundAve = awayRoundAves.get(i);
 				if (homeAvg > 0) {
 					homeRoundAve.setValue(homeAvg);
 					awayRoundAve.clearValue();
@@ -698,7 +695,7 @@ OnDateSetListener {
 		StringBuilder sb = new StringBuilder();
 
 		for (EditText view : nameViews) {
-			sb.append(view.getText().toString().replaceAll(",", "\\,"));
+			sb.append(view.getText().toString().replaceAll(",", "\\\\,"));
 			if (view != nameViews.get(nameViews.size() - 1))
 				sb.append(",");
 		}
@@ -719,6 +716,15 @@ OnDateSetListener {
 		return sb.toString();
 	}
 
+	private static String[] splitString(String s) {
+		if (s == null) return null;
+		String[] result = s.split("(?<!\\\\),");
+		for (int i = 0; i < result.length; i++) {
+			result[i] = result[i].replaceAll("\\\\,", ",");
+		}
+		return result;
+	}
+
 	private static void fillNames(
 			List<EditText> nameViews, String[] names) {
 		if (names == null) return;
@@ -727,22 +733,13 @@ OnDateSetListener {
 		}
 	}
 
-	private static void fillSummableIntegers(
+	private static void fillValues(
 			List<? extends SummableInteger> intViews, String[] data) {
 		if (data == null) return;
 		for (int i = 0; i < data.length; i++) {
 			if (!TextUtils.isEmpty(data[i]))
 				intViews.get(i).setValue(data[i]);
 		}
-	}
-
-	private static String[] splitString(String s) {
-		if (s == null) return null;
-		String[] result = s.split("(?<!\\\\),");
-		for (String string : result) {
-			string = string.replaceAll("\\\\,", ",");
-		}
-		return result;
 	}
 
 	private static void linkViewsByTags(View view1, View view2) {
