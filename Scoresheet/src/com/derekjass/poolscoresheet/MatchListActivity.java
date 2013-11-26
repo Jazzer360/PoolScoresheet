@@ -30,6 +30,7 @@ implements LoaderCallbacks<Cursor>, MatchSelectedListener {
 
 		listAdapter = new MatchCursorAdapter(this, null, 0);
 		list.setListAdapter(listAdapter);
+		list.setSelectionMode(true);
 
 		getLoaderManager().initLoader(0, null, this);
 	}

@@ -26,7 +26,20 @@ public class MatchListFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		listener.onMatchSelected(id);
+		switch (getListView().getChoiceMode()) {
+		case ListView.CHOICE_MODE_MULTIPLE:
+			break;
+		default:
+			listener.onMatchSelected(id);
+		}
+	}
+	
+	public void setSelectionMode(boolean multiSelect) {
+		getListView().setChoiceMode(multiSelect ?
+				ListView.CHOICE_MODE_MULTIPLE : ListView.CHOICE_MODE_SINGLE);
+	}
+	
+	public long[] getSelection() {
+		return getListView().getCheckedItemIds();
 	}
 }
