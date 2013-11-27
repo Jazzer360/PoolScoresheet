@@ -23,6 +23,8 @@ implements LoaderCallbacks<Cursor>, MatchListCallbacks {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_matchlist);
 
+		getActionBar().setTitle(R.string.saved_matches);
+
 		list = (MatchListFragment) getFragmentManager()
 				.findFragmentById(R.id.matchlistFragment);
 

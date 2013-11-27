@@ -26,7 +26,6 @@
 		android:label="@string/app_name" >
 		<activity
 			android:name=".MatchListActivity"
-			android:label="@string/saved_matches"
 			android:theme="@android:style/Theme.Holo.Light" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
