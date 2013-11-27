@@ -41,5 +41,9 @@
 	<string name="no_match_selected">No match selected</string>
 	<string name="in_progress">In progress</string>
 	<string name="new_match">New match</string>
+	<string name="no_matches">No matches</string>
+	<string name="delete_matches">Delete matches</string>
+	<string name="selected">Selected</string>
+	<string name="saved_matches">Saved Matches</string>
 
 </resources>

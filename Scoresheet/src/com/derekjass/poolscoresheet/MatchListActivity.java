@@ -8,14 +8,12 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.derekjass.poolscoresheet.MatchListFragment.MatchSelectedListener;
+import com.derekjass.poolscoresheet.MatchListFragment.MatchListCallbacks;
 import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
 public class MatchListActivity extends Activity 
-implements LoaderCallbacks<Cursor>, MatchSelectedListener {
+implements LoaderCallbacks<Cursor>, MatchListCallbacks {
 
 	private MatchListFragment list;
 	private MatchCursorAdapter listAdapter;
@@ -29,27 +27,10 @@ implements LoaderCallbacks<Cursor>, MatchSelectedListener {
 				.findFragmentById(R.id.matchlistFragment);
 
 		listAdapter = new MatchCursorAdapter(this, null, 0);
+		list.setEmptyText(getString(R.string.no_matches));
 		list.setListAdapter(listAdapter);
-		list.setSelectionMode(true);
 
 		getLoaderManager().initLoader(0, null, this);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_matchlist_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.actionNew:
-			startActivity(new Intent(this, ScoresheetActivity.class));
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	@Override
