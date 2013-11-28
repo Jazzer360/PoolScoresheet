@@ -22,7 +22,6 @@ public class MatchCursorAdapter extends CursorAdapter {
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		LayoutInflater li = LayoutInflater.from(context);
 		View newView = li.inflate(R.layout.listitem_match, parent, false);
-		bindView(newView, context, cursor);
 		return newView;
 	}
 
