@@ -63,5 +63,4 @@ public class MatchCursorAdapter extends CursorAdapter {
 		homeWinsView.setText("- " + String.valueOf(homeWins));
 		awayWinsView.setText("- " + String.valueOf(awayWins));
 	}
-
 }

@@ -1,22 +1,15 @@
 package com.derekjass.poolscoresheet;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.derekjass.poolscoresheet.MatchListFragment.MatchListCallbacks;
 import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
-public class MatchListActivity extends Activity 
-implements LoaderCallbacks<Cursor>, MatchListCallbacks {
-
-	private MatchListFragment list;
-	private MatchCursorAdapter listAdapter;
+public class MatchListActivity extends Activity
+implements MatchListCallbacks {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,37 +18,6 @@ implements LoaderCallbacks<Cursor>, MatchListCallbacks {
 
 		getActionBar().setTitle(R.string.saved_matches);
 
-		list = (MatchListFragment) getFragmentManager()
-				.findFragmentById(R.id.matchlistFragment);
-
-		listAdapter = new MatchCursorAdapter(this, null, 0);
-		list.setEmptyText(getString(R.string.no_matches));
-		list.setListAdapter(listAdapter);
-
-		getLoaderManager().initLoader(0, null, this);
-	}
-
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new CursorLoader(this, Matches.CONTENT_URI,
-				new String[]{
-				Matches._ID,
-				Matches.COLUMN_DATE,
-				Matches.COLUMN_TEAM_HOME,
-				Matches.COLUMN_TEAM_AWAY,
-				Matches.COLUMN_ROUND_WINS_HOME,
-				Matches.COLUMN_ROUND_WINS_AWAY},
-				null, null, null);
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		listAdapter.swapCursor(data);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-		listAdapter.swapCursor(null);
 	}
 
 	@Override

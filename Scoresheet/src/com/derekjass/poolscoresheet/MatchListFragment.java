@@ -2,7 +2,11 @@ package com.derekjass.poolscoresheet;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -14,13 +18,15 @@ import android.widget.ListView;
 
 import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
-public class MatchListFragment extends ListFragment {
+public class MatchListFragment extends ListFragment
+implements LoaderCallbacks<Cursor> {
 
 	public interface MatchListCallbacks {
 		public void onMatchSelected(long id);
 	}
 
 	private MatchListCallbacks listener;
+	private MatchCursorAdapter adapter;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -40,8 +46,16 @@ public class MatchListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		adapter = new MatchCursorAdapter(getActivity(), null, 0);
+		setListAdapter(adapter);
+
+		getLoaderManager().initLoader(0, null, this);
+
+		setEmptyText(getString(R.string.no_matches));
+
 		ListView lv = getListView();
 		lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		lv.setMultiChoiceModeListener(new MultiChoiceModeListener() {
@@ -103,6 +117,29 @@ public class MatchListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		listener.onMatchSelected(id);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new CursorLoader(getActivity(), Matches.CONTENT_URI,
+				new String[]{
+			Matches._ID,
+			Matches.COLUMN_DATE,
+			Matches.COLUMN_TEAM_HOME,
+			Matches.COLUMN_TEAM_AWAY,
+			Matches.COLUMN_ROUND_WINS_HOME,
+			Matches.COLUMN_ROUND_WINS_AWAY},
+			null, null, null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		adapter.swapCursor(data);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		adapter.swapCursor(null);
 	}
 
 	private void deleteSelectedItems() {
