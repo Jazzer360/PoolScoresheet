@@ -97,12 +97,12 @@ implements SummableInteger.OnValueChangedListener {
 	public void setValue(final int value) {
 		switch (animation) {
 		case FLIP_ANIMATION:
-			animate().rotationX(90f)
+			animate().rotationX(90f).setDuration(175)
 			.setListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
 					SumView.super.setValue(value);
-					animate().rotationX(0f).setListener(null);
+					animate().rotationX(0f).setDuration(175).setListener(null);
 				}
 			});
 			return;

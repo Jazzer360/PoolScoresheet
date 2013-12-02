@@ -702,8 +702,8 @@ OnDateSetListener {
 		if (v.getVisibility() != View.VISIBLE) {
 			v.setAlpha(0f);
 			v.setVisibility(View.VISIBLE);
-			v.animate().alpha(1f);
 		}
+		v.animate().alpha(1f).setListener(null);
 	}
 
 	private static void hide(final View v) {
