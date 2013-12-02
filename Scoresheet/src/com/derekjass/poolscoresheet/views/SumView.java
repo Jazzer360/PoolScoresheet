@@ -102,7 +102,7 @@ implements SummableInteger.OnValueChangedListener {
 				@Override
 				public void onAnimationEnd(Animator animation) {
 					SumView.super.setValue(value);
-					animate().rotationX(0f);
+					animate().rotationX(0f).setListener(null);
 				}
 			});
 			return;
