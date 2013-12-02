@@ -25,6 +25,8 @@ public class MatchCursorAdapter extends CursorAdapter {
 	public MatchCursorAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
 
+		mInflater = LayoutInflater.from(context);
+
 		mDateCol = c.getColumnIndexOrThrow(Matches.COLUMN_DATE);
 		mHomeTeamCol = c.getColumnIndexOrThrow(Matches.COLUMN_TEAM_HOME);
 		mAwayTeamCol = c.getColumnIndexOrThrow(Matches.COLUMN_TEAM_AWAY);
@@ -34,7 +36,6 @@ public class MatchCursorAdapter extends CursorAdapter {
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		if (mInflater == null) mInflater = LayoutInflater.from(context);
 		View newView = mInflater.inflate(
 				R.layout.listitem_match, parent, false);
 
