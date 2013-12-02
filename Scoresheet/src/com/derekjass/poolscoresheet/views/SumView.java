@@ -3,6 +3,8 @@ package com.derekjass.poolscoresheet.views;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -15,15 +17,19 @@ implements SummableInteger.OnValueChangedListener {
 
 	private static final int[] STATE_CIRCLED = {R.attr.isCircled};
 
-	public static final int ALWAYS_SUM = 1;
-	public static final int GRAY_SUM_WHEN_MISSING = 2;
-	public static final int NO_SUM_WHEN_MISSING = 3;
+	protected static final int ALWAYS_SUM = 1;
+	protected static final int GRAY_SUM_WHEN_MISSING = 2;
+	protected static final int NO_SUM_WHEN_MISSING = 3;
+
+	protected static final int NO_ANIMATION = 1;
+	protected static final int FLIP_ANIMATION = 2;
 
 	private boolean isCircled;
 	private boolean hasSoftValue;
 	private Set<SummableInteger> watchedViews;
 
 	private final int sumRule;
+	private final int animation;
 
 	public SumView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -35,6 +41,7 @@ implements SummableInteger.OnValueChangedListener {
 
 		try {
 			sumRule = a.getInt(R.styleable.SumView_sumRule, 1);
+			animation = a.getInt(R.styleable.SumView_sumChangeAnimation, 1);
 			setCircled(a.getBoolean(R.styleable.SumView_isCircled, false));
 		} finally {
 			a.recycle();
@@ -83,6 +90,24 @@ implements SummableInteger.OnValueChangedListener {
 		} else {
 			hasSoftValue = false;
 			clearValue();
+		}
+	}
+
+	@Override
+	public void setValue(final int value) {
+		switch (animation) {
+		case FLIP_ANIMATION:
+			animate().rotationX(90f)
+			.setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					SumView.super.setValue(value);
+					animate().rotationX(0f);
+				}
+			});
+			return;
+		default:
+			super.setValue(value);
 		}
 	}
 

@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
@@ -115,6 +117,11 @@ OnDateSetListener {
 		this.matchUri = matchUri;
 
 		if (matchUri == null) {
+			matchDataLoaded = false;
+
+			if (loadTask != null) loadTask.cancel(false);
+			loadTask = null;
+
 			new AsyncTask<Void, Void, Void>() {
 				@Override
 				protected Void doInBackground(Void... params) {
@@ -122,9 +129,9 @@ OnDateSetListener {
 				}
 				@Override
 				protected void onPostExecute(Void result) {
-					scoresheet.setVisibility(View.GONE);
-					progress.setVisibility(View.GONE);
-					noDataText.setVisibility(View.VISIBLE);
+					hide(scoresheet);
+					hide(progress);
+					show(noDataText);
 				};
 			}.execute();
 		} else {
@@ -156,9 +163,9 @@ OnDateSetListener {
 			@Override
 			protected void onProgressUpdate(Void... values) {
 				super.onProgressUpdate(values);
-				scoresheet.setVisibility(View.GONE);
-				noDataText.setVisibility(View.GONE);
-				progress.setVisibility(View.VISIBLE);
+				hide(scoresheet);
+				hide(noDataText);
+				show(progress);
 			}
 
 			@Override
@@ -206,16 +213,16 @@ OnDateSetListener {
 				matchDataLoaded = true;
 				loadTask = null;
 
-				progress.setVisibility(View.GONE);
-				noDataText.setVisibility(View.GONE);
-				scoresheet.setVisibility(View.VISIBLE);
+				hide(progress);
+				hide(noDataText);
+				show(scoresheet);
 			}
 		}.execute(data);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		if (loadTask != null) loadTask.cancel(false);
+		loadUri(null);
 	}
 
 	private View.OnClickListener scoreBoxClickListener =
@@ -689,6 +696,24 @@ OnDateSetListener {
 
 		homeAve.addOnValueChangedListener(avgChangedListener);
 		awayAve.addOnValueChangedListener(avgChangedListener);
+	}
+
+	private static void show(View v) {
+		if (v.getVisibility() != View.VISIBLE) {
+			v.setAlpha(0f);
+			v.setVisibility(View.VISIBLE);
+			v.animate().alpha(1f);
+		}
+	}
+
+	private static void hide(final View v) {
+		if (v.getVisibility() == View.VISIBLE)
+			v.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					v.setVisibility(View.GONE);
+				}
+			});
 	}
 
 	private static String getNamesString(List<EditText> nameViews) {

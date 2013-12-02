@@ -367,6 +367,7 @@
 			android:background="@drawable/box_circleable"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
+			app:sumChangeAnimation="flip"
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
@@ -376,6 +377,7 @@
 			android:background="@drawable/box_circleable"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
+			app:sumChangeAnimation="flip"
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
@@ -385,6 +387,7 @@
 			android:background="@drawable/box_circleable"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
+			app:sumChangeAnimation="flip"
 			app:sumRule="gray_when_missing" />
 
 		<com.derekjass.poolscoresheet.views.SumView
@@ -394,6 +397,7 @@
 			android:background="@drawable/box_circleable"
 			android:gravity="center"
 			android:textSize="@dimen/score_text_size"
+			app:sumChangeAnimation="flip"
 			app:sumRule="gray_when_missing" />
 	</LinearLayout>
 
