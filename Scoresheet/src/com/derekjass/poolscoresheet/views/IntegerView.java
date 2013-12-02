@@ -13,11 +13,11 @@ import com.derekjass.poolscoresheet.R;
 
 public class IntegerView extends TextView implements SummableInteger {
 
-	private int value;
-	private boolean hasValue;
-	private Set<OnValueChangedListener> listeners;
+	private int mValue;
+	private boolean mHasValue;
+	private Set<OnValueChangedListener> mListeners;
 
-	private final boolean mustSum;
+	private final boolean mMustSum;
 
 	public IntegerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -28,43 +28,43 @@ public class IntegerView extends TextView implements SummableInteger {
 				0, 0);
 
 		try {
-			mustSum = a.getBoolean(R.styleable.IntegerView_mustSum, true);
+			mMustSum = a.getBoolean(R.styleable.IntegerView_mustSum, true);
 		} finally {
 			a.recycle();
 		}
 
-		value = 0;
-		hasValue = false;
-		listeners = new HashSet<OnValueChangedListener>();
+		mValue = 0;
+		mHasValue = false;
+		mListeners = new HashSet<OnValueChangedListener>();
 	}
 
 	@Override
 	public void setValue(int value) {
-		this.value = value;
-		hasValue = true;
+		this.mValue = value;
+		mHasValue = true;
 		setText(String.valueOf(value));
 		notifyListeners();
 	}
 
 	@Override
 	public void setValue(CharSequence value) {
-		this.value = stringToInt(value.toString());
-		hasValue = true;
+		this.mValue = stringToInt(value.toString());
+		mHasValue = true;
 		setText(value);
 		notifyListeners();
 	}
 
 	@Override
 	public void clearValue() {
-		value = 0;
-		hasValue = false;
+		mValue = 0;
+		mHasValue = false;
 		setText("");
 		notifyListeners();
 	}
 
 	@Override
 	public int getValue() {
-		return value;
+		return mValue;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class IntegerView extends TextView implements SummableInteger {
 
 	@Override
 	public boolean hasValue() {
-		return hasValue;
+		return mHasValue;
 	}
 
 	@Override
@@ -84,23 +84,23 @@ public class IntegerView extends TextView implements SummableInteger {
 
 	@Override
 	public boolean mustSum() {
-		return mustSum;
+		return mMustSum;
 	}
 
 	@Override
 	public void addOnValueChangedListener(OnValueChangedListener li) {
-		listeners.add(li);
+		mListeners.add(li);
 		li.onAttachListener(this);
 	}
 
 	@Override
 	public void removeOnValueChangedListener(OnValueChangedListener li) {
-		listeners.remove(li);
+		mListeners.remove(li);
 		li.onAttachListener(this);
 	}
 
 	private void notifyListeners() {
-		for (OnValueChangedListener listener : listeners) {
+		for (OnValueChangedListener listener : mListeners) {
 			listener.onValueChanged(this);
 		}
 	}

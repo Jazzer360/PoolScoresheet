@@ -8,23 +8,23 @@ import android.os.Bundle;
 
 public class ScoresheetActivity extends Activity {
 
-	private Uri matchUri;
-	private ScoresheetFragment scoresheet;
+	private Uri mMatchUri;
+	private ScoresheetFragment mScoresheet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scoresheet);
 
-		matchUri = getIntent().getData();
+		mMatchUri = getIntent().getData();
 
-		if (matchUri == null) {
-			matchUri = getContentResolver().insert(Matches.CONTENT_URI, null);
+		if (mMatchUri == null) {
+			mMatchUri = getContentResolver().insert(Matches.CONTENT_URI, null);
 		}
 
-		scoresheet = (ScoresheetFragment) getFragmentManager()
+		mScoresheet = (ScoresheetFragment) getFragmentManager()
 				.findFragmentById(R.id.scoresheetFragment);
 
-		scoresheet.loadUri(matchUri);
+		mScoresheet.loadUri(mMatchUri);
 	}
 }

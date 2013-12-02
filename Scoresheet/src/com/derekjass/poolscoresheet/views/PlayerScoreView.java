@@ -14,13 +14,13 @@ import com.derekjass.poolscoresheet.R;
 public class PlayerScoreView extends FrameLayout
 implements SummableInteger {
 
-	private final int game;
-	private final int round;
-	private boolean ero;
+	private final int mGame;
+	private final int mRound;
+	private boolean mEro;
 
-	private SummableInteger score;
-	private TextView eroText;
-	private ViewStub eroStub;
+	private SummableInteger mScore;
+	private TextView mEroText;
+	private ViewStub mEroStub;
 
 	public PlayerScoreView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -32,8 +32,8 @@ implements SummableInteger {
 
 		boolean breaks;
 		try {
-			game = a.getInteger(R.styleable.PlayerScoreView_game, 0);
-			round = a.getInteger(R.styleable.PlayerScoreView_round, 0);
+			mGame = a.getInteger(R.styleable.PlayerScoreView_game, 0);
+			mRound = a.getInteger(R.styleable.PlayerScoreView_round, 0);
 			breaks = a.getBoolean(R.styleable.PlayerScoreView_breaks, false);
 		} finally {
 			a.recycle();
@@ -43,88 +43,86 @@ implements SummableInteger {
 				context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		li.inflate(R.layout.view_player_score, this);
-		score = (SummableInteger) findViewById(R.id.scoreText);
-		eroStub = (ViewStub) findViewById(R.id.eroStub);
+		mScore = (SummableInteger) findViewById(R.id.scoreText);
+		mEroStub = (ViewStub) findViewById(R.id.eroStub);
 
-		if (breaks) {
-			((ViewStub) findViewById(R.id.breakStub)).inflate();
-		}
+		if (breaks) ((ViewStub) findViewById(R.id.breakStub)).inflate();
 
-		ero = false;
-		eroText = null;
+		mEro = false;
+		mEroText = null;
 	}
 
 	@Override
 	public void setValue(int value) {
-		score.setValue(value);
+		mScore.setValue(value);
 	}
 
 	@Override
 	public void setValue(CharSequence value) {
-		score.setValue(value);
+		mScore.setValue(value);
 	}
 
 	@Override
 	public void clearValue() {
-		score.clearValue();
+		mScore.clearValue();
 	}
 
 	@Override
 	public int getValue() {
-		return score.getValue();
+		return mScore.getValue();
 	}
 
 	@Override
 	public String getValueAsString() {
-		return score.getValueAsString();
+		return mScore.getValueAsString();
 	}
 
 	@Override
 	public boolean hasValue() {
-		return score.hasValue();
+		return mScore.hasValue();
 	}
 
 	@Override
 	public boolean hasSoftValue() {
-		return score.hasSoftValue();
+		return mScore.hasSoftValue();
 	}
 
 	@Override
 	public boolean mustSum() {
-		return score.mustSum();
+		return mScore.mustSum();
 	}
 
 	@Override
 	public void addOnValueChangedListener(OnValueChangedListener li) {
-		score.addOnValueChangedListener(li);
+		mScore.addOnValueChangedListener(li);
 	}
 
 	@Override
 	public void removeOnValueChangedListener(OnValueChangedListener li) {
-		score.removeOnValueChangedListener(li);
+		mScore.removeOnValueChangedListener(li);
 	}
 
 	public void setEro(boolean isEro) {
-		if (ero ^ isEro) {
-			ero = isEro;
-			if (eroText == null) {
-				eroText = (TextView) eroStub.inflate();
-				eroStub = null;
+		if (mEro ^ isEro) {
+			mEro = isEro;
+			if (mEroText == null) {
+				mEroText = (TextView) mEroStub.inflate();
+				mEroStub = null;
 			} else {
-				eroText.setVisibility(ero ? View.VISIBLE : View.GONE);
+				mEroText.setVisibility(mEro ? View.VISIBLE : View.GONE);
 			}
 		}
 	}
 
 	public boolean isEro() {
-		return ero;
+		return mEro;
 	}
 
 	public int getRound() {
-		return round;
+		return mRound;
 	}
 
 	public int getGame() {
-		return game;
+		return mGame;
 	}
 }

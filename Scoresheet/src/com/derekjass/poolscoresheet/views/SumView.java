@@ -24,12 +24,12 @@ implements SummableInteger.OnValueChangedListener {
 	protected static final int NO_ANIMATION = 1;
 	protected static final int FLIP_ANIMATION = 2;
 
-	private boolean isCircled;
-	private boolean hasSoftValue;
-	private Set<SummableInteger> watchedViews;
+	private boolean mIsCircled;
+	private boolean mHasSoftValue;
+	private Set<SummableInteger> mWatchedViews;
 
-	private final int sumRule;
-	private final int animation;
+	private final int mSumRule;
+	private final int mAnimation;
 
 	public SumView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -40,22 +40,22 @@ implements SummableInteger.OnValueChangedListener {
 				0, 0);
 
 		try {
-			sumRule = a.getInt(R.styleable.SumView_sumRule, 1);
-			animation = a.getInt(R.styleable.SumView_sumChangeAnimation, 1);
+			mSumRule = a.getInt(R.styleable.SumView_sumRule, 1);
+			mAnimation = a.getInt(R.styleable.SumView_sumChangeAnimation, 1);
 			setCircled(a.getBoolean(R.styleable.SumView_isCircled, false));
 		} finally {
 			a.recycle();
 		}
 
-		hasSoftValue = false;
-		watchedViews = new HashSet<SummableInteger>();
+		mHasSoftValue = false;
+		mWatchedViews = new HashSet<SummableInteger>();
 	}
 
 	@Override
 	protected int[] onCreateDrawableState(int extraSpace) {
 		final int[] drawableState =
 				super.onCreateDrawableState(extraSpace + 1);
-		if (isCircled) mergeDrawableStates(drawableState, STATE_CIRCLED);
+		if (mIsCircled) mergeDrawableStates(drawableState, STATE_CIRCLED);
 		return drawableState;
 	}
 
@@ -66,11 +66,11 @@ implements SummableInteger.OnValueChangedListener {
 		boolean atLeastOneHasValue = v.hasValue() || v.hasSoftValue();
 		int sum = 0;
 
-		for (SummableInteger view : watchedViews) {
+		for (SummableInteger view : mWatchedViews) {
 			setComplete &= !view.mustSum() ||
 					(view.hasValue() && !view.hasSoftValue());
 			atLeastOneHasValue |= view.hasValue() || view.hasSoftValue();
-			if (sumRule == NO_SUM_WHEN_MISSING && !setComplete) {
+			if (mSumRule == NO_SUM_WHEN_MISSING && !setComplete) {
 				clearValue();
 				return;
 			}
@@ -78,24 +78,24 @@ implements SummableInteger.OnValueChangedListener {
 		}
 
 		if (atLeastOneHasValue) {
-			if (sumRule == GRAY_SUM_WHEN_MISSING && !setComplete) {
+			if (mSumRule == GRAY_SUM_WHEN_MISSING && !setComplete) {
 				setTextColor(getResources().getColor(R.color.light_gray));
-				hasSoftValue = true;
+				mHasSoftValue = true;
 				setValue(sum);
 			} else {
 				setTextColor(Color.BLACK);
-				hasSoftValue = false;
+				mHasSoftValue = false;
 				setValue(sum);
 			}
 		} else {
-			hasSoftValue = false;
+			mHasSoftValue = false;
 			clearValue();
 		}
 	}
 
 	@Override
 	public void setValue(final int value) {
-		switch (animation) {
+		switch (mAnimation) {
 		case FLIP_ANIMATION:
 			animate().rotationX(90f).setDuration(175)
 			.setListener(new AnimatorListenerAdapter() {
@@ -113,22 +113,22 @@ implements SummableInteger.OnValueChangedListener {
 
 	@Override
 	public boolean hasSoftValue() {
-		return hasSoftValue;
+		return mHasSoftValue;
 	}
 
 	@Override
 	public void onAttachListener(SummableInteger subject) {
-		watchedViews.add(subject);
+		mWatchedViews.add(subject);
 	}
 
 	@Override
 	public void onDetachListener(SummableInteger subject) {
-		watchedViews.add(subject);
+		mWatchedViews.add(subject);
 	}
 
 	public int countAddendOccurrences(int value) {
 		int occurrences = 0;
-		for (SummableInteger view : watchedViews) {
+		for (SummableInteger view : mWatchedViews) {
 			if (view instanceof SumView) {
 				occurrences += ((SumView) view).countAddendOccurrences(value);
 			} else if (view.getValue() == value) {
@@ -139,13 +139,13 @@ implements SummableInteger.OnValueChangedListener {
 	}
 
 	public void setCircled(boolean circled) {
-		if (isCircled != circled) {
-			isCircled = circled;
+		if (mIsCircled != circled) {
+			mIsCircled = circled;
 			refreshDrawableState();
 		}
 	}
 
 	public boolean isCircled() {
-		return isCircled;
+		return mIsCircled;
 	}
 }

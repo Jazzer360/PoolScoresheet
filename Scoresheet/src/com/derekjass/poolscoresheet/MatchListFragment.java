@@ -25,14 +25,14 @@ implements LoaderCallbacks<Cursor> {
 		public void onMatchSelected(long id);
 	}
 
-	private MatchListCallbacks listener;
-	private MatchCursorAdapter adapter;
+	private MatchListCallbacks mListener;
+	private MatchCursorAdapter mAdapter;
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			listener = (MatchListCallbacks) activity;
+			mListener = (MatchListCallbacks) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString() +
 					" must implement MatchSelectedListener");
@@ -113,7 +113,7 @@ implements LoaderCallbacks<Cursor> {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		listener.onMatchSelected(id);
+		mListener.onMatchSelected(id);
 	}
 
 	@Override
@@ -131,17 +131,17 @@ implements LoaderCallbacks<Cursor> {
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		if (adapter == null) {
-			adapter = new MatchCursorAdapter(getActivity(), data, 0);
-			setListAdapter(adapter);
+		if (mAdapter == null) {
+			mAdapter = new MatchCursorAdapter(getActivity(), data, 0);
+			setListAdapter(mAdapter);
 		} else {
-			adapter.swapCursor(data);
+			mAdapter.swapCursor(data);
 		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		adapter.swapCursor(null);
+		mAdapter.swapCursor(null);
 	}
 
 	private void deleteSelectedItems() {

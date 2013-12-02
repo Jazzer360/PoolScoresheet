@@ -34,8 +34,7 @@ public class MatchCursorAdapter extends CursorAdapter {
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		if (mInflater == null)
-			mInflater = LayoutInflater.from(context);
+		if (mInflater == null) mInflater = LayoutInflater.from(context);
 		View newView = mInflater.inflate(
 				R.layout.listitem_match, parent, false);
 
@@ -72,7 +71,7 @@ public class MatchCursorAdapter extends CursorAdapter {
 		int progressVisibility =
 				homeWins + awayWins == 4 ? View.INVISIBLE : View.VISIBLE;
 
-		views.dateView.setText(ScoresheetFragment.sdf.format(date));
+		views.dateView.setText(ScoresheetFragment.sSdf.format(date));
 		views.inProgressView.setVisibility(progressVisibility);
 		views.homeTeamView.setText(homeTeam);
 		views.awayTeamView.setText(awayTeam);

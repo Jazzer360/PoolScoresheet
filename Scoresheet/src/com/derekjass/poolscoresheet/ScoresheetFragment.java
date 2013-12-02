@@ -45,42 +45,42 @@ OnDateSetListener {
 	private static final int PLAYER_TAG_KEY = R.id.playerTagKey;
 	private static final int PLAYERS = 5;
 	private static final int ROUNDS = 3;
-	static SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
+	static SimpleDateFormat sSdf = new SimpleDateFormat("M-d-yyyy", Locale.US);
 
-	private View progress;
-	private View noDataText;
-	private View scoresheet;
+	private View mProgress;
+	private View mNoDataText;
+	private View mScoresheet;
 
-	private long dateMs;
-	private TextView date;
-	private EditText homeTeam;
-	private EditText awayTeam;
-	private List<EditText> homePlayers;
-	private List<EditText> awayPlayers;
-	private List<IntegerView> homeAves;
-	private List<IntegerView> awayAves;
-	private List<PlayerScoreView> homeScores;
-	private List<PlayerScoreView> awayScores;
-	private List<SumView> homeFinalRound;
-	private List<SumView> awayFinalRound;
-	private List<SumView> homeSubtotals;
-	private List<SumView> awaySubtotals;
-	private List<IntegerView> homeRoundAves;
-	private List<IntegerView> awayRoundAves;
-	private List<SumView> homeTotals;
-	private List<SumView> awayTotals;
-	private SumView homeAve;
-	private SumView awayAve;
+	private long mDateMs;
+	private TextView mDate;
+	private EditText mHomeTeam;
+	private EditText mAwayTeam;
+	private List<EditText> mHomePlayers;
+	private List<EditText> mAwayPlayers;
+	private List<IntegerView> mHomeAves;
+	private List<IntegerView> mAwayAves;
+	private List<PlayerScoreView> mHomeScores;
+	private List<PlayerScoreView> mAwayScores;
+	private List<SumView> mHomeFinalRound;
+	private List<SumView> mAwayFinalRound;
+	private List<SumView> mHomeSubtotals;
+	private List<SumView> mAwaySubtotals;
+	private List<IntegerView> mHomeRoundAves;
+	private List<IntegerView> mAwayRoundAves;
+	private List<SumView> mHomeTotals;
+	private List<SumView> mAwayTotals;
+	private SumView mHomeAve;
+	private SumView mAwayAve;
 
-	private Uri matchUri;
+	private Uri mMatchUri;
 
-	private AsyncTask<Cursor, Void, Void> loadTask;
-	private boolean matchDataLoaded;
+	private AsyncTask<Cursor, Void, Void> mLoadTask;
+	private boolean mMatchDataLoaded;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		matchDataLoaded = false;
+		mMatchDataLoaded = false;
 	}
 
 	@Override
@@ -109,18 +109,18 @@ OnDateSetListener {
 	@Override
 	public void onStop() {
 		super.onStop();
-		if (matchDataLoaded)
+		if (mMatchDataLoaded)
 			saveData();
 	}
 
 	public void loadUri(Uri matchUri) {
-		this.matchUri = matchUri;
+		this.mMatchUri = matchUri;
 
 		if (matchUri == null) {
-			matchDataLoaded = false;
+			mMatchDataLoaded = false;
 
-			if (loadTask != null) loadTask.cancel(false);
-			loadTask = null;
+			if (mLoadTask != null) mLoadTask.cancel(false);
+			mLoadTask = null;
 
 			new AsyncTask<Void, Void, Void>() {
 				@Override
@@ -129,9 +129,9 @@ OnDateSetListener {
 				}
 				@Override
 				protected void onPostExecute(Void result) {
-					hide(scoresheet);
-					hide(progress);
-					show(noDataText);
+					hide(mScoresheet);
+					hide(mProgress);
+					show(mNoDataText);
 				};
 			}.execute();
 		} else {
@@ -141,14 +141,14 @@ OnDateSetListener {
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new CursorLoader(getActivity(), matchUri,
+		return new CursorLoader(getActivity(), mMatchUri,
 				null, null, null, null);
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		matchDataLoaded = false;
-		loadTask = new AsyncTask<Cursor, Void, Void>() {
+		mMatchDataLoaded = false;
+		mLoadTask = new AsyncTask<Cursor, Void, Void>() {
 			private long tDate;
 			private String tHomeTeam;
 			private String tAwayTeam;
@@ -163,9 +163,9 @@ OnDateSetListener {
 			@Override
 			protected void onProgressUpdate(Void... values) {
 				super.onProgressUpdate(values);
-				hide(scoresheet);
-				hide(noDataText);
-				show(progress);
+				hide(mScoresheet);
+				hide(mNoDataText);
+				show(mProgress);
 			}
 
 			@Override
@@ -200,22 +200,22 @@ OnDateSetListener {
 			@Override
 			protected void onPostExecute(Void result) {
 				setDate(new Date(tDate));
-				homeTeam.setText(tHomeTeam);
-				awayTeam.setText(tAwayTeam);
-				fillNames(homePlayers, tHomePlayers);
-				fillNames(awayPlayers, tAwayPlayers);
-				fillValues(homeAves, tHomeAves);
-				fillValues(awayAves, tAwayAves);
-				fillValues(homeScores, tHomeScores);
-				fillValues(awayScores, tAwayScores);
+				mHomeTeam.setText(tHomeTeam);
+				mAwayTeam.setText(tAwayTeam);
+				fillNames(mHomePlayers, tHomePlayers);
+				fillNames(mAwayPlayers, tAwayPlayers);
+				fillValues(mHomeAves, tHomeAves);
+				fillValues(mAwayAves, tAwayAves);
+				fillValues(mHomeScores, tHomeScores);
+				fillValues(mAwayScores, tAwayScores);
 				setEroFromBitmask(eroBitmask);
 
-				matchDataLoaded = true;
-				loadTask = null;
+				mMatchDataLoaded = true;
+				mLoadTask = null;
 
-				hide(progress);
-				hide(noDataText);
-				show(scoresheet);
+				hide(mProgress);
+				hide(mNoDataText);
+				show(mScoresheet);
 			}
 		}.execute(data);
 	}
@@ -225,7 +225,7 @@ OnDateSetListener {
 		loadUri(null);
 	}
 
-	private View.OnClickListener scoreBoxClickListener =
+	private View.OnClickListener mScoreBoxClickListener =
 			new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -295,7 +295,7 @@ OnDateSetListener {
 		view2.setEro(false);
 	}
 
-	private OnValueChangedListener totalChangedListener =
+	private OnValueChangedListener mTotalChangedListener =
 			new OnValueChangedListener() {
 		@Override
 		public void onValueChanged(SummableInteger subject) {
@@ -338,7 +338,7 @@ OnDateSetListener {
 		public void onAttachListener(SummableInteger subject) {}
 	};
 
-	private View.OnClickListener averageBoxClickListener =
+	private View.OnClickListener mAverageBoxClickListener =
 			new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -374,16 +374,18 @@ OnDateSetListener {
 		view.clearValue();
 	}
 
-	private OnValueChangedListener avgChangedListener =
+	private OnValueChangedListener mAvgChangedListener =
 			new OnValueChangedListener() {
 		@Override
 		public void onValueChanged(SummableInteger subject) {
-			int homeAvg = Math.max(awayAve.getValue() - homeAve.getValue(), 0);
-			int awayAvg = Math.max(homeAve.getValue() - awayAve.getValue(), 0);
+			int homeAvg = Math.max(
+					mAwayAve.getValue() - mHomeAve.getValue(), 0);
+			int awayAvg = Math.max(
+					mHomeAve.getValue() - mAwayAve.getValue(), 0);
 
 			for (int i = 0; i < ROUNDS; i++) {
-				SummableInteger homeRoundAve = homeRoundAves.get(i);
-				SummableInteger awayRoundAve = awayRoundAves.get(i);
+				SummableInteger homeRoundAve = mHomeRoundAves.get(i);
+				SummableInteger awayRoundAve = mAwayRoundAves.get(i);
 				if (homeAvg > 0) {
 					homeRoundAve.setValue(homeAvg);
 					awayRoundAve.clearValue();
@@ -403,12 +405,12 @@ OnDateSetListener {
 		public void onDetachListener(SummableInteger subject) {}
 	};
 
-	private View.OnClickListener dateBoxClickListener =
+	private View.OnClickListener mDateBoxClickListener =
 			new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			Calendar c = Calendar.getInstance();
-			c.setTimeInMillis(dateMs);
+			c.setTimeInMillis(mDateMs);
 			DatePickerDialog dialog = new DatePickerDialog(
 					getActivity(), ScoresheetFragment.this,
 					c.get(Calendar.YEAR),
@@ -431,42 +433,42 @@ OnDateSetListener {
 	private void saveData() {
 		ContentValues cv = new ContentValues();
 
-		cv.put(Matches.COLUMN_DATE, dateMs);
-		cv.put(Matches.COLUMN_TEAM_HOME, homeTeam.getText().toString());
-		cv.put(Matches.COLUMN_TEAM_AWAY, awayTeam.getText().toString());
-		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(homeAves));
-		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(awayAves));
-		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(homePlayers));
-		cv.put(Matches.COLUMN_PLAYER_NAMES_AWAY, getNamesString(awayPlayers));
-		cv.put(Matches.COLUMN_PLAYER_SCORES_HOME, getValuesString(homeScores));
-		cv.put(Matches.COLUMN_PLAYER_SCORES_AWAY, getValuesString(awayScores));
+		cv.put(Matches.COLUMN_DATE, mDateMs);
+		cv.put(Matches.COLUMN_TEAM_HOME, mHomeTeam.getText().toString());
+		cv.put(Matches.COLUMN_TEAM_AWAY, mAwayTeam.getText().toString());
+		cv.put(Matches.COLUMN_PLAYER_AVES_HOME, getValuesString(mHomeAves));
+		cv.put(Matches.COLUMN_PLAYER_AVES_AWAY, getValuesString(mAwayAves));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_HOME, getNamesString(mHomePlayers));
+		cv.put(Matches.COLUMN_PLAYER_NAMES_AWAY, getNamesString(mAwayPlayers));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_HOME, getValuesString(mHomeScores));
+		cv.put(Matches.COLUMN_PLAYER_SCORES_AWAY, getValuesString(mAwayScores));
 		cv.put(Matches.COLUMN_ERO_BITMASK, getEroBitmask());
 
 		int homeWins = 0;
-		for (SumView view : homeTotals) {
+		for (SumView view : mHomeTotals) {
 			if (view.isCircled()) homeWins++;
 		}
-		if (homeFinalRound.get(PLAYERS + 2).isCircled()) homeWins++;
+		if (mHomeFinalRound.get(PLAYERS + 2).isCircled()) homeWins++;
 		cv.put(Matches.COLUMN_ROUND_WINS_HOME, homeWins);
 
 		int awayWins = 0;
-		for (SumView view : awayTotals) {
+		for (SumView view : mAwayTotals) {
 			if (view.isCircled()) awayWins++;
 		}
-		if (awayFinalRound.get(PLAYERS + 2).isCircled()) awayWins++;
+		if (mAwayFinalRound.get(PLAYERS + 2).isCircled()) awayWins++;
 		cv.put(Matches.COLUMN_ROUND_WINS_AWAY, awayWins);
 
-		getActivity().getContentResolver().update(matchUri, cv, null, null);
+		getActivity().getContentResolver().update(mMatchUri, cv, null, null);
 	}
 
 	private void setEroFromBitmask(long eroBitmask) {
 		if (eroBitmask == 0) return;
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
 			if (((1 << i) & eroBitmask) > 0) {
-				if (homeScores.get(i).getValue() == 10) {
-					homeScores.get(i).setEro(true);
+				if (mHomeScores.get(i).getValue() == 10) {
+					mHomeScores.get(i).setEro(true);
 				} else {
-					awayScores.get(i).setEro(true);
+					mAwayScores.get(i).setEro(true);
 				}
 			}
 		}
@@ -476,7 +478,7 @@ OnDateSetListener {
 		long mask = 0;
 
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
-			if (homeScores.get(i).isEro() || awayScores.get(i).isEro())
+			if (mHomeScores.get(i).isEro() || mAwayScores.get(i).isEro())
 				mask |= 1 << i;
 		}
 
@@ -484,157 +486,157 @@ OnDateSetListener {
 	}
 
 	private void setDate(Date newDate) {
-		dateMs = newDate.getTime();
-		date.setText(sdf.format(newDate));
+		mDateMs = newDate.getTime();
+		mDate.setText(sSdf.format(newDate));
 	}
 
 	private void getViewReferences(View v) {
 		initLists();
 
-		progress = (View) v.findViewById(R.id.scoresheetProgressBar);
-		noDataText = (View) v.findViewById(R.id.scoresheetNoDataText);
-		scoresheet = (View) v.findViewById(R.id.scoresheet);
+		mProgress = (View) v.findViewById(R.id.scoresheetProgressBar);
+		mNoDataText = (View) v.findViewById(R.id.scoresheetNoDataText);
+		mScoresheet = (View) v.findViewById(R.id.scoresheet);
 
-		date = (TextView) v.findViewById(R.id.dateView);
+		mDate = (TextView) v.findViewById(R.id.dateView);
 
-		homeTeam = (EditText) v.findViewById(R.id.homeTeamName);
-		awayTeam = (EditText) v.findViewById(R.id.awayTeamName);
+		mHomeTeam = (EditText) v.findViewById(R.id.homeTeamName);
+		mAwayTeam = (EditText) v.findViewById(R.id.awayTeamName);
 
-		homePlayers.add((EditText) v.findViewById(R.id.homeP1Name));
-		homePlayers.add((EditText) v.findViewById(R.id.homeP2Name));
-		homePlayers.add((EditText) v.findViewById(R.id.homeP3Name));
-		homePlayers.add((EditText) v.findViewById(R.id.homeP4Name));
-		homePlayers.add((EditText) v.findViewById(R.id.homeP5Name));
-		awayPlayers.add((EditText) v.findViewById(R.id.awayP1Name));
-		awayPlayers.add((EditText) v.findViewById(R.id.awayP2Name));
-		awayPlayers.add((EditText) v.findViewById(R.id.awayP3Name));
-		awayPlayers.add((EditText) v.findViewById(R.id.awayP4Name));
-		awayPlayers.add((EditText) v.findViewById(R.id.awayP5Name));
+		mHomePlayers.add((EditText) v.findViewById(R.id.homeP1Name));
+		mHomePlayers.add((EditText) v.findViewById(R.id.homeP2Name));
+		mHomePlayers.add((EditText) v.findViewById(R.id.homeP3Name));
+		mHomePlayers.add((EditText) v.findViewById(R.id.homeP4Name));
+		mHomePlayers.add((EditText) v.findViewById(R.id.homeP5Name));
+		mAwayPlayers.add((EditText) v.findViewById(R.id.awayP1Name));
+		mAwayPlayers.add((EditText) v.findViewById(R.id.awayP2Name));
+		mAwayPlayers.add((EditText) v.findViewById(R.id.awayP3Name));
+		mAwayPlayers.add((EditText) v.findViewById(R.id.awayP4Name));
+		mAwayPlayers.add((EditText) v.findViewById(R.id.awayP5Name));
 
-		homeAves.add((IntegerView) v.findViewById(R.id.homeP1Ave));
-		homeAves.add((IntegerView) v.findViewById(R.id.homeP2Ave));
-		homeAves.add((IntegerView) v.findViewById(R.id.homeP3Ave));
-		homeAves.add((IntegerView) v.findViewById(R.id.homeP4Ave));
-		homeAves.add((IntegerView) v.findViewById(R.id.homeP5Ave));
-		awayAves.add((IntegerView) v.findViewById(R.id.awayP1Ave));
-		awayAves.add((IntegerView) v.findViewById(R.id.awayP2Ave));
-		awayAves.add((IntegerView) v.findViewById(R.id.awayP3Ave));
-		awayAves.add((IntegerView) v.findViewById(R.id.awayP4Ave));
-		awayAves.add((IntegerView) v.findViewById(R.id.awayP5Ave));
+		mHomeAves.add((IntegerView) v.findViewById(R.id.homeP1Ave));
+		mHomeAves.add((IntegerView) v.findViewById(R.id.homeP2Ave));
+		mHomeAves.add((IntegerView) v.findViewById(R.id.homeP3Ave));
+		mHomeAves.add((IntegerView) v.findViewById(R.id.homeP4Ave));
+		mHomeAves.add((IntegerView) v.findViewById(R.id.homeP5Ave));
+		mAwayAves.add((IntegerView) v.findViewById(R.id.awayP1Ave));
+		mAwayAves.add((IntegerView) v.findViewById(R.id.awayP2Ave));
+		mAwayAves.add((IntegerView) v.findViewById(R.id.awayP3Ave));
+		mAwayAves.add((IntegerView) v.findViewById(R.id.awayP4Ave));
+		mAwayAves.add((IntegerView) v.findViewById(R.id.awayP5Ave));
 
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R1));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R1));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R1));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R1));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R1));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R2));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R2));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R2));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R2));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R2));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R3));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R3));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R3));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R3));
-		homeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R3));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R1));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R1));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R1));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R1));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R1));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R2));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R2));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R2));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R2));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R2));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R3));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R3));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R3));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R3));
-		awayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R3));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R1));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R1));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R1));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R1));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R1));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R2));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R2));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R2));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R2));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R2));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP1R3));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP2R3));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP3R3));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP4R3));
+		mHomeScores.add((PlayerScoreView) v.findViewById(R.id.homeP5R3));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R1));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R1));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R1));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R1));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R1));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R2));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R2));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R2));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R2));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R2));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP1R3));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP2R3));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP3R3));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP4R3));
+		mAwayScores.add((PlayerScoreView) v.findViewById(R.id.awayP5R3));
 
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeP1Total));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeP2Total));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeP3Total));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeP4Total));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeP5Total));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeSubtotalR4));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeAveR4));
-		homeFinalRound.add((SumView) v.findViewById(R.id.homeTotalR4));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayP1Total));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayP2Total));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayP3Total));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayP4Total));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayP5Total));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awaySubtotalR4));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayAveR4));
-		awayFinalRound.add((SumView) v.findViewById(R.id.awayTotalR4));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeP1Total));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeP2Total));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeP3Total));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeP4Total));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeP5Total));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeSubtotalR4));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeAveR4));
+		mHomeFinalRound.add((SumView) v.findViewById(R.id.homeTotalR4));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayP1Total));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayP2Total));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayP3Total));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayP4Total));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayP5Total));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awaySubtotalR4));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayAveR4));
+		mAwayFinalRound.add((SumView) v.findViewById(R.id.awayTotalR4));
 
-		homeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR1));
-		homeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR2));
-		homeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR3));
-		awaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR1));
-		awaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR2));
-		awaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR3));
+		mHomeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR1));
+		mHomeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR2));
+		mHomeSubtotals.add((SumView) v.findViewById(R.id.homeSubtotalR3));
+		mAwaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR1));
+		mAwaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR2));
+		mAwaySubtotals.add((SumView) v.findViewById(R.id.awaySubtotalR3));
 
-		homeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR1));
-		homeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR2));
-		homeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR3));
-		awayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR1));
-		awayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR2));
-		awayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR3));
+		mHomeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR1));
+		mHomeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR2));
+		mHomeRoundAves.add((IntegerView) v.findViewById(R.id.homeAveR3));
+		mAwayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR1));
+		mAwayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR2));
+		mAwayRoundAves.add((IntegerView) v.findViewById(R.id.awayAveR3));
 
-		homeTotals.add((SumView) v.findViewById(R.id.homeTotalR1));
-		homeTotals.add((SumView) v.findViewById(R.id.homeTotalR2));
-		homeTotals.add((SumView) v.findViewById(R.id.homeTotalR3));
-		awayTotals.add((SumView) v.findViewById(R.id.awayTotalR1));
-		awayTotals.add((SumView) v.findViewById(R.id.awayTotalR2));
-		awayTotals.add((SumView) v.findViewById(R.id.awayTotalR3));
+		mHomeTotals.add((SumView) v.findViewById(R.id.homeTotalR1));
+		mHomeTotals.add((SumView) v.findViewById(R.id.homeTotalR2));
+		mHomeTotals.add((SumView) v.findViewById(R.id.homeTotalR3));
+		mAwayTotals.add((SumView) v.findViewById(R.id.awayTotalR1));
+		mAwayTotals.add((SumView) v.findViewById(R.id.awayTotalR2));
+		mAwayTotals.add((SumView) v.findViewById(R.id.awayTotalR3));
 
-		homeAve = (SumView) v.findViewById(R.id.homeAve);
-		awayAve = (SumView) v.findViewById(R.id.awayAve);
+		mHomeAve = (SumView) v.findViewById(R.id.homeAve);
+		mAwayAve = (SumView) v.findViewById(R.id.awayAve);
 	}
 
 	private void initLists() {
-		homePlayers = new ArrayList<EditText>(PLAYERS);
-		awayPlayers = new ArrayList<EditText>(PLAYERS);
-		homeAves = new ArrayList<IntegerView>(PLAYERS);
-		awayAves = new ArrayList<IntegerView>(PLAYERS);
-		homeScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
-		awayScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
-		homeFinalRound = new ArrayList<SumView>(PLAYERS + 3);
-		awayFinalRound = new ArrayList<SumView>(PLAYERS + 3);
-		homeSubtotals = new ArrayList<SumView>(ROUNDS);
-		awaySubtotals = new ArrayList<SumView>(ROUNDS);
-		homeRoundAves = new ArrayList<IntegerView>(ROUNDS);
-		awayRoundAves = new ArrayList<IntegerView>(ROUNDS);
-		homeTotals = new ArrayList<SumView>(ROUNDS);
-		awayTotals = new ArrayList<SumView>(ROUNDS);
+		mHomePlayers = new ArrayList<EditText>(PLAYERS);
+		mAwayPlayers = new ArrayList<EditText>(PLAYERS);
+		mHomeAves = new ArrayList<IntegerView>(PLAYERS);
+		mAwayAves = new ArrayList<IntegerView>(PLAYERS);
+		mHomeScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
+		mAwayScores = new ArrayList<PlayerScoreView>(PLAYERS * ROUNDS);
+		mHomeFinalRound = new ArrayList<SumView>(PLAYERS + 3);
+		mAwayFinalRound = new ArrayList<SumView>(PLAYERS + 3);
+		mHomeSubtotals = new ArrayList<SumView>(ROUNDS);
+		mAwaySubtotals = new ArrayList<SumView>(ROUNDS);
+		mHomeRoundAves = new ArrayList<IntegerView>(ROUNDS);
+		mAwayRoundAves = new ArrayList<IntegerView>(ROUNDS);
+		mHomeTotals = new ArrayList<SumView>(ROUNDS);
+		mAwayTotals = new ArrayList<SumView>(ROUNDS);
 	}
 
 	private void initTags() {
 		int r4total = PLAYERS + 2;
-		linkViewsByTags(homeFinalRound.get(r4total),
-				awayFinalRound.get(r4total));
+		linkViewsByTags(mHomeFinalRound.get(r4total),
+				mAwayFinalRound.get(r4total));
 
 		for (int i = 0; i < ROUNDS; i++) {
-			linkViewsByTags(homeTotals.get(i), awayTotals.get(i));
+			linkViewsByTags(mHomeTotals.get(i), mAwayTotals.get(i));
 		}
 
 		for (int i = 0; i < PLAYERS; i++) {
-			linkViewsByTags(homeAves.get(i), homePlayers.get(i),
+			linkViewsByTags(mHomeAves.get(i), mHomePlayers.get(i),
 					PLAYER_TAG_KEY);
-			linkViewsByTags(awayAves.get(i), awayPlayers.get(i),
+			linkViewsByTags(mAwayAves.get(i), mAwayPlayers.get(i),
 					PLAYER_TAG_KEY);
 		}
 
 		for (int i = 0; i < ROUNDS * PLAYERS; i++) {
-			linkViewsByTags(homeScores.get(i), homePlayers.get(i % PLAYERS),
+			linkViewsByTags(mHomeScores.get(i), mHomePlayers.get(i % PLAYERS),
 					PLAYER_TAG_KEY);
-			linkViewsByTags(awayScores.get(i), awayPlayers.get(i % PLAYERS),
+			linkViewsByTags(mAwayScores.get(i), mAwayPlayers.get(i % PLAYERS),
 					PLAYER_TAG_KEY);
-			PlayerScoreView home = homeScores.get(i);
-			for (PlayerScoreView away : awayScores) {
+			PlayerScoreView home = mHomeScores.get(i);
+			for (PlayerScoreView away : mAwayScores) {
 				if (home.getRound() == away.getRound() &&
 						home.getGame() == away.getGame()) {
 					linkViewsByTags(home, away);
@@ -644,28 +646,28 @@ OnDateSetListener {
 	}
 
 	private void initListeners() {
-		date.setOnClickListener(dateBoxClickListener);
+		mDate.setOnClickListener(mDateBoxClickListener);
 
 		for (int i = 0; i < PLAYERS; i++) {
-			addViewToSum(homeAve, homeAves.get(i));
-			addViewToSum(awayAve, awayAves.get(i));
-			homeAves.get(i).setOnClickListener(averageBoxClickListener);
-			awayAves.get(i).setOnClickListener(averageBoxClickListener);
+			addViewToSum(mHomeAve, mHomeAves.get(i));
+			addViewToSum(mAwayAve, mAwayAves.get(i));
+			mHomeAves.get(i).setOnClickListener(mAverageBoxClickListener);
+			mAwayAves.get(i).setOnClickListener(mAverageBoxClickListener);
 		}
 
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
-			PlayerScoreView homeScore = homeScores.get(i);
-			PlayerScoreView awayScore = awayScores.get(i);
+			PlayerScoreView homeScore = mHomeScores.get(i);
+			PlayerScoreView awayScore = mAwayScores.get(i);
 
 			int round = i / PLAYERS;
 			int game = i % PLAYERS;
 
-			addViewToSum(homeSubtotals.get(round), homeScore);
-			addViewToSum(homeFinalRound.get(game), homeScore);
-			addViewToSum(awaySubtotals.get(round), awayScore);
-			addViewToSum(awayFinalRound.get(game), awayScore);
-			homeScores.get(i).setOnClickListener(scoreBoxClickListener);
-			awayScores.get(i).setOnClickListener(scoreBoxClickListener);
+			addViewToSum(mHomeSubtotals.get(round), homeScore);
+			addViewToSum(mHomeFinalRound.get(game), homeScore);
+			addViewToSum(mAwaySubtotals.get(round), awayScore);
+			addViewToSum(mAwayFinalRound.get(game), awayScore);
+			mHomeScores.get(i).setOnClickListener(mScoreBoxClickListener);
+			mAwayScores.get(i).setOnClickListener(mScoreBoxClickListener);
 		}
 
 		final int r4Subtotal = PLAYERS + 0;
@@ -673,29 +675,33 @@ OnDateSetListener {
 		final int r4Total = PLAYERS + 2;
 
 		for (int i = 0; i < ROUNDS; i++) {
-			addViewToSum(homeTotals.get(i), homeSubtotals.get(i));
-			addViewToSum(homeTotals.get(i), homeRoundAves.get(i));
-			addViewToSum(homeFinalRound.get(r4Subtotal), homeSubtotals.get(i));
-			addViewToSum(homeFinalRound.get(r4AveTotal), homeRoundAves.get(i));
-			addViewToSum(homeFinalRound.get(r4Total), homeTotals.get(i));
+			addViewToSum(mHomeTotals.get(i), mHomeSubtotals.get(i));
+			addViewToSum(mHomeTotals.get(i), mHomeRoundAves.get(i));
+			addViewToSum(mHomeFinalRound.get(r4Subtotal),
+					mHomeSubtotals.get(i));
+			addViewToSum(mHomeFinalRound.get(r4AveTotal),
+					mHomeRoundAves.get(i));
+			addViewToSum(mHomeFinalRound.get(r4Total), mHomeTotals.get(i));
 
-			addViewToSum(awayTotals.get(i), awaySubtotals.get(i));
-			addViewToSum(awayTotals.get(i), awayRoundAves.get(i));
-			addViewToSum(awayFinalRound.get(r4Subtotal), awaySubtotals.get(i));
-			addViewToSum(awayFinalRound.get(r4AveTotal), awayRoundAves.get(i));
-			addViewToSum(awayFinalRound.get(r4Total), awayTotals.get(i));
+			addViewToSum(mAwayTotals.get(i), mAwaySubtotals.get(i));
+			addViewToSum(mAwayTotals.get(i), mAwayRoundAves.get(i));
+			addViewToSum(mAwayFinalRound.get(r4Subtotal),
+					mAwaySubtotals.get(i));
+			addViewToSum(mAwayFinalRound.get(r4AveTotal),
+					mAwayRoundAves.get(i));
+			addViewToSum(mAwayFinalRound.get(r4Total), mAwayTotals.get(i));
 
-			homeTotals.get(i).addOnValueChangedListener(totalChangedListener);
-			awayTotals.get(i).addOnValueChangedListener(totalChangedListener);
+			mHomeTotals.get(i).addOnValueChangedListener(mTotalChangedListener);
+			mAwayTotals.get(i).addOnValueChangedListener(mTotalChangedListener);
 		}
 
-		homeFinalRound.get(r4Total).addOnValueChangedListener(
-				totalChangedListener);
-		awayFinalRound.get(r4Total).addOnValueChangedListener(
-				totalChangedListener);
+		mHomeFinalRound.get(r4Total).addOnValueChangedListener(
+				mTotalChangedListener);
+		mAwayFinalRound.get(r4Total).addOnValueChangedListener(
+				mTotalChangedListener);
 
-		homeAve.addOnValueChangedListener(avgChangedListener);
-		awayAve.addOnValueChangedListener(avgChangedListener);
+		mHomeAve.addOnValueChangedListener(mAvgChangedListener);
+		mAwayAve.addOnValueChangedListener(mAvgChangedListener);
 	}
 
 	private static void show(View v) {

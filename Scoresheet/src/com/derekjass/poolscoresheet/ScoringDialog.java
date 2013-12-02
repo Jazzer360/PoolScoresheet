@@ -31,28 +31,28 @@ public class ScoringDialog extends DialogFragment {
 	public static final String AWAY_SCORE_KEY = "away_score";
 	public static final String ERO_KEY = "ero";
 
-	private int homeViewId;
-	private int awayViewId;
-	private ScoringListener listener;
+	private int mHomeViewId;
+	private int mAwayViewId;
+	private ScoringListener mListener;
 
-	private CheckBox eroBox;
-	private Set<RadioButton> scoreButtons = new HashSet<RadioButton>();
-	private Set<RadioButton> playerButtons = new HashSet<RadioButton>();
-	private View.OnClickListener scoreButtonListener =
+	private CheckBox mEroBox;
+	private Set<RadioButton> mScoreButtons = new HashSet<RadioButton>();
+	private Set<RadioButton> mPlayerButtons = new HashSet<RadioButton>();
+	private View.OnClickListener mScoreButtonListener =
 			new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			for (RadioButton button : scoreButtons) {
+			for (RadioButton button : mScoreButtons) {
 				button.setChecked(false);
 			}
 			((RadioButton) v).setChecked(true);
 		}
 	};
-	private View.OnClickListener playerButtonListener =
+	private View.OnClickListener mPlayerButtonListener =
 			new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			for (RadioButton button : playerButtons) {
+			for (RadioButton button : mPlayerButtons) {
 				button.setChecked(false);
 			}
 			((RadioButton) v).setChecked(true);
@@ -65,7 +65,7 @@ public class ScoringDialog extends DialogFragment {
 
 		if (getTargetFragment() == null) {
 			try {
-				listener = (ScoringListener) activity;
+				mListener = (ScoringListener) activity;
 			} catch (ClassCastException e) {
 				throw new ClassCastException(activity.toString() +
 						" must implement ScoringListener or" +
@@ -73,7 +73,7 @@ public class ScoringDialog extends DialogFragment {
 			}
 		} else {
 			try {
-				listener = (ScoringListener) getTargetFragment();
+				mListener = (ScoringListener) getTargetFragment();
 			} catch (ClassCastException e) {
 				throw new ClassCastException(getTargetFragment().toString() +
 						" must implement ScoringListener");
@@ -98,7 +98,7 @@ public class ScoringDialog extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				RadioButton winner = null;
 				boolean winnerSelected = false;
-				for (RadioButton button : playerButtons) {
+				for (RadioButton button : mPlayerButtons) {
 					if (button.isChecked()) {
 						winnerSelected = true;
 						winner = button;
@@ -108,7 +108,7 @@ public class ScoringDialog extends DialogFragment {
 
 				boolean scoreSelected = false;
 				CharSequence score = "";
-				for (RadioButton button : scoreButtons) {
+				for (RadioButton button : mScoreButtons) {
 					if (button.isChecked()) {
 						scoreSelected = true;
 						score = button.getText();
@@ -117,7 +117,7 @@ public class ScoringDialog extends DialogFragment {
 				}
 
 				if (!(winnerSelected && scoreSelected)) {
-					listener.onScoreCleared(homeViewId, awayViewId);
+					mListener.onScoreCleared(mHomeViewId, mAwayViewId);
 					return;
 				}
 
@@ -125,15 +125,15 @@ public class ScoringDialog extends DialogFragment {
 						(winner.getId() == R.id.homeRadio) ? true : false;
 
 				if (homeWins) {
-					listener.onScorePicked(
-							homeViewId, getActivity().getText(R.string.n10),
-							awayViewId, score,
-							eroBox.isChecked());
+					mListener.onScorePicked(
+							mHomeViewId, getActivity().getText(R.string.n10),
+							mAwayViewId, score,
+							mEroBox.isChecked());
 				} else {
-					listener.onScorePicked(
-							awayViewId, getActivity().getText(R.string.n10),
-							homeViewId, score,
-							eroBox.isChecked());
+					mListener.onScorePicked(
+							mAwayViewId, getActivity().getText(R.string.n10),
+							mHomeViewId, score,
+							mEroBox.isChecked());
 				}
 			}
 		})
@@ -141,13 +141,13 @@ public class ScoringDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listener.onScoreCleared(homeViewId, awayViewId);
+				mListener.onScoreCleared(mHomeViewId, mAwayViewId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);
 
-		homeViewId = getArguments().getInt(HOME_VIEW_ID_KEY);
-		awayViewId = getArguments().getInt(AWAY_VIEW_ID_KEY);
+		mHomeViewId = getArguments().getInt(HOME_VIEW_ID_KEY);
+		mAwayViewId = getArguments().getInt(AWAY_VIEW_ID_KEY);
 
 		return builder.create();
 	}
@@ -157,7 +157,7 @@ public class ScoringDialog extends DialogFragment {
 
 		RadioButton homePlayer = (RadioButton) v.findViewById(R.id.homeRadio);
 		homePlayer.setText(getArguments().getString(HOME_PLAYER_KEY));
-		homePlayer.setOnClickListener(playerButtonListener);
+		homePlayer.setOnClickListener(mPlayerButtonListener);
 		String homeScore = getArguments().getString(HOME_SCORE_KEY);
 		if (homeScore != null &&
 				homeScore.equals(getActivity().getString(R.string.n10))) {
@@ -165,11 +165,11 @@ public class ScoringDialog extends DialogFragment {
 		} else {
 			score = homeScore;
 		}
-		playerButtons.add(homePlayer);
+		mPlayerButtons.add(homePlayer);
 
 		RadioButton awayPlayer = (RadioButton) v.findViewById(R.id.awayRadio);
 		awayPlayer.setText(getArguments().getString(AWAY_PLAYER_KEY));
-		awayPlayer.setOnClickListener(playerButtonListener);
+		awayPlayer.setOnClickListener(mPlayerButtonListener);
 		String awayScore = getArguments().getString(AWAY_SCORE_KEY);
 		if (awayScore != null &&
 				awayScore.equals(getActivity().getString(R.string.n10))) {
@@ -177,21 +177,21 @@ public class ScoringDialog extends DialogFragment {
 		} else {
 			score = awayScore;
 		}
-		playerButtons.add(awayPlayer);
+		mPlayerButtons.add(awayPlayer);
 
 		ViewGroup buttonLayout =
 				(ViewGroup) v.findViewById(R.id.dialog_buttons);
 
 		for (int i = 0; i < buttonLayout.getChildCount(); i++) {
 			RadioButton button = (RadioButton) buttonLayout.getChildAt(i);
-			button.setOnClickListener(scoreButtonListener);
+			button.setOnClickListener(mScoreButtonListener);
 			if (button.getText().equals(score)) {
 				button.setChecked(true);
 			}
-			scoreButtons.add(button);
+			mScoreButtons.add(button);
 		}
 
-		eroBox = (CheckBox) v.findViewById(R.id.eroCheckbox);
-		eroBox.setChecked(getArguments().getBoolean(ERO_KEY));
+		mEroBox = (CheckBox) v.findViewById(R.id.eroCheckbox);
+		mEroBox.setChecked(getArguments().getBoolean(ERO_KEY));
 	}
 }
