@@ -49,9 +49,6 @@ implements LoaderCallbacks<Cursor> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		adapter = new MatchCursorAdapter(getActivity(), null, 0);
-		setListAdapter(adapter);
-
 		getLoaderManager().initLoader(0, null, this);
 
 		setEmptyText(getString(R.string.no_matches));
@@ -134,7 +131,12 @@ implements LoaderCallbacks<Cursor> {
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		adapter.swapCursor(data);
+		if (adapter == null) {
+			adapter = new MatchCursorAdapter(getActivity(), data, 0);
+			setListAdapter(adapter);
+		} else {
+			adapter.swapCursor(data);
+		}
 	}
 
 	@Override

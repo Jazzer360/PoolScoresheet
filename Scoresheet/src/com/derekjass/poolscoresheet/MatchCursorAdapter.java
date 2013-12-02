@@ -14,53 +14,78 @@ import com.derekjass.poolscoresheet.provider.LeagueContract.Matches;
 
 public class MatchCursorAdapter extends CursorAdapter {
 
+	private LayoutInflater mInflater;
+
+	private final int mDateCol;
+	private final int mHomeTeamCol;
+	private final int mAwayTeamCol;
+	private final int mHomeWinsCol;
+	private final int mAwayWinsCol;
+
 	public MatchCursorAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
+
+		mDateCol = c.getColumnIndexOrThrow(Matches.COLUMN_DATE);
+		mHomeTeamCol = c.getColumnIndexOrThrow(Matches.COLUMN_TEAM_HOME);
+		mAwayTeamCol = c.getColumnIndexOrThrow(Matches.COLUMN_TEAM_AWAY);
+		mHomeWinsCol = c.getColumnIndexOrThrow(Matches.COLUMN_ROUND_WINS_HOME);
+		mAwayWinsCol = c.getColumnIndexOrThrow(Matches.COLUMN_ROUND_WINS_AWAY);
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		LayoutInflater li = LayoutInflater.from(context);
-		View newView = li.inflate(R.layout.listitem_match, parent, false);
+		if (mInflater == null)
+			mInflater = LayoutInflater.from(context);
+		View newView = mInflater.inflate(
+				R.layout.listitem_match, parent, false);
+
+		ViewHolder views = new ViewHolder();
+		views.dateView =
+				(TextView) newView.findViewById(R.id.listDate);
+		views.inProgressView =
+				(TextView) newView.findViewById(R.id.listMatchIncomplete);
+		views.homeTeamView =
+				(TextView) newView.findViewById(R.id.listHomeTeam);
+		views.awayTeamView =
+				(TextView) newView.findViewById(R.id.listAwayTeam);
+		views.homeWinsView =
+				(TextView) newView.findViewById(R.id.listHomeWins);
+		views.awayWinsView =
+				(TextView) newView.findViewById(R.id.listAwayWins);
+
+		newView.setTag(views);
 		return newView;
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		Date date = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
-				Matches.COLUMN_DATE)));
+		ViewHolder views = (ViewHolder) view.getTag();
 
-		String homeTeam = cursor.getString(cursor.getColumnIndexOrThrow(
-				Matches.COLUMN_TEAM_HOME));
-		String awayTeam = cursor.getString(cursor.getColumnIndexOrThrow(
-				Matches.COLUMN_TEAM_AWAY));
+		Date date = new Date(cursor.getLong(mDateCol));
 
-		int homeWins = cursor.getInt(cursor.getColumnIndexOrThrow(
-				Matches.COLUMN_ROUND_WINS_HOME));
-		int awayWins = cursor.getInt(cursor.getColumnIndexOrThrow(
-				Matches.COLUMN_ROUND_WINS_AWAY));
+		String homeTeam = cursor.getString(mHomeTeamCol);
+		String awayTeam = cursor.getString(mAwayTeamCol);
+
+		int homeWins = cursor.getInt(mHomeWinsCol);
+		int awayWins = cursor.getInt(mAwayWinsCol);
 
 		int progressVisibility =
 				homeWins + awayWins == 4 ? View.INVISIBLE : View.VISIBLE;
 
-		TextView dateView =
-				(TextView) view.findViewById(R.id.listDate);
-		TextView inProgressView =
-				(TextView) view.findViewById(R.id.listMatchIncomplete);
-		TextView homeTeamView =
-				(TextView) view.findViewById(R.id.listHomeTeam);
-		TextView awayTeamView =
-				(TextView) view.findViewById(R.id.listAwayTeam);
-		TextView homeWinsView =
-				(TextView) view.findViewById(R.id.listHomeWins);
-		TextView awayWinsView =
-				(TextView) view.findViewById(R.id.listAwayWins);
+		views.dateView.setText(ScoresheetFragment.sdf.format(date));
+		views.inProgressView.setVisibility(progressVisibility);
+		views.homeTeamView.setText(homeTeam);
+		views.awayTeamView.setText(awayTeam);
+		views.homeWinsView.setText("- " + String.valueOf(homeWins));
+		views.awayWinsView.setText("- " + String.valueOf(awayWins));
+	}
 
-		dateView.setText(ScoresheetFragment.sdf.format(date));
-		inProgressView.setVisibility(progressVisibility);
-		homeTeamView.setText(homeTeam);
-		awayTeamView.setText(awayTeam);
-		homeWinsView.setText("- " + String.valueOf(homeWins));
-		awayWinsView.setText("- " + String.valueOf(awayWins));
+	static class ViewHolder {
+		TextView dateView;
+		TextView inProgressView;
+		TextView homeTeamView;
+		TextView awayTeamView;
+		TextView homeWinsView;
+		TextView awayWinsView;
 	}
 }
