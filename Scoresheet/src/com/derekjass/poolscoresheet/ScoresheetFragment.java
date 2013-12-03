@@ -363,7 +363,7 @@ OnDateSetListener {
 	};
 
 	@Override
-	public void onAveragePicked(int viewId, CharSequence avg) {
+	public void onAveragePicked(int viewId, int avg) {
 		SummableInteger view = (SummableInteger) getView().findViewById(viewId);
 		view.setValue(avg);
 	}

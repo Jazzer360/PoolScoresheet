@@ -1,8 +1,5 @@
 package com.derekjass.poolscoresheet;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,13 +9,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 public class AveragePickerDialog extends DialogFragment {
 
 	public interface AveragePickerListener {
-		public void onAveragePicked(int viewId, CharSequence avg);
+		public void onAveragePicked(int viewId, int avg);
 		public void onAverageCleared(int viewId);
 	}
 
@@ -26,19 +23,10 @@ public class AveragePickerDialog extends DialogFragment {
 	public static final String VIEW_ID_KEY = "view_id";
 	public static final String AVG_KEY = "avg";
 
-	private int mViewClickedId;
+	private int mViewId;
 	private AveragePickerListener mListener;
 
-	private Set<RadioButton> mButtons = new HashSet<RadioButton>();
-	private View.OnClickListener mButtonListener = new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			for (RadioButton button : mButtons) {
-				button.setChecked(false);
-			}
-			((RadioButton) v).setChecked(true);
-		}
-	};
+	private NumberPicker mAvePicker;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -64,13 +52,20 @@ public class AveragePickerDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		mViewId = getArguments().getInt(VIEW_ID_KEY);
+
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 
-		View v = inflater.inflate(R.layout.dialog_average, null);
-		TextView name = (TextView) v.findViewById(R.id.dialog_name);
-		name.setText(getArguments().getString(NAME_KEY));
+		View v = inflater.inflate(R.layout.dialog_average,
+				(ViewGroup) getView(), false);
 
-		setupButtons((ViewGroup) v);
+		mAvePicker = (NumberPicker) v.findViewById(R.id.avePicker);
+		mAvePicker.setMaxValue(10);
+		mAvePicker.setWrapSelectorWheel(false);
+		mAvePicker.setValue(getArguments().getInt(AVG_KEY, 7));
+
+		TextView name = (TextView) v.findViewById(R.id.dialogName);
+		name.setText(getArguments().getString(NAME_KEY));
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.assign_average)
@@ -79,43 +74,18 @@ public class AveragePickerDialog extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				for (RadioButton button : mButtons) {
-					if (button.isChecked()) {
-						mListener.onAveragePicked(mViewClickedId,
-								button.getText());
-						return;
-					}
-					mListener.onAveragePicked(mViewClickedId, "");
-				}
+				mListener.onAveragePicked(mViewId, mAvePicker.getValue());
 			}
 		})
 		.setNeutralButton(R.string.clear,
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				mListener.onAverageCleared(mViewClickedId);
+				mListener.onAverageCleared(mViewId);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, null);
 
-		mViewClickedId = getArguments().getInt(VIEW_ID_KEY);
-
 		return builder.create();
-	}
-
-	private void setupButtons(ViewGroup v) {
-		for (int i = 0; i < v.getChildCount(); i++) {
-			View childView = v.getChildAt(i);
-			if (childView instanceof ViewGroup) {
-				setupButtons((ViewGroup) childView);
-			} else if (childView instanceof RadioButton) {
-				RadioButton button = (RadioButton) childView;
-				button.setOnClickListener(mButtonListener);
-				mButtons.add(button);
-
-				if (button.getText().equals(getArguments().getString(AVG_KEY)))
-					button.setChecked(true);
-			}
-		}
 	}
 }
