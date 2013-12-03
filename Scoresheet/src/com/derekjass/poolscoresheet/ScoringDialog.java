@@ -1,8 +1,5 @@
 package com.derekjass.poolscoresheet;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,15 +8,16 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 
 public class ScoringDialog extends DialogFragment {
 
 	public interface ScoringListener {
-		public void onScorePicked(int winViewId, CharSequence winScore,
-				int lossViewId, CharSequence lossScore, boolean ero);
+		public void onScorePicked(int winViewId, int winScore,
+				int lossViewId, int lossScore, boolean ero);
 		public void onScoreCleared(int viewId1, int viewId2);
 	}
 
@@ -36,26 +34,15 @@ public class ScoringDialog extends DialogFragment {
 	private ScoringListener mListener;
 
 	private CheckBox mEroBox;
-	private Set<RadioButton> mScoreButtons = new HashSet<RadioButton>();
-	private Set<RadioButton> mPlayerButtons = new HashSet<RadioButton>();
-	private View.OnClickListener mScoreButtonListener =
-			new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			for (RadioButton button : mScoreButtons) {
-				button.setChecked(false);
-			}
-			((RadioButton) v).setChecked(true);
-		}
-	};
+	private NumberPicker mScorePicker;
+	private RadioButton mHomePlayer;
+	private RadioButton mAwayPlayer;
 	private View.OnClickListener mPlayerButtonListener =
 			new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			for (RadioButton button : mPlayerButtons) {
-				button.setChecked(false);
-			}
-			((RadioButton) v).setChecked(true);
+			((CompoundButton) v).setChecked(true);
+			((CompoundButton) v.getTag()).setChecked(false);
 		}
 	};
 
@@ -83,57 +70,27 @@ public class ScoringDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-
 		View v = inflater.inflate(R.layout.dialog_scoring, null);
 		setupView(v);
 
-
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.select_winner)
 		.setView(v)
 		.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				RadioButton winner = null;
-				boolean winnerSelected = false;
-				for (RadioButton button : mPlayerButtons) {
-					if (button.isChecked()) {
-						winnerSelected = true;
-						winner = button;
-						break;
-					}
-				}
-
-				boolean scoreSelected = false;
-				CharSequence score = "";
-				for (RadioButton button : mScoreButtons) {
-					if (button.isChecked()) {
-						scoreSelected = true;
-						score = button.getText();
-						break;
-					}
-				}
-
-				if (!(winnerSelected && scoreSelected)) {
-					mListener.onScoreCleared(mHomeViewId, mAwayViewId);
-					return;
-				}
-
-				boolean homeWins =
-						(winner.getId() == R.id.homeRadio) ? true : false;
-
-				if (homeWins) {
-					mListener.onScorePicked(
-							mHomeViewId, getActivity().getText(R.string.n10),
-							mAwayViewId, score,
+				if (mHomePlayer.isChecked()) {
+					mListener.onScorePicked(mHomeViewId, 10,
+							mAwayViewId, mScorePicker.getValue(),
+							mEroBox.isChecked());
+				} else if (mAwayPlayer.isChecked()) {
+					mListener.onScorePicked(mAwayViewId, 10,
+							mHomeViewId, mScorePicker.getValue(),
 							mEroBox.isChecked());
 				} else {
-					mListener.onScorePicked(
-							mAwayViewId, getActivity().getText(R.string.n10),
-							mHomeViewId, score,
-							mEroBox.isChecked());
+					mListener.onScoreCleared(mHomeViewId, mAwayViewId);
 				}
 			}
 		})
@@ -146,52 +103,50 @@ public class ScoringDialog extends DialogFragment {
 		})
 		.setNegativeButton(android.R.string.cancel, null);
 
-		mHomeViewId = getArguments().getInt(HOME_VIEW_ID_KEY);
-		mAwayViewId = getArguments().getInt(AWAY_VIEW_ID_KEY);
 
 		return builder.create();
 	}
 
 	private void setupView(View v) {
-		String score = null;
+		mHomeViewId = getArguments().getInt(HOME_VIEW_ID_KEY);
+		mAwayViewId = getArguments().getInt(AWAY_VIEW_ID_KEY);
 
-		RadioButton homePlayer = (RadioButton) v.findViewById(R.id.homeRadio);
-		homePlayer.setText(getArguments().getString(HOME_PLAYER_KEY));
-		homePlayer.setOnClickListener(mPlayerButtonListener);
-		String homeScore = getArguments().getString(HOME_SCORE_KEY);
-		if (homeScore != null &&
-				homeScore.equals(getActivity().getString(R.string.n10))) {
-			homePlayer.setChecked(true);
-		} else {
-			score = homeScore;
-		}
-		mPlayerButtons.add(homePlayer);
+		int homeScore = getArguments().getInt(HOME_SCORE_KEY, -1);
+		int awayScore = getArguments().getInt(AWAY_SCORE_KEY, -1);
 
-		RadioButton awayPlayer = (RadioButton) v.findViewById(R.id.awayRadio);
-		awayPlayer.setText(getArguments().getString(AWAY_PLAYER_KEY));
-		awayPlayer.setOnClickListener(mPlayerButtonListener);
-		String awayScore = getArguments().getString(AWAY_SCORE_KEY);
-		if (awayScore != null &&
-				awayScore.equals(getActivity().getString(R.string.n10))) {
-			awayPlayer.setChecked(true);
-		} else {
-			score = awayScore;
-		}
-		mPlayerButtons.add(awayPlayer);
-
-		ViewGroup buttonLayout =
-				(ViewGroup) v.findViewById(R.id.dialog_buttons);
-
-		for (int i = 0; i < buttonLayout.getChildCount(); i++) {
-			RadioButton button = (RadioButton) buttonLayout.getChildAt(i);
-			button.setOnClickListener(mScoreButtonListener);
-			if (button.getText().equals(score)) {
-				button.setChecked(true);
-			}
-			mScoreButtons.add(button);
-		}
-
+		mScorePicker = (NumberPicker) v.findViewById(R.id.scorePicker);
 		mEroBox = (CheckBox) v.findViewById(R.id.eroCheckbox);
+		mHomePlayer = (RadioButton) v.findViewById(R.id.homeRadio);
+		mAwayPlayer = (RadioButton) v.findViewById(R.id.awayRadio);
+
+		mScorePicker.setMaxValue(7);
+		mScorePicker.setWrapSelectorWheel(false);
+
+		mHomePlayer.setText(getArguments().getString(HOME_PLAYER_KEY));
+		mAwayPlayer.setText(getArguments().getString(AWAY_PLAYER_KEY));
+		mHomePlayer.setOnClickListener(mPlayerButtonListener);
+		mAwayPlayer.setOnClickListener(mPlayerButtonListener);
+		linkViewsByTag(mHomePlayer, mAwayPlayer);
+
+		if (homeScore == 10) {
+			mHomePlayer.setChecked(true);
+			mAwayPlayer.setChecked(false);
+			mScorePicker.setValue(awayScore);
+		} else if (awayScore == 10) {
+			mAwayPlayer.setChecked(true);
+			mHomePlayer.setChecked(false);
+			mScorePicker.setValue(homeScore);
+		} else {
+			mHomePlayer.setChecked(false);
+			mAwayPlayer.setChecked(false);
+			mScorePicker.setValue(7);
+		}
+
 		mEroBox.setChecked(getArguments().getBoolean(ERO_KEY));
+	}
+
+	private static void linkViewsByTag(View v1, View v2) {
+		v1.setTag(v2);
+		v2.setTag(v1);
 	}
 }

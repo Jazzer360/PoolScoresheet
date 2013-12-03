@@ -236,8 +236,6 @@ OnDateSetListener {
 					(PlayerScoreView) (homeClicked ? v : v.getTag());
 			PlayerScoreView awayView =
 					(PlayerScoreView) (homeClicked ? v.getTag() : v);
-			String homeScore = homeView.getValueAsString();
-			String awayScore = awayView.getValueAsString();
 
 			TextView homePlayer = (TextView) homeView.getTag(PLAYER_TAG_KEY);
 			TextView awayPlayer = (TextView) awayView.getTag(PLAYER_TAG_KEY);
@@ -251,10 +249,12 @@ OnDateSetListener {
 			args.putString(ScoringDialog.AWAY_PLAYER_KEY,
 					!TextUtils.isEmpty(awayName) ?
 							awayName : awayPlayer.getHint().toString());
-			if (!TextUtils.isEmpty(homeScore))
-				args.putString(ScoringDialog.HOME_SCORE_KEY, homeScore);
-			if (!TextUtils.isEmpty(awayScore))
-				args.putString(ScoringDialog.AWAY_SCORE_KEY, awayScore);
+			if (homeView.hasValue()) {
+				args.putInt(ScoringDialog.HOME_SCORE_KEY, homeView.getValue());
+			}
+			if (awayView.hasValue()) {
+				args.putInt(ScoringDialog.AWAY_SCORE_KEY, awayView.getValue());
+			}
 			args.putInt(ScoringDialog.HOME_VIEW_ID_KEY, homeView.getId());
 			args.putInt(ScoringDialog.AWAY_VIEW_ID_KEY, awayView.getId());
 
@@ -269,8 +269,8 @@ OnDateSetListener {
 	};
 
 	@Override
-	public void onScorePicked(int winViewId, CharSequence winScore,
-			int lossViewId, CharSequence lossScore, boolean ero) {
+	public void onScorePicked(int winViewId, int winScore,
+			int lossViewId, int lossScore, boolean ero) {
 		PlayerScoreView winner = (PlayerScoreView) getView()
 				.findViewById(winViewId);
 		PlayerScoreView loser = (PlayerScoreView) getView()

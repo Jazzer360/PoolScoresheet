@@ -1,127 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical" >
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_gravity="center"
+	android:baselineAligned="false"
+	android:orientation="horizontal" >
 
-	<LinearLayout
-		android:layout_width="wrap_content"
+	<RelativeLayout
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:orientation="horizontal" >
+		android:layout_weight="1" >
 
 		<RadioButton
 			android:id="@+id/homeRadio"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
 			android:textSize="20sp" />
 
 		<TextView
+			android:id="@+id/vsText"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:layout_margin="10dp"
+			android:layout_below="@id/homeRadio"
+			android:layout_centerHorizontal="true"
 			android:text="@string/vs" />
 
 		<RadioButton
 			android:id="@+id/awayRadio"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_below="@id/vsText"
+			android:layout_centerHorizontal="true"
 			android:textSize="20sp" />
-	</LinearLayout>
 
-	<CheckBox
-		android:id="@+id/eroCheckbox"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:text="@string/ero" />
+		<CheckBox
+			android:id="@+id/eroCheckbox"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/awayRadio"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="10dp"
+			android:text="@string/ero" />
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:text="@string/loser_score"
-		android:textSize="20sp" />
+	</RelativeLayout>
 
 	<LinearLayout
-		android:id="@+id/dialog_buttons"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:orientation="horizontal" >
+		android:layout_margin="8dp"
+		android:orientation="vertical" >
 
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
+		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n0" />
+			android:text="@string/loser_score"
+			android:textSize="20sp" />
 
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
+		<NumberPicker
+			android:id="@+id/scorePicker"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n1" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n2" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n3" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n4" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n5" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n6" />
-
-		<RadioButton
-			style="?android:attr/buttonBarButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@drawable/radio_button"
-			android:button="@null"
-			android:minWidth="48dp"
-			android:text="@string/n7" />
+			android:layout_gravity="center" />
 	</LinearLayout>
 
 </LinearLayout>
