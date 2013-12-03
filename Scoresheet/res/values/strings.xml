@@ -34,6 +34,8 @@
 	<string name="no_matches">No matches</string>
 	<string name="delete_matches">Delete matches</string>
 	<string name="selected">Selected</string>
-	<string name="saved_matches">Saved Matches</string>
+	<string name="saved_matches">Saved matches</string>
+	<string name="delete_warning_title">Delete matches?</string>
+	<string name="delete_warning">You\'ll lose all match data for the selected matches</string>
 
 </resources>

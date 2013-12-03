@@ -1,10 +1,12 @@
 package com.derekjass.poolscoresheet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -65,11 +67,24 @@ implements LoaderCallbacks<Cursor> {
 			}
 
 			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			public boolean onActionItemClicked(final ActionMode mode,
+					MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.deleteSelection:
-					deleteSelectedItems();
-					mode.finish();
+					new AlertDialog.Builder(getActivity())
+					.setTitle(R.string.delete_warning_title)
+					.setMessage(R.string.delete_warning)
+					.setPositiveButton(android.R.string.yes,
+							new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							deleteSelectedItems();
+							mode.finish();
+						}
+					})
+					.setNegativeButton(android.R.string.no, null)
+					.show();
+
 					return true;
 				default:
 					return false;
