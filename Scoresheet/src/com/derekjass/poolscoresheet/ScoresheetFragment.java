@@ -344,7 +344,6 @@ OnDateSetListener {
 		public void onClick(View v) {
 			SummableInteger avgView = (SummableInteger) v;
 			TextView nameView = (TextView) v.getTag(PLAYER_TAG_KEY);
-			String avg = avgView.getValueAsString();
 			String name = nameView.getText().toString();
 
 			Bundle args = new Bundle();
@@ -352,8 +351,9 @@ OnDateSetListener {
 			args.putString(AveragePickerDialog.NAME_KEY,
 					!TextUtils.isEmpty(name) ?
 							name : nameView.getHint().toString());
-			if (!TextUtils.isEmpty(avg))
-				args.putString(AveragePickerDialog.AVG_KEY, avg);
+			if (avgView.hasValue()) {
+				args.putInt(AveragePickerDialog.AVG_KEY, avgView.getValue());
+			}
 
 			AveragePickerDialog dialog = new AveragePickerDialog();
 			dialog.setArguments(args);
