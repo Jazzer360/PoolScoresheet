@@ -705,21 +705,23 @@ OnDateSetListener {
 	}
 
 	private static void show(View v) {
+		v.animate().setListener(null);
 		if (v.getVisibility() != View.VISIBLE) {
 			v.setAlpha(0f);
 			v.setVisibility(View.VISIBLE);
 		}
-		v.animate().alpha(1f).setListener(null);
+		v.animate().alpha(1f);
 	}
 
 	private static void hide(final View v) {
-		if (v.getVisibility() == View.VISIBLE)
+		if (v.getVisibility() == View.VISIBLE) {
 			v.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
 					v.setVisibility(View.GONE);
 				}
 			});
+		}
 	}
 
 	private static String getNamesString(List<EditText> nameViews) {
@@ -727,8 +729,7 @@ OnDateSetListener {
 
 		for (EditText view : nameViews) {
 			sb.append(view.getText().toString().replaceAll(",", "\\\\,"));
-			if (view != nameViews.get(nameViews.size() - 1))
-				sb.append(",");
+			if (view != nameViews.get(nameViews.size() - 1)) sb.append(",");
 		}
 
 		return sb.toString();
@@ -740,8 +741,7 @@ OnDateSetListener {
 
 		for (SummableInteger view : intViews) {
 			sb.append(view.getValueAsString());
-			if (view != intViews.get(intViews.size() - 1))
-				sb.append(",");
+			if (view != intViews.get(intViews.size() - 1)) sb.append(",");
 		}
 
 		return sb.toString();
@@ -768,8 +768,7 @@ OnDateSetListener {
 			List<? extends SummableInteger> intViews, String[] data) {
 		if (data == null) return;
 		for (int i = 0; i < data.length; i++) {
-			if (!TextUtils.isEmpty(data[i]))
-				intViews.get(i).setValue(data[i]);
+			if (!TextUtils.isEmpty(data[i])) intViews.get(i).setValue(data[i]);
 		}
 	}
 
