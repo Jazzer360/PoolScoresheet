@@ -103,7 +103,7 @@ implements SummableInteger {
 	}
 
 	public void setEro(boolean isEro) {
-		if (mEro ^ isEro) {
+		if (mEro != isEro) {
 			mEro = isEro;
 			if (mEroText == null) {
 				mEroText = (TextView) mEroStub.inflate();

@@ -17,12 +17,12 @@ implements SummableInteger.OnValueChangedListener {
 
 	private static final int[] STATE_CIRCLED = {R.attr.isCircled};
 
-	protected static final int ALWAYS_SUM = 1;
-	protected static final int GRAY_SUM_WHEN_MISSING = 2;
-	protected static final int NO_SUM_WHEN_MISSING = 3;
+	protected static final int SUM_ALWAYS = 1;
+	protected static final int SUM_GRAY_WHEN_MISSING = 2;
+	protected static final int SUM_NOT_WHEN_MISSING = 3;
 
-	protected static final int NO_ANIMATION = 1;
-	protected static final int FLIP_ANIMATION = 2;
+	protected static final int ANIMATION_NONE = 1;
+	protected static final int ANIMATION_FLIP = 2;
 
 	private boolean mIsCircled;
 	private boolean mHasSoftValue;
@@ -70,7 +70,7 @@ implements SummableInteger.OnValueChangedListener {
 			setComplete &= !view.mustSum() ||
 					(view.hasValue() && !view.hasSoftValue());
 			atLeastOneHasValue |= view.hasValue() || view.hasSoftValue();
-			if (mSumRule == NO_SUM_WHEN_MISSING && !setComplete) {
+			if (mSumRule == SUM_NOT_WHEN_MISSING && !setComplete) {
 				clearValue();
 				return;
 			}
@@ -78,7 +78,7 @@ implements SummableInteger.OnValueChangedListener {
 		}
 
 		if (atLeastOneHasValue) {
-			if (mSumRule == GRAY_SUM_WHEN_MISSING && !setComplete) {
+			if (mSumRule == SUM_GRAY_WHEN_MISSING && !setComplete) {
 				setTextColor(getResources().getColor(R.color.light_gray));
 				mHasSoftValue = true;
 				setValue(sum);
@@ -96,7 +96,7 @@ implements SummableInteger.OnValueChangedListener {
 	@Override
 	public void setValue(final int value) {
 		switch (mAnimation) {
-		case FLIP_ANIMATION:
+		case ANIMATION_FLIP:
 			animate().rotationX(90f).setDuration(175)
 			.setListener(new AnimatorListenerAdapter() {
 				@Override
