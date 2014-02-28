@@ -465,10 +465,12 @@ OnDateSetListener {
 		if (eroBitmask == 0) return;
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
 			if (((1 << i) & eroBitmask) > 0) {
-				if (mHomeScores.get(i).getValue() == 10) {
-					mHomeScores.get(i).setEro(true);
+				PlayerScoreView home = mHomeScores.get(i);
+				PlayerScoreView away = (PlayerScoreView) home.getTag();
+				if (home.getValue() == 10) {
+					home.setEro(true);
 				} else {
-					mAwayScores.get(i).setEro(true);
+					away.setEro(true);
 				}
 			}
 		}
@@ -478,8 +480,9 @@ OnDateSetListener {
 		long mask = 0;
 
 		for (int i = 0; i < PLAYERS * ROUNDS; i++) {
-			if (mHomeScores.get(i).isEro() || mAwayScores.get(i).isEro())
-				mask |= 1 << i;
+			PlayerScoreView home = mHomeScores.get(i);
+			PlayerScoreView away = (PlayerScoreView) home.getTag();
+			if (home.isEro() || away.isEro()) mask |= 1 << i;
 		}
 
 		return mask;
