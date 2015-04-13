@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="PlayerName">
+		<item name="android:layout_width">0dp</item>
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:background">@drawable/box_white</item>
+		<item name="android:inputType">textPersonName|textCapWords</item>
+		<item name="android:paddingLeft">4dp</item>
+		<item name="android:textSize">@dimen/player_text_size</item>
+	</style>
+
+	<style name="PlayerAve">
+		<item name="android:layout_width">@dimen/ave_width</item>
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:background">@drawable/box_white</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textSize">@dimen/ave_text_size</item>
+	</style>
+
+	<style name="PlayerScore">
+		<item name="android:layout_width">@dimen/score_box_width</item>
+		<item name="android:layout_height">match_parent</item>
+	</style>
+
+</resources>

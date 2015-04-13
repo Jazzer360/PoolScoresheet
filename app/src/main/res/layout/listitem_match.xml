@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?android:attr/activatedBackgroundIndicator"
+	android:padding="8dp" >
+
+	<TextView
+		android:id="@+id/listDate"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true" />
+
+	<TextView
+		android:id="@+id/listMatchIncomplete"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@id/listDate"
+		android:layout_below="@id/listDate"
+		android:text="@string/in_progress"
+		android:textColor="#B22222"
+		android:textSize="12sp"
+		android:visibility="invisible" />
+
+	<TextView
+		android:id="@+id/listHomeWins"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
+		android:paddingLeft="5dp" />
+
+	<TextView
+		android:id="@+id/listAwayWins"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/listHomeWins"
+		android:paddingLeft="5dp" />
+
+	<TextView
+		android:id="@+id/listHomeTeam"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/listHomeWins"
+		android:maxWidth="200dp" />
+
+	<TextView
+		android:id="@+id/listAwayTeam"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignTop="@id/listAwayWins"
+		android:layout_toLeftOf="@id/listAwayWins"
+		android:maxWidth="200dp" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/listHomeTeam"
+		android:paddingRight="5dp"
+		android:text="@string/home" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignTop="@id/listAwayTeam"
+		android:layout_toLeftOf="@id/listAwayTeam"
+		android:paddingRight="5dp"
+		android:text="@string/away" />
+
+</RelativeLayout>

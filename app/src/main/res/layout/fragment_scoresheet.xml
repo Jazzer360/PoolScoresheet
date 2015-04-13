@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
+
+	<ProgressBar
+		android:id="@+id/scoresheetProgressBar"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:layout_gravity="center"
+		android:indeterminate="true" />
+
+	<TextView
+		android:id="@+id/scoresheetNoDataText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:text="@string/no_match_selected"
+		android:visibility="gone" />
+
+	<LinearLayout
+		android:id="@+id/scoresheet"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:orientation="vertical"
+		android:visibility="gone" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="@string/jackson_tuesday_night" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="4dp" >
+
+			<EditText
+				android:id="@+id/homeTeamName"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:background="@drawable/box_white"
+				android:gravity="center"
+				android:hint="@string/home_team"
+				android:inputType="textCapWords" />
+
+			<TextView
+				android:id="@+id/dateView"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="6dp"
+				android:layout_marginRight="6dp"
+				android:background="@drawable/box_white"
+				android:paddingLeft="2dp"
+				android:paddingRight="2dp"
+				android:textSize="20sp" />
+
+			<EditText
+				android:id="@+id/awayTeamName"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:background="@drawable/box_white"
+				android:gravity="center"
+				android:hint="@string/away_team"
+				android:inputType="textCapWords" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:baselineAligned="false" >
+
+			<include
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="4dp"
+				android:layout_weight="1"
+				layout="@layout/layout_home_players" />
+
+			<include
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="4dp"
+				android:layout_weight="1"
+				layout="@layout/layout_away_players" />
+		</LinearLayout>
+	</LinearLayout>
+
+</FrameLayout>

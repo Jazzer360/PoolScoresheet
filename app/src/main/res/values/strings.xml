@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="app_name">Pool Scoresheet</string>
+	<string name="home">Home: </string>
+	<string name="home_team">Home Team</string>
+	<string name="away">Away: </string>
+	<string name="away_team">Away Team</string>
+	<string name="abbrev_average">Ave</string>
+	<string name="player">Player</string>
+	<string name="r1">R1</string>
+	<string name="r2">R2</string>
+	<string name="r3">R3</string>
+	<string name="total">Total</string>
+	<string name="player1">Player 1</string>
+	<string name="player2">Player 2</string>
+	<string name="player3">Player 3</string>
+	<string name="player4">Player 4</string>
+	<string name="player5">Player 5</string>
+	<string name="subtotals">Subtotals</string>
+	<string name="totals">Totals</string>
+	<string name="assign_average">Assign average</string>
+	<string name="vs">Vs.</string>
+	<string name="select_winner">Select winner</string>
+	<string name="ero">ERO</string>
+	<string name="loser_score">Loser score</string>
+	<string name="clear">Clear</string>
+	<string name="breaks">Break</string>
+	<string name="round_ave">Round Ave</string>
+	<string name="jackson_tuesday_night">Jackson Area Tuesday Night</string>
+	<string name="no_match_selected">No match selected</string>
+	<string name="in_progress">In progress</string>
+	<string name="new_match">New match</string>
+	<string name="no_matches">No matches</string>
+	<string name="delete_matches">Delete matches</string>
+	<string name="selected">Selected</string>
+	<string name="saved_matches">Saved matches</string>
+	<string name="delete_warning_title">Delete matches?</string>
+	<string name="delete_warning">You\'ll lose all match data for the selected matches</string>
+
+</resources>
